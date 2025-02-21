@@ -1,27 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Update Player</title>
-    <link rel="stylesheet" href="../style/boxscore.css">
-    <link rel="stylesheet" href="../style/bootstrap.min.css">
-    <link rel="stylesheet" href="../style/font-awesome-4.7.0/css/font-awesome.min.css">
-</head>
-<body>
-<header>
-    <h1>BasketStats Tracker</h1>
-    <?php if (isset($_SESSION['email'])) { ?>
-    <h4>Welcome <?= $user->username ?></h4>
-    <form action="../index.php" method="post">
-        <button type="submit" class="btn btn-danger" name="logout" id="logout">Logout</button>
-        <?php } else { ?>
-            <a href="login.php" class="btn btn-success">Login</a>
-            <a href="signup.php" class="btn btn-info">Signup</a>
-        <?php }; ?>
-    </form>
-</header>
-<?php if(isset($_SESSION['email'])){ ?>
+{% extends "base.html" %}
+{% block title %} Update Player {{ player.name }} {% endblock %}
+{% block content %}
+{% if session.username %}
 <section class="details">
     <div class="last-played">
         <br>
@@ -31,37 +11,37 @@
             <div class="forms">
                 <label for="id_player"></label>
                 <label>Player Name</label>
-                <input type="text" name="name" value="<?= $playerData->name ?>" required>
+                <input type="text" name="name" value="{{ player.name }}" required>
                 <label>Player Family Name</label>
-                <input type="text" name="family_name" value="<?= $playerData->familyName ?? null ?>">
+                <input type="text" name="family_name" value="{{ player.family_name }}">
                 <label>Player Number</label>
-                <input type="number" name="number" value="<?= $playerData->number ?? null ?>">
+                <input type="number" name="number" value="{{ player.number }}">
                 <label>Position</label>
-                <input type="number" min="1" max="5" name="position" value="<?= $playerData->position ?? null ?>">
+                <input type="number" min="1" max="5" name="position" value="{{ player.position }}">
                 <label>Position Name</label>
-                <input type="text" name="position_name" value="<?= $playerData->positionName ?? null ?>">
+                <input type="text" name="position_name" value="{{ player.position_name }}">
                 <label>Height</label>
-                <input type="number" name="height" value="<?= $playerData->height ?? null ?>">
+                <input type="number" name="height" value="{{ player.height }}">
                 <label>Birthday</label>
-                <input type="date" name="birthday" value="<?= $playerData->birthday ?? null ?>">
+                <input type="date" name="birthday" value="{{ player.birthday }}">
                 <label>Nationality</label>
-                <input type="text" name="nationality" value="<?= $playerData->nationality ?? null ?>">
+                <input type="text" name="nationality" value="{{ player.nationality }}">
             </div>
             <br>
             <div>
                 <input type="submit" class="btn btn-primary" value="Submit">
-                <a href="readteam.php?id_team=<?= $id_team ?>" class="btn btn-secondary ml-2">Cancel</a>
+                <a href="{{ url_for('team.view_team', team_id=team.id_team) }}" class="btn btn-secondary ml-2">Cancel</a>
             </div>
         </form>
     </div>
 </section>
-<?php } else { ?>
+{% else %}
 <section class="details">
     <div class="last-played">
         <br>
         <h2>You must be Logged in, to be able to update a Player</h2>
     </div>
 </section>
-<?php } ?>
-</body>
-</html>
+{% endif %}
+<br>
+{% endblock %}

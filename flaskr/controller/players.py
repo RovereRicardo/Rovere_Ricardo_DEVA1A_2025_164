@@ -3,6 +3,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from werkzeug.security import generate_password_hash, check_password_hash
 from flaskr.db import connection
 from flaskr.models.players import Player
+from flaskr.models.teams import Team
 
 player = Blueprint('player', __name__)
 
@@ -63,6 +64,12 @@ def update_player():
 
     player = Player(**player_data)
 
+    team = None
+    if id_team:
+        team_data = Team.get_by_id(id_team)
+        if team_data:
+            team = Team(**team_data)  # Convert data to Team object
+
     if request.method == 'POST':
         player.name = request.form['name']
         player.family_name = request.form['family_name']
@@ -78,4 +85,22 @@ def update_player():
         flash("Player updated successfully.", "success")
         return redirect(url_for('team.view_team', team_id=id_team))
 
-    return render_template("players/update_player.html", player=player, team_id=id_team)
+    return render_template("players/update_player.html", player=player, team=team)
+
+@player.route('/view_player', methods=['GET', 'POST'])
+def view_player():
+    player_id = request.args.get('player_id', type=int)
+    id_team = request.args.get('team_id', type=int)
+
+    if not player_id:
+        flash("Player ID is missing.", "danger")
+        return redirect(url_for('team.view_team', team_id=id_team))
+
+    player_data = Player.get_by_id(player_id)
+    if not player_data:
+        flash("Player does not exist.", "danger")
+        return redirect(url_for('team.view_team', team_id=id_team))
+
+    player = Player(**player_data)
+    return render_template("players/view_player.html", player=player, team_id=id_team)
+

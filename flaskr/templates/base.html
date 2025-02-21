@@ -14,8 +14,8 @@
 <header>
     {% block header %}
     <h1>BasketStats Tracker</h1>
-    {% if username %}
-    <h4>Welcome {{ username }}</h4>
+    {% if session.username %}
+    <h4>Welcome {{ session.username }}</h4>
     <form action="{{ url_for('auth.logout') }}" method="POST">
         <button type="submit" class="btn btn-danger">Logout</button>
     </form>

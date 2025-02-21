@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block title %} Update Team {{ team.team_name }} {% endblock %}
 {% block content %}
+{% if session.username %}
 <section class="details">
     <div class="last-played">
         <h2>Update Team</h2>
@@ -30,5 +31,14 @@
         </form>
     </div>
 </section>
+{% else %}
+<section class="details">
+    <div class="last-played">
+        <br>
+        <h2>You must be logged in, to be able to update a Team.</h2>
+    </div>
+</section>
+{% endif %}
+<br>
 {% endblock %}
 

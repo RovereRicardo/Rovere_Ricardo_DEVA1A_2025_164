@@ -60,13 +60,14 @@ def login():
             flash('Invalid username or password.', 'error')
             return redirect(url_for('auth.login'))
 
-        session.clear()
+        session.permanent = True  # Ensures session lasts as configured
         session['username'] = user[0]
         session['id_user'] = user[1]
         flash('Login successful!', 'success')
         return redirect(url_for('index'))
 
     return render_template('/auth/login.html')
+
 
 
 # User Logout
@@ -76,12 +77,13 @@ def logout():
     return redirect(url_for("index"))  # Redirects to homepage
 
 
-# Login Required Decorator
 def login_required(view):
     @functools.wraps(view)
     def wrapped_view(*args, **kwargs):
-        if 'user_id' not in session:
+        if 'id_user' not in session:  # Use 'id_user' instead of 'user_id'
+            flash("You need to log in first.", "error")
             return redirect(url_for('auth.login'))
         return view(*args, **kwargs)
 
     return wrapped_view
+

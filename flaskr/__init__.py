@@ -1,7 +1,7 @@
 import os
 from flask import Flask, redirect, url_for, render_template, session, request
 from flaskr.db import connection  # Use 'flaskr.db' instead of 'db'
-
+from datetime import timedelta
 
 def create_app():
     app = Flask(__name__)
@@ -9,6 +9,9 @@ def create_app():
         SECRET_KEY='dev',
         DATABASE=connection,
     )
+
+    app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=1)
+    app.config['SESSION_PERMANENT'] = True
 
     try:
         os.makedirs(app.instance_path, exist_ok=True)
@@ -75,6 +78,22 @@ def create_app():
         id_team = request.args.get('id_team')
 
         return render_template("/players/register_player.html", username=username, iduser=iduser, id_team=id_team)
+
+    @app.route("/players/update_player")
+    def update_player():
+        username = session.get('username')
+        iduser = session.get('id_user')
+        id_team = request.args.get('id_team')
+
+        return render_template("/players/update_player.html", username=username, iduser=iduser, team=team)
+
+    @app.route("/players/view_player")
+    def view_player():
+        username = session.get('username')
+        iduser = session.get('id_user')
+        id_team = request.args.get('id_team')
+
+        return render_template("/players/view_player.html", username=username, iduser=iduser, id_team=id_team)
 
 
     app.secret_key = os.urandom(24)

@@ -1,0 +1,81 @@
+import functools
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session
+from werkzeug.security import generate_password_hash, check_password_hash
+from flaskr.db import connection
+from flaskr.models.players import Player
+
+player = Blueprint('player', __name__)
+
+@player.route('/players/register_player', methods=['GET', 'POST'])
+def register_player():
+    if request.method == 'POST':
+        name = request.form['name']
+        family_name = request.form['family_name']
+        picture = request.files['picture']
+        number = request.form['number']
+        position = request.form['position']
+        position_name = request.form['position_name']
+        height = request.form['height']
+        birthday = request.form['birthday']
+        nationality = request.form['nationality']
+
+        if not name:
+            flash('Player name is required.', 'danger')
+            return redirect(url_for('player.register_player'))
+
+        new_player = Player(name, family_name, picture, number, position, position_name, height,birthday, nationality)
+        new_player.register_player(team_id=session['team_id'])
+        flash("Player registered successfully.", "success")
+        return redirect(url_for('index'))
+    return render_template('/players/register_player.html')
+
+@player.route('/delete_player', methods=['POST'])
+def delete_player():
+    id_player = request.form.get('id_player')
+    id_team = request.form.get('id_team')
+
+    if not id_player or not id_team:
+        flash("Invalid player or team ID.", "danger")
+        return redirect(url_for('index'))
+
+    try:
+        Player.delete_player(id_player, id_team)  # Call the delete function
+        flash("Player deleted successfully.", "success")
+    except Exception as e:
+        flash(f"Error deleting player: {str(e)}", "danger")
+
+    return redirect(url_for('team.view_team', team_id=id_team))
+
+@player.route('/update_player', methods=['POST', 'GET'])
+def update_player():
+    player_id = request.args.get('player_id', type=int)  # Get player_id from query string
+    id_team = request.args.get('team_id', type=int)  # Get team_id from query string
+
+    if not player_id:
+        flash("Player ID is missing.", "danger")
+        return redirect(url_for('player.register_player'))
+
+    player_data = Player.get_by_id(player_id)
+
+    if not player_data:
+        flash("Player does not exist.", "danger")
+        return redirect(url_for('player.register_player'))
+
+    player = Player(**player_data)
+
+    if request.method == 'POST':
+        player.name = request.form['name']
+        player.family_name = request.form['family_name']
+        player.picture = request.files['picture']
+        player.number = request.form['number']
+        player.position = request.form['position']
+        player.position_name = request.form['position_name']
+        player.height = request.form['height']
+        player.birthday = request.form['birthday']
+        player.nationality = request.form['nationality']
+
+        player.update_player()
+        flash("Player updated successfully.", "success")
+        return redirect(url_for('team.view_team', team_id=id_team))
+
+    return render_template("players/update_player.html", player=player, team_id=id_team)

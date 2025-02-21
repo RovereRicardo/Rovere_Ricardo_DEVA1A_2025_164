@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Player</title>
+    <link rel="stylesheet" href="../style/boxscore.css">
+    <link rel="stylesheet" href="../style/bootstrap.min.css">
+    <link rel="stylesheet" href="../style/font-awesome-4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+<header>
+    <h1>BasketStats Tracker</h1>
+    <?php if (isset($_SESSION['email'])) { ?>
+    <h4>Welcome <?= $user->username ?></h4>
+    <form action="../index.php" method="post">
+        <button type="submit" class="btn btn-danger" name="logout" id="logout">Logout</button>
+        <?php } else { ?>
+            <a href="login.php" class="btn btn-success">Login</a>
+            <a href="signup.php" class="btn btn-info">Signup</a>
+        <?php }; ?>
+    </form>
+</header>
+<?php if(isset($_SESSION['email'])){ ?>
+<section class="details">
+    <div class="last-played">
+        <br>
+        <h2>Update Player</h2>
+        <p>Fill the form and submit to update Player details.</p>
+        <form action="" name="myForm" method="POST">
+            <div class="forms">
+                <label for="id_player"></label>
+                <label>Player Name</label>
+                <input type="text" name="name" value="<?= $playerData->name ?>" required>
+                <label>Player Family Name</label>
+                <input type="text" name="family_name" value="<?= $playerData->familyName ?? null ?>">
+                <label>Player Number</label>
+                <input type="number" name="number" value="<?= $playerData->number ?? null ?>">
+                <label>Position</label>
+                <input type="number" min="1" max="5" name="position" value="<?= $playerData->position ?? null ?>">
+                <label>Position Name</label>
+                <input type="text" name="position_name" value="<?= $playerData->positionName ?? null ?>">
+                <label>Height</label>
+                <input type="number" name="height" value="<?= $playerData->height ?? null ?>">
+                <label>Birthday</label>
+                <input type="date" name="birthday" value="<?= $playerData->birthday ?? null ?>">
+                <label>Nationality</label>
+                <input type="text" name="nationality" value="<?= $playerData->nationality ?? null ?>">
+            </div>
+            <br>
+            <div>
+                <input type="submit" class="btn btn-primary" value="Submit">
+                <a href="readteam.php?id_team=<?= $id_team ?>" class="btn btn-secondary ml-2">Cancel</a>
+            </div>
+        </form>
+    </div>
+</section>
+<?php } else { ?>
+<section class="details">
+    <div class="last-played">
+        <br>
+        <h2>You must be Logged in, to be able to update a Player</h2>
+    </div>
+</section>
+<?php } ?>
+</body>
+</html>

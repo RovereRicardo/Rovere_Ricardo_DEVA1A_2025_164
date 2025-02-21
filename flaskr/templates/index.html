@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %} BasketStats {% endblock%}
+{% block content %}
+<section class="details">
+    <div class="last-played">
+        <h2>Matches</h2>
+        <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>Match</th>
+                <th>Date</th>
+                <th>Home Team</th>
+                <th>Away Team</th>
+                <th>Score</th>
+                <th>Boxscore</th>
+                <th>Action</th>
+                <th>Play Game</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for match in matches %}
+            <tr>
+                <td>{{ match.match_name }}</td>
+                <td>{{ match.date }}</td>
+                <td>{{ match.home_team }}</td>
+                <td>{{ match.away_team }}</td>
+                <td>{{ match.score }}</td>
+                <td>
+                    <a href="" class="mr-3" title="View Match">
+                        <span class="fa fa-eye"></span>
+                    </a>
+                </td>
+                <td>
+                    <a href="" class="mr-3" title="View Match">
+                        <span class="fa fa-eye"></span>
+                    </a>
+                    <a href="" class="mr-3" title="Update Match">
+                        <span class="fa fa-pencil"></span>
+                    </a>
+                    <a href="" class="mr-3" title="Remove Match"
+                       onclick="return confirm('Are you sure?')">
+                        <span class="fa fa-trash"></span>
+                    </a>
+                </td>
+                <td>
+                    <a href="" class="mr-3" title="Play Game">
+                        <span class="fa fa-play"></span>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <br>
+        <a href="" class="btn btn-success pull-right">
+            <i class="fa fa-plus"></i> Add New Match
+        </a>
+    </div>
+
+    <div class="teams-details">
+        <h2>Teams</h2>
+        <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <th class="bg-success">Team</th>
+                <th>Points</th>
+                <th>Wins</th>
+                <th>Loses</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for team in teams %}
+            <tr>
+                <td>{{ team.team_name }}</td>
+                <td>{{ team.points }}</td>
+                <td>{{ team.wins }}</td>
+                <td>{{ team.loses }}</td>
+                <td>
+                    <a href="{{ url_for('team.view_team', team_id=team.id_team) }}" class="mr-3"
+                       title="View Team">
+                        <span class="fa fa-eye"></span>
+                    </a>
+                    <a href="{{ url_for('team.update_team', team_id=team.id_team) }}" class="mr-3"
+                       title="Update Team">
+                        <span class="fa fa-pencil"></span>
+                    </a>
+                    <form action="{{ url_for('team.delete_team', team_id=team.id_team) }}" method="POST"
+                          style="display:inline;">
+                        <input type="hidden" name="id_team" value="{{ team.id_team }}">
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?')">
+                            <span class="fa fa-trash"></span>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <br>
+        <a href="{{ url_for('team.register_team') }} " class="btn btn-success pull-right">
+            <i class="fa fa-plus"></i> Add New Team
+        </a>
+    </div>
+</section>
+{% endblock %}

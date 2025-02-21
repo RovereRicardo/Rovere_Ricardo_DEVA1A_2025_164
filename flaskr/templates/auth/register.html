@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %} New Team {% endblock %}
+{% block content %}
+<section class="details">
+    <div class="last-played">
+        <br>
+        <h2>Signup</h2>
+        <p>Fill the form and submit to Sign In</p>
+        <form action="" name="signInForm" method="POST">
+            <div class="forms">
+                <label for="username">Username</label>
+                <input type="text" name="username" id="username" value="" required>
+                <label for="email">Email</label>
+                <input type="email" name="email" id="email" value="" required>
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" value="" required>
+                <label for="confirm_password">Confirm Password</label>
+                <input type="password" name="confirm_password" id="confirm_password">
+                <label for="role">Role</label>
+                <input type="text" name="role" id="role" value="" required>
+            </div>
+            <br>
+            <div>
+                <button type="submit" name="signup" id="signup" class="btn btn-primary">Submit</button>
+                <a href="/index" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+        <a href="{{ url_for('auth.login') }}">Already have an account? Login</a>
+    </div>
+</section>
+{% endblock %}

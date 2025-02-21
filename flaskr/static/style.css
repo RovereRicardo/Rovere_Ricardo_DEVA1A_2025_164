@@ -1,0 +1,120 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #eaeaea;
+}
+
+header {
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+td {
+    text-align: center;
+}
+
+.table td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.table .button-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+.pointsTd {
+    display: flex;
+    justify-content: center;
+}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+h1 {
+    margin: 0;
+}
+
+.forms {
+    display: flex;
+    justify-content: center;
+}
+
+.loginForm {
+    display: inline-block;
+    align-content: center;
+    width: 250px;
+    padding: 10px;
+    border: 1px solid black;
+}
+
+.nav button {
+    background-color: #555;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.match-info {
+    background-color: #f1f1f1;
+    padding: 10px;
+}
+
+.tabs {
+    display: flex;
+    margin-top: 10px;
+}
+
+.tabs button {
+    background-color: #ccc;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+}
+
+.tabs button.active {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.players-section {
+    margin: 20px;
+}
+
+ul {
+    list-style-type: none;
+    text-align: center;
+}
+
+.details-form {
+    display: flex;
+    justify-content: center;
+}
+
+.details {
+    display: flex;
+    justify-content: space-around;
+}
+
+.forms {
+    display: flex;
+    flex-direction: column;
+}
+
+footer {
+    text-align: right;
+    padding: 10px 20px;
+}
+
+

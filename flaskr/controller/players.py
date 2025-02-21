@@ -92,6 +92,12 @@ def view_player():
     player_id = request.args.get('player_id', type=int)
     id_team = request.args.get('team_id', type=int)
 
+    team = None
+    if id_team:
+        team_data = Team.get_by_id(id_team)
+        if team_data:
+            team = Team(**team_data)  # Convert data to Team object
+
     if not player_id:
         flash("Player ID is missing.", "danger")
         return redirect(url_for('team.view_team', team_id=id_team))
@@ -102,5 +108,5 @@ def view_player():
         return redirect(url_for('team.view_team', team_id=id_team))
 
     player = Player(**player_data)
-    return render_template("players/view_player.html", player=player, team_id=id_team)
+    return render_template("players/view_player.html", player=player, team_id=id_team, team=team)
 

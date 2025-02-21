@@ -1,39 +1,35 @@
 {% extends "base.html" %}
 {% block title %} Player {{ player.name }} {% endblock %}
 {% block content %}
-<section class="match-info">
-    <h2>Player {{ player.name}}</h2>
-</section>
 <section class="players-section">
-    <table class="table table-bordered table-hover">
-        <thead>
-        <tr>
-            <th>Name</th>
-            <th>Family Name</th>
-            <th>Number</th>
-            <th>Position</th>
-            <th>Position Name</th>
-            <th>Height</th>
-            <th>Birthday</th>
-            <th>Nationality</th>
-            <th>Teams</th>
-        </tr>
-        </thead>
-        <tbody id="players-list">
-            <tr>
-                <td style="display: none">{{ player.id_player}}</td>
-                <td>{{ player.name }}</td>
-                <td>{{ player.family_name }}</td>
-                <td>{{ player.number }}</td>
-                <td>{{ player.position }}</td>
-                <td>{{ player.position_name }}</td>
-                <td>{{ player.height }}</td>
-                <td>{{ player.birthday }}</td>
-                <td>{{ player.nationality }}</td>
-            </tr>
-        </tbody>
-    </table>
-    <br>
-    <a href="readteam.php?id_team=<?= $id_team ?>" class="btn btn-secondary ml-2 pull-right" style="margin-right: 10px">Cancel</a>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg">
+                <div class="text-lg-left">
+                    {% if player.picture != null %}
+                   <img src="data:image/jpeg;base64,' . base64_encode({{player.picture}}) . '" alt="Uploaded Image" style="max-width: 500px;">
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg">
+                <h2>Details</h2>
+                <br>
+                <p><strong>Name</strong></p>
+                <p>{{ player.name }}</p>
+                <p><strong>Family Name</strong></p>
+                <p>{{ player.family_name }}</p>
+                <p><strong>Birthday</strong></p>
+                <p>{{ player.birthday }}</p>
+                <p><strong>Height</strong></p>
+                <p>{{ player.height }}</p>
+                <p><strong>Teams</strong></p>
+            </div>
+        </div>
+        {% if session.username %}
+        <a href="{{ url_for('player.update_player', player_id=player.id_player, team_id=team.id_team) }}" class="btn btn-warning ml-2 pull-right">Update</a>
+        {% endif %}
+        <a href="{{ url_for('team.view_team', team_id=team.id_team) }}" class="btn btn-secondary ml-2 pull-right" style="margin-right: 10px">Cancel</a>
+    </div>
 </section>
+
 {% endblock %}

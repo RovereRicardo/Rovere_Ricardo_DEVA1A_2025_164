@@ -3,7 +3,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from werkzeug.security import generate_password_hash, check_password_hash
 from flaskr.db import connection
 from flaskr.models.teams import Team  # Import the Team model
-from flaskr.models.players import Player
+from flaskr.models.players import Player # Import Player model
 
 team = Blueprint('team', __name__)
 
@@ -24,8 +24,8 @@ def register_team():
             flash("Team Name is required.", "danger")
             return redirect(url_for('team.register_team'))
 
-        new_team = Team(None, team_name, team_logo, address, city, wins, loses, draws, points, id_user)
-        new_team.register_team()
+        new_team = Team(None, team_name, team_logo, address, city, wins, loses, draws, points, id_user) # Create team object
+        new_team.register_team() # Call register function
 
         flash("Team Registered!", "success")
         return redirect(url_for('index'))
@@ -42,13 +42,13 @@ def delete_team():
 
 @team.route("/update/<int:team_id>", methods=["GET", "POST"])
 def update_team(team_id):
-    print(session)
+    #print(session)
     team_data = Team.get_by_id(team_id)
     if not team_data:
         flash("Team not found.", "danger")
         return redirect(url_for("index"))
 
-    team = Team(**team_data)  # Create an instance of the Team class
+    team = Team(**team_data)  # Create an instance of the Team class with the retrieved Data
 
     if request.method == "POST":
         team.team_name = request.form["team_name"]
@@ -76,8 +76,8 @@ def view_team(team_id):
 
     team = Team(**team_data)
 
-    player_data_list = Player.get_by_team(team_id)  # This returns a list of dictionaries
+    player_data_list = Player.get_by_team(team_id)  # Returns a list of dictionaries
 
-    players = [Player(**player_data) for player_data in player_data_list]
+    players = [Player(**player_data) for player_data in player_data_list] # Create a list of players from player_data in player_data_list
 
     return render_template('/teams/view_team.html', team=team, username=session.get('username'), players=players)

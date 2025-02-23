@@ -52,8 +52,8 @@ def create_app():
         cursor = connection.cursor()
         cursor.execute("SELECT * FROM t_team WHERE id_team = %s", (team_id,))
         team = cursor.fetchone()
-        column_names = [desc[0] for desc in cursor.description]
-        team = dict(zip(column_names, team))
+        column_names = [desc[0] for desc in cursor.description] #Get columns names
+        team = dict(zip(column_names, team)) #Convert from tuple to dictionary
 
         cursor.execute(
             "SELECT p.* FROM t_player p JOIN t_team_player tp ON p.id_player = tp.id_player_team JOIN t_team t ON tp.id_team_player = t.id_team WHERE t.id_team = %s",

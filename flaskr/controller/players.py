@@ -24,8 +24,8 @@ def register_player():
             flash('Player name is required.', 'danger')
             return redirect(url_for('player.register_player'))
 
-        new_player = Player(name, family_name, picture, number, position, position_name, height,birthday, nationality)
-        new_player.register_player(team_id=session['team_id'])
+        new_player = Player(name, family_name, picture, number, position, position_name, height,birthday, nationality) #Create instance/object Player
+        new_player.register_player(team_id=session['team_id']) #Call register function
         flash("Player registered successfully.", "success")
         return redirect(url_for('index'))
     return render_template('/players/register_player.html')
@@ -49,8 +49,8 @@ def delete_player():
 
 @player.route('/update_player', methods=['POST', 'GET'])
 def update_player():
-    player_id = request.args.get('player_id', type=int)  # Get player_id from query string
-    id_team = request.args.get('team_id', type=int)  # Get team_id from query string
+    player_id = request.args.get('player_id', type=int)  # Get player_id from query string/link
+    id_team = request.args.get('team_id', type=int)  # Get team_id from query string/link
 
     if not player_id:
         flash("Player ID is missing.", "danger")
@@ -62,13 +62,15 @@ def update_player():
         flash("Player does not exist.", "danger")
         return redirect(url_for('player.register_player'))
 
-    player = Player(**player_data)
+    player = Player(**player_data) # Convert data to Player object
 
     team = None
     if id_team:
         team_data = Team.get_by_id(id_team)
         if team_data:
             team = Team(**team_data)  # Convert data to Team object
+
+    # Team data needed to render template
 
     if request.method == 'POST':
         player.name = request.form['name']

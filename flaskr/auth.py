@@ -32,7 +32,7 @@ def register():
             flash('Passwords do not match.', 'error')
             return redirect(url_for('auth.register'))
 
-        password = generate_password_hash(password)
+        password = generate_password_hash(password) #Create password hash
         cursor.execute("INSERT INTO t_user (username, email, password, role) VALUES (%s, %s,%s, %s)",
                        (username, email, password, role))
         connection.commit()
@@ -56,11 +56,11 @@ def login():
         user = cursor.fetchone()
         cursor.close()
 
-        if user is None or not check_password_hash(user[2], password):
+        if user is None or not check_password_hash(user[2], password): # Compare the password from form with password in db
             flash('Invalid username or password.', 'error')
             return redirect(url_for('auth.login'))
 
-        session.permanent = True  # Ensures session lasts as configured
+        session.permanent = True  # Permanent session
         session['username'] = user[0]
         session['id_user'] = user[1]
         flash('Login successful!', 'success')
@@ -80,10 +80,11 @@ def logout():
 def login_required(view):
     @functools.wraps(view)
     def wrapped_view(*args, **kwargs):
-        if 'id_user' not in session:  # Use 'id_user' instead of 'user_id'
+        if 'id_user' not in session:
             flash("You need to log in first.", "error")
             return redirect(url_for('auth.login'))
         return view(*args, **kwargs)
 
     return wrapped_view
 
+# TODO: Class User for logins

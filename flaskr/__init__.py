@@ -1,5 +1,6 @@
 import os
 from sys import prefix
+import base64
 
 from flask import Flask, redirect, url_for, render_template, session, request
 from flaskr.db import connection  # Use 'flaskr.db' instead of 'db'
@@ -96,6 +97,11 @@ def create_app():
         id_team = request.args.get('id_team')
 
         return render_template("/players/view_player.html", username=username, iduser=iduser, id_team=id_team)
+
+
+    @app.template_filter('b64encode')
+    def b64encode_filter(data):
+        return base64.b64encode(data).decode('utf-8') if data else None
 
     app.secret_key = os.urandom(24)
 

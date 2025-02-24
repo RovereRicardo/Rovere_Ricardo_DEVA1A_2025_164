@@ -6,9 +6,13 @@
         <div class="row">
             <div class="col-lg">
                 <div class="text-lg-left">
-                    {% if player.picture != null %}
-                   <img src="data:image/jpeg;base64,' . base64_encode({{player.picture}}) . '" alt="Uploaded Image" style="max-width: 500px;">
+                    {% if player.picture %}
+                    <img src="data:image/jpeg;base64,{{ player.picture | b64encode }}" alt="{{ player.name }}'s image"
+                         style="max-width: 500px;">
+                    {% else %}
+                    <p>No image available</p>
                     {% endif %}
+
                 </div>
             </div>
             <div class="col-lg">
@@ -26,9 +30,11 @@
             </div>
         </div>
         {% if session.username %}
-        <a href="{{ url_for('player.update_player', player_id=player.id_player, team_id=team.id_team) }}" class="btn btn-warning ml-2 pull-right">Update</a>
+        <a href="{{ url_for('player.update_player', player_id=player.id_player, team_id=team.id_team) }}"
+           class="btn btn-warning ml-2 pull-right">Update</a>
         {% endif %}
-        <a href="{{ url_for('team.view_team', team_id=team.id_team) }}" class="btn btn-secondary ml-2 pull-right" style="margin-right: 10px">Cancel</a>
+        <a href="{{ url_for('team.view_team', team_id=team.id_team) }}" class="btn btn-secondary ml-2 pull-right"
+           style="margin-right: 10px">Cancel</a>
     </div>
 </section>
 

@@ -23,26 +23,17 @@ def register_player():
 
         team_id = request.args.get('id_team')
 
-        # Handle the uploaded file (picture)
         picture = request.files.get('picture')
         if picture:
             picture_data = picture.read()  # Read the file content as binary data
         else:
             picture_data = None  # If no picture is uploaded, set to None
 
-        # Validation
         if not name:
             flash('Player name is required.', 'danger')
             return redirect(url_for('player.register_player'))
 
-        # Make sure number is properly handled (e.g., convert to int)
-        if not number.isdigit():  # Validate that 'number' is a valid number
-            flash('Please provide a valid number.', 'danger')
-            return redirect(url_for('player.register_player'))
 
-        number = int(number)  # Convert number to integer
-
-        # Create player object and register
         new_player = Player(name, family_name, picture_data, number, position, position_name, height, birthday, nationality)
         new_player.register_player(team_id)  # Call register function
         flash("Player registered successfully.", "success")
@@ -130,5 +121,6 @@ def view_player():
         return redirect(url_for('team.view_team', team_id=id_team))
 
     player = Player(**player_data)
+
     return render_template("players/view_player.html", player=player, team_id=id_team, team=team)
 

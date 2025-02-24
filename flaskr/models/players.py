@@ -72,8 +72,7 @@ class Player:
 
         cursor.execute(
             "UPDATE t_player SET name=%s, family_name=%s, number=%s, position=%s, position_name=%s, height=%s, birthday=%s, nationality=%s WHERE id_player = %s",
-            (self.name, self.family_name, self.number, self.position, self.position_name, self.height, self.birthday,
-             self.nationality,)
+            (self.name, self.family_name, self.number, self.position, self.position_name, self.height, self.birthday,self.nationality, self.id_player)
         )
         connection.commit()
         cursor.close()

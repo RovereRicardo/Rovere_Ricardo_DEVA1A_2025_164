@@ -86,7 +86,6 @@ def update_player():
     if request.method == 'POST':
         player.name = request.form['name']
         player.family_name = request.form['family_name']
-        player.picture = request.files['picture']
         player.number = request.form['number']
         player.position = request.form['position']
         player.position_name = request.form['position_name']

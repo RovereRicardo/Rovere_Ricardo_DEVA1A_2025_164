@@ -1,4 +1,6 @@
 import os
+from sys import prefix
+
 from flask import Flask, redirect, url_for, render_template, session, request
 from flaskr.db import connection  # Use 'flaskr.db' instead of 'db'
 from datetime import timedelta
@@ -95,16 +97,15 @@ def create_app():
 
         return render_template("/players/view_player.html", username=username, iduser=iduser, id_team=id_team)
 
-
     app.secret_key = os.urandom(24)
 
     from flaskr.auth import auth
     app.register_blueprint(auth)
 
     from flaskr.controller.teams import team
-    app.register_blueprint(team)  # URL prefix is /teams
+    app.register_blueprint(team)
 
     from flaskr.controller.players import player
-    app.register_blueprint(player)  # Ensure it's prefixed
+    app.register_blueprint(player)
 
     return app

@@ -65,4 +65,5 @@ class Team:
         column_names = [desc[0] for desc in cursor.description]
         team = dict(zip(column_names, team))
         cursor.close()
+
         return team

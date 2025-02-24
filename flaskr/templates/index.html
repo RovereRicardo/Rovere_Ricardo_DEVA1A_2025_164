@@ -85,8 +85,7 @@
                        title="Update Team">
                         <span class="fa fa-pencil"></span>
                     </a>
-                    <form action="{{ url_for('team.delete_team', team_id=team.id_team) }}" method="POST"
-                          style="display:inline;">
+                    <form action="{{ url_for('team.delete_team') }}" method="POST" style="display:inline;">
                         <input type="hidden" name="id_team" value="{{ team.id_team }}">
                         <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?')">
                             <span class="fa fa-trash"></span>

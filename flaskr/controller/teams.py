@@ -35,8 +35,15 @@ def register_team():
 def delete_team():
     if request.method == 'POST':
         team_id = request.form['id_team']
-        team = Team(team_id)
+
+        team_data = Team.get_by_id(team_id)
+
+        if not team_data:
+            flash("Team does not exist.", "danger")
+            return redirect(url_for('index'))
+        team = Team(**team_data)
         team.delete_team()
+
         flash("Team Deleted!", "success")
         return redirect(url_for('index'))
 

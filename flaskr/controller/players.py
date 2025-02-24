@@ -1,4 +1,6 @@
 import functools
+import os
+
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from werkzeug.security import generate_password_hash, check_password_hash
 from flaskr.db import connection
@@ -12,22 +14,40 @@ def register_player():
     if request.method == 'POST':
         name = request.form['name']
         family_name = request.form['family_name']
-        picture = request.files['picture']
-        number = request.form['number']
+        number = request.form['number']  # Make sure this is a string or integer
         position = request.form['position']
         position_name = request.form['position_name']
         height = request.form['height']
         birthday = request.form['birthday']
         nationality = request.form['nationality']
 
+        team_id = request.args.get('id_team')
+
+        # Handle the uploaded file (picture)
+        picture = request.files.get('picture')
+        if picture:
+            picture_data = picture.read()  # Read the file content as binary data
+        else:
+            picture_data = None  # If no picture is uploaded, set to None
+
+        # Validation
         if not name:
             flash('Player name is required.', 'danger')
             return redirect(url_for('player.register_player'))
 
-        new_player = Player(name, family_name, picture, number, position, position_name, height,birthday, nationality) #Create instance/object Player
-        new_player.register_player(team_id=session['team_id']) #Call register function
+        # Make sure number is properly handled (e.g., convert to int)
+        if not number.isdigit():  # Validate that 'number' is a valid number
+            flash('Please provide a valid number.', 'danger')
+            return redirect(url_for('player.register_player'))
+
+        number = int(number)  # Convert number to integer
+
+        # Create player object and register
+        new_player = Player(name, family_name, picture_data, number, position, position_name, height, birthday, nationality)
+        new_player.register_player(team_id)  # Call register function
         flash("Player registered successfully.", "success")
         return redirect(url_for('index'))
+
     return render_template('/players/register_player.html')
 
 @player.route('/delete_player', methods=['POST'])

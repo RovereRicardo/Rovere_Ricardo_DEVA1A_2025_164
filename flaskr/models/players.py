@@ -3,13 +3,15 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from werkzeug.security import generate_password_hash, check_password_hash
 from flaskr.db import connection
 
+
 class Player:
-    def __init__(self, id_player, name, family_name, picture, number, position, position_name, height, birthday, nationality):
+    def __init__(self, name, family_name, picture, number, position, position_name, height, birthday, nationality,
+                 id_player=None):
         self.id_player = id_player
         self.name = name
         self.family_name = family_name
-        self.picture = picture
         self.number = number
+        self.picture = picture
         self.position = position
         self.position_name = position_name
         self.height = height
@@ -19,27 +21,33 @@ class Player:
     @staticmethod
     def get_by_team(team_id):
         cursor = connection.cursor()
-        cursor.execute("SELECT p.* FROM t_player p JOIN t_team_player tp ON p.id_player = tp.id_player_team JOIN t_team t ON tp.id_team_player = t.id_team WHERE t.id_team = %s", (team_id,))
+        cursor.execute(
+            "SELECT p.* FROM t_player p JOIN t_team_player tp ON p.id_player = tp.id_player_team JOIN t_team t ON tp.id_team_player = t.id_team WHERE t.id_team = %s",
+            (team_id,))
         players = cursor.fetchall()
         column_names = [desc[0] for desc in cursor.description]
         players = [dict(zip(column_names, player)) for player in players]
 
         return players
 
-    def register_player(self,team_id):
+    def register_player(self, team_id):
         cursor = connection.cursor()
+
         cursor.execute(
-            "INSERT INTO t_player(name, family_name, picture, number, position, position_name, height, birthday, nationality) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
-            (self.name, self.family_name, self.picture, self.number, self.position, self.position_name,)
+            "INSERT INTO t_player(name, family_name, picture, number, position, position_name, height, birthday, nationality) VALUES (%s,%s, %s, %s, %s, %s, %s, %s, %s)",
+            (self.name, self.family_name, self.picture, self.number, self.position, self.position_name, self.height, self.birthday,
+             self.nationality)
         )
 
         id_player = cursor.lastrowid
         connection.commit()
+
         cursor.execute(
-            "INSERT INTO t_team_player (id_team_player, id_player_team) VALUES (team_id, %s)",
-            (team_id,id_player)
+            "INSERT INTO t_team_player (id_team_player, id_player_team) VALUES (%s, %s)",
+            (team_id, id_player)
         )
         connection.commit()
+
         cursor.close()
 
     def delete_player(id_player, id_team):
@@ -64,7 +72,8 @@ class Player:
 
         cursor.execute(
             "UPDATE t_player SET name=%s, family_name=%s, number=%s, position=%s, position_name=%s, height=%s, birthday=%s, nationality=%s WHERE id_player = %s",
-            (self.name, self.family_name, self.number, self.position, self.position_name, self.height, self.birthday, self.nationality,)
+            (self.name, self.family_name, self.number, self.position, self.position_name, self.height, self.birthday,
+             self.nationality,)
         )
         connection.commit()
         cursor.close()
@@ -81,5 +90,3 @@ class Player:
         player = dict(zip(column_names, player))
         cursor.close()
         return player
-
-

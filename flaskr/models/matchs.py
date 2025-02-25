@@ -1,7 +1,7 @@
 from flaskr.models.db import connection
 
 class Matchs:
-    def __init__(self,id_match,date_match,id_home_team,id_away_team,home_score = None, away_score = None, home_team = None, away_team = None):
+    def __init__(self,id_match, date_match, id_home_team, id_away_team, home_score = None, away_score = None, home_team = None, away_team = None):
         self.id_match = id_match
         self.date_match = date_match
         self.id_home_team = id_home_team

@@ -24,7 +24,7 @@
                 <td>{{ match.date_match }}</td>
                 <td>{{ match.home_team }}</td>
                 <td>{{ match.away_team }}</td>
-                <td>{{ match.score }}</td>
+                <td>{{ match.home_score | default(0, true) }} - {{ match.away_score | default(0, true) }}</td>
                 <td>
                     <a href="" class="mr-3" title="View Match">
                         <span class="fa fa-eye"></span>

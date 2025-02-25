@@ -1,9 +1,8 @@
 import os
-from sys import prefix
 import base64
 
 from flask import Flask, redirect, url_for, render_template, session, request
-from flaskr.db import connection  # Use 'flaskr.db' instead of 'db'
+from flaskr.models.db import connection  # Use 'flaskr.db' instead of 'db'
 from datetime import timedelta
 
 def create_app():
@@ -105,8 +104,8 @@ def create_app():
 
     app.secret_key = os.urandom(24)
 
-    from flaskr.auth import auth
-    app.register_blueprint(auth)
+    from flaskr.controller.user import user
+    app.register_blueprint(user)
 
     from flaskr.controller.teams import team
     app.register_blueprint(team)

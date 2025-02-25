@@ -1,7 +1,5 @@
-import functools
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session
-from werkzeug.security import generate_password_hash, check_password_hash
-from flaskr.db import connection
+from flask import render_template, session
+from flaskr.models.db import connection
 
 class Team:
     def __init__(self, id_team, team_name, team_logo, address, city, wins, loses, draws, points, id_coach_creator):

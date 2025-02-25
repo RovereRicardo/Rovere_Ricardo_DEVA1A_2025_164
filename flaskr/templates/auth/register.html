@@ -14,8 +14,6 @@
                 <input type="email" name="email" id="email" value="" required>
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" value="" required>
-                <label for="confirm_password">Confirm Password</label>
-                <input type="password" name="confirm_password" id="confirm_password">
                 <label for="role">Role</label>
                 <input type="text" name="role" id="role" value="" required>
             </div>
@@ -25,7 +23,7 @@
                 <a href="/index" class="btn btn-secondary">Cancel</a>
             </div>
         </form>
-        <a href="{{ url_for('auth.login') }}">Already have an account? Login</a>
+        <a href="{{ url_for('user.register') }}">Already have an account? Login</a>
     </div>
 </section>
 {% endblock %}

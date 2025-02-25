@@ -16,12 +16,12 @@
     <h1>BasketStats Tracker</h1>
     {% if session.username %}
     <h4>Welcome {{ session.username }}</h4>
-    <form action="{{ url_for('auth.logout') }}" method="POST">
+    <form action="{{ url_for('user.logout') }}" method="POST">
         <button type="submit" class="btn btn-danger">Logout</button>
     </form>
     {% else %}
-    <a href="{{ url_for('auth.login') }}" class="btn btn-success">Login</a>
-    <a href="{{ url_for('auth.register') }}" class="btn btn-info">Signup</a>
+    <a href="{{ url_for('user.login') }}" class="btn btn-success">Login</a>
+    <a href="{{ url_for('user.register') }}" class="btn btn-info">Signup</a>
     {% endif %}
     {% endblock %}
 </header>

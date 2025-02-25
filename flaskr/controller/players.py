@@ -1,9 +1,4 @@
-import functools
-import os
-
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session
-from werkzeug.security import generate_password_hash, check_password_hash
-from flaskr.db import connection
+from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flaskr.models.players import Player
 from flaskr.models.teams import Team
 

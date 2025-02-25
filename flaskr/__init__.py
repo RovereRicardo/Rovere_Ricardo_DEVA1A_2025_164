@@ -5,6 +5,7 @@ from flask import Flask, redirect, url_for, render_template, session, request
 from flaskr.models.db import connection  # Use 'flaskr.db' instead of 'db'
 from datetime import timedelta
 
+
 def create_app():
     app = Flask(__name__)
     app.config.from_mapping(
@@ -26,18 +27,24 @@ def create_app():
 
     @app.route("/")
     def index():
-        cursor = connection.cursor()
-        cursor.execute("SELECT * FROM t_match")
-        matches = cursor.fetchall()
+        cursorM = connection.cursor()
+        cursorM.execute(
+            "SELECT m.id_match, m.id_home_team, m.id_away_team, home_team.team_name AS home_team, away_team.team_name AS away_team, m.date_match, m.home_score, m.away_score FROM t_match m JOIN t_team home_team ON m.id_home_team = home_team.id_team JOIN t_team away_team ON m.id_away_team = away_team.id_team ORDER BY m.date_match ASC")
+        matches = cursorM.fetchall()
+        cursorM.close()
 
-        cursor.execute("SELECT * FROM t_team")
-        teams = cursor.fetchall()  # Fetch all results
+        cursorT = connection.cursor()
+        cursorT.execute("SELECT * FROM t_team")
+        teams = cursorT.fetchall()  # Fetch all results
+        cursorT.close()
 
         # Get column names from the cursor
-        column_names = [desc[0] for desc in cursor.description]
+        column_namesM = [desc[0] for desc in cursorM.description]
+        column_namesT = [desc[0] for desc in cursorT.description]
 
         # Convert each row from tuple to dictionary
-        teams = [dict(zip(column_names, team)) for team in teams]
+        teams = [dict(zip(column_namesT, team)) for team in teams]
+        matches = [dict(zip(column_namesM, match)) for match in matches]
 
         username = session.get('username')  # Get username from session
 
@@ -54,8 +61,8 @@ def create_app():
         cursor = connection.cursor()
         cursor.execute("SELECT * FROM t_team WHERE id_team = %s", (team_id,))
         team = cursor.fetchone()
-        column_names = [desc[0] for desc in cursor.description] #Get columns names
-        team = dict(zip(column_names, team)) #Convert from tuple to dictionary
+        column_names = [desc[0] for desc in cursor.description]  # Get columns names
+        team = dict(zip(column_names, team))  # Convert from tuple to dictionary
 
         cursor.execute(
             "SELECT p.* FROM t_player p JOIN t_team_player tp ON p.id_player = tp.id_player_team JOIN t_team t ON tp.id_team_player = t.id_team WHERE t.id_team = %s",
@@ -97,6 +104,13 @@ def create_app():
 
         return render_template("/players/view_player.html", username=username, iduser=iduser, id_team=id_team)
 
+    @app.route("/matches/register_match")
+    def register_match():
+        username = session.get('username')
+        iduser = session.get('id_user')
+
+        return render_template("/matchs/register_match.html", username=username, iduser=iduser)
+
 
     @app.template_filter('b64encode')
     def b64encode_filter(data):
@@ -112,5 +126,8 @@ def create_app():
 
     from flaskr.controller.players import player
     app.register_blueprint(player)
+
+    from flaskr.controller.matchs import match
+    app.register_blueprint(match)
 
     return app

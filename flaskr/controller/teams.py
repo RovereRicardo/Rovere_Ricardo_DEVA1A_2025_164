@@ -38,6 +38,7 @@ def delete_team():
         if not team_data:
             flash("Team does not exist.", "danger")
             return redirect(url_for('index'))
+
         team = Team(**team_data)
         team.delete_team()
 

@@ -1,8 +1,6 @@
-from MySQLdb import connect
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session
+from flask import Blueprint, render_template, request, redirect, url_for, flash
 
-from flaskr.models.db import connection
-from flaskr.models.teams import Team
+from flaskr.database.db import connection
 from flaskr.models.matchs import Matchs
 
 match = Blueprint('match', __name__)

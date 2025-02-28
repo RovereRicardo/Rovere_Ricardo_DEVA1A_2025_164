@@ -1,4 +1,4 @@
-from flaskr.models.db import connection
+from flaskr.database.db import connection
 
 
 class Player:

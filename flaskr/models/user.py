@@ -1,5 +1,5 @@
 from flask import redirect, url_for, flash
-from flaskr.models.db import connection
+from flaskr.database.db import connection
 
 class User:
     def __init__(self, id_user, username, email, password, role):

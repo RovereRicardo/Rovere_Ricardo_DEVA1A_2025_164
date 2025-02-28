@@ -1,8 +1,7 @@
 import os
 import base64
-
 from flask import Flask, redirect, url_for, render_template, session, request
-from flaskr.models.db import connection  # Use 'flaskr.db' instead of 'db'
+from flaskr.database.db import connection, import_dump
 from datetime import timedelta
 
 
@@ -21,15 +20,46 @@ def create_app():
     except OSError:
         pass
 
+    import_dump()
+
     @app.route("/index")
     def hello():
-        return redirect(url_for('index'))
+        # Ensure the correct database is selected
+        connection.select_db(os.getenv("NAME_BD_MYSQL"))
+
+        cursorM = connection.cursor()
+        cursorM.execute(
+            "SELECT m.id_match, m.id_home_team, m.id_away_team, home_team.team_name AS home_team, away_team.team_name AS away_team, m.date_match, m.home_score, m.away_score FROM t_match m JOIN t_team home_team ON m.id_home_team = home_team.id_team JOIN t_team away_team ON m.id_away_team = away_team.id_team ORDER BY m.date_match ASC"
+        )
+        matches = cursorM.fetchall()
+        cursorM.close()
+
+        cursorT = connection.cursor()
+        cursorT.execute("SELECT * FROM t_team")
+        teams = cursorT.fetchall()  # Fetch all results
+        cursorT.close()
+
+        # Get column names from the cursor
+        column_namesM = [desc[0] for desc in cursorM.description]
+        column_namesT = [desc[0] for desc in cursorT.description]
+
+        # Convert each row from tuple to dictionary
+        teams = [dict(zip(column_namesT, team)) for team in teams]
+        matches = [dict(zip(column_namesM, match)) for match in matches]
+
+        username = session.get('username')  # Get username from session
+
+        return render_template("index.html", matches=matches, teams=teams, username=username)
 
     @app.route("/")
     def index():
+        # Ensure the correct database is selected
+        connection.select_db(os.getenv("NAME_BD_MYSQL"))
+
         cursorM = connection.cursor()
         cursorM.execute(
-            "SELECT m.id_match, m.id_home_team, m.id_away_team, home_team.team_name AS home_team, away_team.team_name AS away_team, m.date_match, m.home_score, m.away_score FROM t_match m JOIN t_team home_team ON m.id_home_team = home_team.id_team JOIN t_team away_team ON m.id_away_team = away_team.id_team ORDER BY m.date_match ASC")
+            "SELECT m.id_match, m.id_home_team, m.id_away_team, home_team.team_name AS home_team, away_team.team_name AS away_team, m.date_match, m.home_score, m.away_score FROM t_match m JOIN t_team home_team ON m.id_home_team = home_team.id_team JOIN t_team away_team ON m.id_away_team = away_team.id_team ORDER BY m.date_match ASC"
+        )
         matches = cursorM.fetchall()
         cursorM.close()
 

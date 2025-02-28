@@ -47,7 +47,6 @@ def delete_team():
 
 @team.route("/update/<int:team_id>", methods=["GET", "POST"])
 def update_team(team_id):
-    #print(session)
     team_data = Team.get_by_id(team_id)
     if not team_data:
         flash("Team not found.", "danger")

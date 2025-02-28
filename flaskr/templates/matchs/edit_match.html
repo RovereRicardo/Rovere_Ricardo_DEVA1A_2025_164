@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %} Update Match {{ match.id_match }} {% endblock %}
+{% block content %}
+{% if session.username %}
+<section class="details">
+    <div class="last-played">
+        <h2>Update Match</h2>
+        <p>Edit the form and submit to update the match details.</p>
+        <form action="" method="POST">
+            <div class="forms">
+                <label>Date</label>
+                <input type="date" name="date_match" value="{{ match.date_match }}">
+                <label>Home Team</label>
+                <select name="id_home_team">
+                    {% for team in teams %}
+                        <option value=" {{ team.id_team }}"> {{ team.team_name }}</option>
+                    {% endfor %}
+                </select>
+                <label>Away Team</label>
+                <select name="id_away_team">
+                    {% for team in teams %}
+                    <option value=" {{ team.id_team }}"> {{ team.team_name }}</option>
+                    {% endfor %}
+                </select>
+                <label>Home Score</label>
+                <input type="number" name="home_score"  value="{{ match.home_score }}" required>
+                <label>Away Score</label>
+                <input type="number" name="away_score" value="{{ match.away_score }}" required>
+            </div>
+            <br>
+            <div>
+                <input type="submit" class="btn btn-primary" value="Update">
+                <a href="/" class="btn btn-secondary ml-2">Cancel</a>
+            </div>
+        </form>
+    </div>
+</section>
+{% else %}
+<section class="details">
+    <div class="last-played">
+        <h2>You must be Logged in, to be able to Update a Match. </h2>
+    </div>
+</section>
+{% endif %}
+<br>
+{% endblock %}

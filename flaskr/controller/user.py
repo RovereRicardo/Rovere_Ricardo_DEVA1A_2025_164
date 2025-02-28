@@ -38,7 +38,7 @@ def login():
 
         if user is None or not check_password_hash(user[2], password): # Compare the password from form with password in db
             flash('Invalid username or password.', 'error')
-            return redirect(url_for('auth.login'))
+            return redirect(url_for('user.login'))
 
         session.permanent = True  # Permanent session
         session['username'] = user[0]

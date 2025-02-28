@@ -40,3 +40,11 @@ class Matchs:
 
         connection.commit()
         cursor.close()
+
+    def edit_match(self):
+        cursor = connection.cursor()
+        cursor.execute(
+            "UPDATE t_match SET date_match = %s, id_home_team = %s, id_away_team = %s, home_score = %s, away_score = %s WHERE id_match=%s",
+            (self.date_match, self.id_home_team, self.id_away_team,self.home_score, self.away_score, self.id_match))
+        connection.commit()
+        connection.close()

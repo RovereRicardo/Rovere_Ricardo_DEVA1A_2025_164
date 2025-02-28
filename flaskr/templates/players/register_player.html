@@ -32,7 +32,7 @@
             <br>
             <div>
                 <input type="submit" name="newplayer" id="newplayer" class="btn btn-primary" value="Submit">
-                <a href="" class="btn btn-secondary ml-2">Cancel</a>
+                <a href="{{ url_for('team.view_team', team_id=id_team) }}" class="btn btn-secondary ml-2">Cancel</a>
             </div>
         </form>
     </div>
@@ -47,4 +47,5 @@
 {% endif %}
 <br>
 {% endblock %}
+
 

@@ -14,8 +14,11 @@ SET time_zone = "+00:00";
 --
 -- Database: `rovere_ricardo_deva1a_basketstats_164_2025`
 --
-CREATE DATABASE IF NOT EXISTS `rovere_ricardo_deva1a_basketstats_164_2025` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-USE `rovere_ricardo_deva1a_basketstats_164_2025`;
+
+DROP DATABASE IF EXISTS rovere_ricardo_deva1a_basketstats_164_2025;
+
+CREATE DATABASE rovere_ricardo_deva1a_basketstats_164_2025 DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE rovere_ricardo_deva1a_basketstats_164_2025;
 
 -- --------------------------------------------------------
 
@@ -37,7 +40,7 @@ CREATE TABLE `t_user` (
 --
 
 INSERT INTO `t_user` (`id_user`, `username`, `email`, `password`, `role`) VALUES
-(18, 'admin', 'admin@admin.com', '$2y$10$ltxkKOPtPeY.GvYtmePMo.a7lLUYnHYirq2V8xBtr4cVhmqalC7yK', 'Admin');
+(18, 'admin', 'admin@admin.com', 'scrypt:32768:8:1$hRxZEHYIzCeL0Xt1$d12db159bc7208bfd053a945d8a53cfe41c354015d3edc27dc71a5f743c219594df853f94aac4042929cc2fe2057942df9bbaeb28fe10b3a85c86089a645a0c2', 'Admin');
 
 --
 -- Table structure for table `t_coach`

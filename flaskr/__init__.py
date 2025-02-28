@@ -1,5 +1,7 @@
 import os
 import base64
+
+import pymysql
 from flask import Flask, redirect, url_for, render_template, session, request
 from flaskr.database.db import connection, import_dump
 from datetime import timedelta
@@ -9,7 +11,7 @@ def create_app():
     app = Flask(__name__)
     app.config.from_mapping(
         SECRET_KEY='dev',
-        DATABASE=connection,
+        DATABASE=os.getenv("NAME_BD_MYSQL"),
     )
 
     app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=1)
@@ -20,65 +22,52 @@ def create_app():
     except OSError:
         pass
 
-    import_dump()
-
-    @app.route("/index")
-    def hello():
-        # Ensure the correct database is selected
-        connection.select_db(os.getenv("NAME_BD_MYSQL"))
-
-        cursorM = connection.cursor()
-        cursorM.execute(
-            "SELECT m.id_match, m.id_home_team, m.id_away_team, home_team.team_name AS home_team, away_team.team_name AS away_team, m.date_match, m.home_score, m.away_score FROM t_match m JOIN t_team home_team ON m.id_home_team = home_team.id_team JOIN t_team away_team ON m.id_away_team = away_team.id_team ORDER BY m.date_match ASC"
-        )
-        matches = cursorM.fetchall()
-        cursorM.close()
-
-        cursorT = connection.cursor()
-        cursorT.execute("SELECT * FROM t_team")
-        teams = cursorT.fetchall()  # Fetch all results
-        cursorT.close()
-
-        # Get column names from the cursor
-        column_namesM = [desc[0] for desc in cursorM.description]
-        column_namesT = [desc[0] for desc in cursorT.description]
-
-        # Convert each row from tuple to dictionary
-        teams = [dict(zip(column_namesT, team)) for team in teams]
-        matches = [dict(zip(column_namesM, match)) for match in matches]
-
-        username = session.get('username')  # Get username from session
-
-        return render_template("index.html", matches=matches, teams=teams, username=username)
-
     @app.route("/")
     def index():
+        # Ensure the connection is open
+        global connection
+        if not connection.open:
+            connection.ping(reconnect=True)
+
         # Ensure the correct database is selected
-        connection.select_db(os.getenv("NAME_BD_MYSQL"))
+        db_name = os.getenv("NAME_BD_MYSQL")
+        connection.select_db(db_name)
 
-        cursorM = connection.cursor()
-        cursorM.execute(
-            "SELECT m.id_match, m.id_home_team, m.id_away_team, home_team.team_name AS home_team, away_team.team_name AS away_team, m.date_match, m.home_score, m.away_score FROM t_match m JOIN t_team home_team ON m.id_home_team = home_team.id_team JOIN t_team away_team ON m.id_away_team = away_team.id_team ORDER BY m.date_match ASC"
-        )
-        matches = cursorM.fetchall()
-        cursorM.close()
+        try:
+            # First cursor for matches
+            cursorM = connection.cursor()
+            cursorM.execute("""
+                SELECT 
+                    m.id_match, m.id_home_team, m.id_away_team, 
+                    home_team.team_name AS home_team, 
+                    away_team.team_name AS away_team, 
+                    m.date_match, m.home_score, m.away_score 
+                FROM t_match m 
+                JOIN t_team home_team ON m.id_home_team = home_team.id_team 
+                JOIN t_team away_team ON m.id_away_team = away_team.id_team 
+                ORDER BY m.date_match ASC
+            """)
+            matches = cursorM.fetchall()
+            column_namesM = [desc[0] for desc in cursorM.description]
+            cursorM.close()
 
-        cursorT = connection.cursor()
-        cursorT.execute("SELECT * FROM t_team")
-        teams = cursorT.fetchall()  # Fetch all results
-        cursorT.close()
+            # Second cursor for teams
+            cursorT = connection.cursor()
+            cursorT.execute("SELECT * FROM t_team")
+            teams = cursorT.fetchall()
+            column_namesT = [desc[0] for desc in cursorT.description]
+            cursorT.close()
 
-        # Get column names from the cursor
-        column_namesM = [desc[0] for desc in cursorM.description]
-        column_namesT = [desc[0] for desc in cursorT.description]
+            # Convert tuples to dictionaries
+            matches = [dict(zip(column_namesM, match)) for match in matches]
+            teams = [dict(zip(column_namesT, team)) for team in teams]
 
-        # Convert each row from tuple to dictionary
-        teams = [dict(zip(column_namesT, team)) for team in teams]
-        matches = [dict(zip(column_namesM, match)) for match in matches]
+            username = session.get('username')  # Get username from session
 
-        username = session.get('username')  # Get username from session
+            return render_template("index.html", matches=matches, teams=teams, username=username)
 
-        return render_template("index.html", matches=matches, teams=teams, username=username)
+        except pymysql.MySQLError as e:
+            return f"Database error: {str(e)}", 500
 
     @app.route("/teams/register_team")
     def register_team():
@@ -141,6 +130,12 @@ def create_app():
 
         return render_template("/matchs/register_match.html", username=username, iduser=iduser)
 
+    @app.route("/matches/edit_match")
+    def edit_match():
+        username = session.get('username')
+        iduser = session.get('id_user')
+
+        return render_template("/matchs/edit_match.html", match=match, username=username, iduser=iduser)
 
     @app.template_filter('b64encode')
     def b64encode_filter(data):

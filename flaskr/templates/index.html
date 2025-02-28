@@ -14,7 +14,9 @@
                 <th>Score</th>
                 <th>Boxscore</th>
                 <th>Action</th>
+                {% if session.username %}
                 <th>Play Game</th>
+                {% endif %}
             </tr>
             </thead>
             <tbody>
@@ -34,7 +36,8 @@
                     <a href="" class="mr-3" title="View Match">
                         <span class="fa fa-eye"></span>
                     </a>
-                    <a href="" class="mr-3" title="Update Match">
+                    {% if session.username %}
+                    <a href="{{ url_for('match.edit_match', id_match = match.id_match) }}" class="mr-3" title="Update Match">
                         <span class="fa fa-pencil"></span>
                     </a>
                     <form action="{{ url_for('match.delete_match') }}" method="POST" style="display: inline;">
@@ -49,6 +52,7 @@
                         <span class="fa fa-play"></span>
                     </a>
                 </td>
+                {% endif %}
             </tr>
             {% endfor %}
             </tbody>
@@ -83,6 +87,7 @@
                        title="View Team">
                         <span class="fa fa-eye"></span>
                     </a>
+                    {% if session.username %}
                     <a href="{{ url_for('team.update_team', team_id=team.id_team) }}" class="mr-3"
                        title="Update Team">
                         <span class="fa fa-pencil"></span>
@@ -93,6 +98,7 @@
                             <span class="fa fa-trash"></span>
                         </button>
                     </form>
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}

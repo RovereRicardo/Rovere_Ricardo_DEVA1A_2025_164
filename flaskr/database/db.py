@@ -26,6 +26,7 @@ connection = pymysql.connect(
     port=PORT_MYSQL,
     user=USER_MYSQL,
     passwd=PASS_MYSQL,
+    database=DATABASE_NAME,
 )
 
 # Function to check if the database exists
@@ -56,6 +57,7 @@ def import_dump():
         port=PORT_MYSQL,
         user=USER_MYSQL,
         passwd=PASS_MYSQL,
+        database=DATABASE_NAME,
     )
 
     try:
@@ -107,3 +109,4 @@ def import_dump():
         print(f"Dump file {absolute_dump_path} does not exist.")
 
     connection.close()
+import_dump()

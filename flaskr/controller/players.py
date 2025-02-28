@@ -1,3 +1,4 @@
+
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flaskr.models.players import Player
 from flaskr.models.teams import Team
@@ -32,8 +33,7 @@ def register_player():
         new_player = Player(name, family_name, picture_data, number, position, position_name, height, birthday, nationality)
         new_player.register_player(team_id)  # Call register function
         flash("Player registered successfully.", "success")
-        return redirect(url_for('index'))
-
+        return redirect(url_for('team.view_team', team_id=team_id))
     return render_template('/players/register_player.html')
 
 @player.route('/delete_player', methods=['POST'])

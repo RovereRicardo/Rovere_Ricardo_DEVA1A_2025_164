@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 
 from flaskr.database.db import connection
 from flaskr.models.matchs import Matchs
+from flaskr.models.teams import Team
 
 match = Blueprint('match', __name__)
 
@@ -47,3 +48,35 @@ def delete_match():
 
         flash("Match Deleted!", "success")
         return redirect(url_for('index'))
+
+@match.route('/edit_match/<int:id_match>', methods=['GET','POST'])
+def edit_match(id_match):
+
+    cursor = connection.cursor()
+    cursor.execute('SELECT id_team, team_name FROM t_team')
+    teams = cursor.fetchall()
+
+    column_names = [desc[0] for desc in cursor.description]
+    teams = [dict(zip(column_names, team)) for team in teams]
+
+    match_data = Matchs.get_by_id(id_match)
+
+    if not match_data:
+        flash("Match does not exist.", "danger")
+        return redirect(url_for('index'))
+
+    match = Matchs(**match_data)
+
+    if request.method == 'POST':
+        match.date_match = request.form['date_match']
+        match.id_home_team = request.form['id_home_team']
+        match.id_away_team = request.form['id_away_team']
+        match.home_score = request.form['home_score']
+        match.away_score = request.form['away_score']
+
+
+        match.edit_match()
+        flash("Match Edited!", "success")
+        return redirect(url_for('index'))
+
+    return render_template("/matchs/edit_match.html", match=match, teams=teams)

@@ -1,3 +1,4 @@
+
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 
 from flaskr.controller.players import player
@@ -5,6 +6,7 @@ from flaskr.database.db import connection
 from flaskr.models.matchs import Matchs
 from flaskr.models.players import Player
 from flaskr.models.teams import Team
+from flaskr.models.stats import Stats
 
 match = Blueprint('match', __name__)
 
@@ -102,5 +104,6 @@ def view_match():
         Matchs.add_player_to_mach(match.id_match, request.form['idPlayer'])
 
     players_playing = Matchs.get_players_playing(match.id_match,match.id_home_team)
+    players_points = {player['id_player']: Stats.get_player_points(player['id_player']) for player in players_playing}
 
-    return render_template('matchs/view_match.html', match=match, home_players=home_players, away_players=away_players, players_playing=players_playing)
+    return render_template('matchs/view_match.html', match=match, home_players=home_players, away_players=away_players, players_playing=players_playing, players_points=players_points )

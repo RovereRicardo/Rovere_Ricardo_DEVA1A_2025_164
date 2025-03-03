@@ -28,14 +28,15 @@
         </thead>
         <tbody>
         {% for playersPlaying in players_playing %}
-        <tr data-player-id="<?= $player->id_player ?>">
+        <tr data-player-id="{{ playersPlaying.id_player }}">
             <td> {{ playersPlaying.name }}</td>
             <td>
                 <span id="minutes">00</span>:<span id="seconds">00</span>
                 <button class="btn btn-success" id="button-start">Sub In</button>
                 <button class="btn btn-danger" id="button-stop">Sub Out</button>
             </td>
-            <td><?= $statsController->getPlayerPoints($player->id_player) ?></td>
+            <td>{{ players_points.get(playersPlaying.id_player, {'total_points': 0})['total_points'] }}
+            </td>
 
             <td>
                 <button class="btn btn-success" name="LF" value="1" onclick="registerStats(this)">+1</button>
@@ -125,38 +126,38 @@
     <?php } ?>
     <br>
     <h3>away team</h3>
-<table class="table table-bordered table-hover">
-    <thead>
-    <tr>
-        <th>Player</th>
-        <th>Min</th>
-        <th>PTS</th>
-        <th>LF</th>
-        <th>LF A</th>
-        <th>%LF</th>
-        <th>2PT</th>
-        <th>2PT A</th>
-        <th>2PT %</th>
-        <th>3PT</th>
-        <th>3PT A</th>
-        <th>3PT %</th>
-        <th>O Reb</th>
-        <th>D Reb</th>
-        <th>Rebs</th>
-        <th>TO</th>
-        <th>Fouls</th>
-        <th>+</th>
-    </tr>
-    </thead>
-    <tbody>
-    <?php foreach ($playersPlayingAway as $player) { ?>
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>Player</th>
+            <th>Min</th>
+            <th>PTS</th>
+            <th>LF</th>
+            <th>LF A</th>
+            <th>%LF</th>
+            <th>2PT</th>
+            <th>2PT A</th>
+            <th>2PT %</th>
+            <th>3PT</th>
+            <th>3PT A</th>
+            <th>3PT %</th>
+            <th>O Reb</th>
+            <th>D Reb</th>
+            <th>Rebs</th>
+            <th>TO</th>
+            <th>Fouls</th>
+            <th>+</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($playersPlayingAway as $player) { ?>
         <tr data-player-id="<?= $player->id_player ?>">
             <td><?= $player->name ?></td>
             <td>
                 <span id="minutes">00</span>:<span id="seconds">00</span>
                 <?php if ($match->awayScore === null) { ?>
-                    <button class="btn btn-success" name="sub" value="1" onclick="registerStats(this)">Sub In</button>
-                    <button class="btn btn-danger" name="sub" value="0" onclick="registerStats(this)">Sub Out</button>
+                <button class="btn btn-success" name="sub" value="1" onclick="registerStats(this)">Sub In</button>
+                <button class="btn btn-danger" name="sub" value="0" onclick="registerStats(this)">Sub Out</button>
                 <?php } ?>
             </td>
             <td><?= $statsController->getPlayerPoints($player->id_player) ?></td>
@@ -166,7 +167,9 @@
                 <button class="btn btn-success" name="LF" value="1" onclick="registerStats(this)">+1</button>
                 <button class="btn btn-danger" name="LF_Miss" value="1" onclick="registerStats(this)">-1</button>
             </td>
-            <td><?= $statsController->getPlayerLFMade($player->id_player) ?>/<?= $stat->getTotalLFAttempt($statsModel, $player->id_player) ?></td>
+            <td><?= $statsController->getPlayerLFMade($player->id_player) ?>/<?= $stat->getTotalLFAttempt($statsModel,
+                $player->id_player) ?>
+            </td>
             <td><?= $stat->getPlayerLFPercentage($statsModel, $player->id_player) ?>%</td>
 
             <!-- 2PT -->
@@ -174,7 +177,9 @@
                 <button class="btn btn-success" name="2PT" value="2" onclick="registerStats(this)">+2PT</button>
                 <button class="btn btn-danger" name="2PT_Miss" value="1" onclick="registerStats(this)">-2PT</button>
             </td>
-            <td><?= $stat->getPlayer2PTMade($statsModel, $player->id_player) ?>/<?= $stat->getTotal2PTAttempt($statsModel, $player->id_player) ?></td>
+            <td><?= $stat->getPlayer2PTMade($statsModel, $player->id_player) ?>/<?= $stat->
+                getTotal2PTAttempt($statsModel, $player->id_player) ?>
+            </td>
             <td><?= $stat->getPlayer2PTPercentage($statsModel, $player->id_player) ?>%</td>
 
             <!-- 3PT -->
@@ -182,42 +187,58 @@
                 <button class="btn btn-success" name="3PT" value="3" onclick="registerStats(this)">+3PT</button>
                 <button class="btn btn-danger" name="3PT_Miss" value="1" onclick="registerStats(this)">-3PT</button>
             </td>
-            <td><?= $stat->getPlayer3PTMade($statsModel, $player->id_player) ?>/<?= $stat->getTotal3PTAttempt($statsModel, $player->id_player) ?></td>
+            <td><?= $stat->getPlayer3PTMade($statsModel, $player->id_player) ?>/<?= $stat->
+                getTotal3PTAttempt($statsModel, $player->id_player) ?>
+            </td>
             <td><?= $stat->getPlayer3PTPercentage($statsModel, $player->id_player) ?>%</td>
 
             <!-- OReb / DReb -->
-            <td><button class="btn btn-success" name="OReb" value="1" onclick="registerStats(this)">+OReb</button></td>
-            <td><button class="btn btn-success" name="DReb" value="1" onclick="registerStats(this)">+DReb</button></td>
+            <td>
+                <button class="btn btn-success" name="OReb" value="1" onclick="registerStats(this)">+OReb</button>
+            </td>
+            <td>
+                <button class="btn btn-success" name="DReb" value="1" onclick="registerStats(this)">+DReb</button>
+            </td>
             <td><?= $stat->getTotalRebounds($statsModel, $player->id_player) ?></td>
 
             <!-- TO / Fouls -->
-            <td><button class="btn btn-warning" name="TO" value="1" onclick="registerStats(this)">+TO</button></td>
-            <td><button class="btn btn-danger" name="Fouls" value="1" onclick="registerStats(this)">+Foul</button></td>
+            <td>
+                <button class="btn btn-warning" name="TO" value="1" onclick="registerStats(this)">+TO</button>
+            </td>
+            <td>
+                <button class="btn btn-danger" name="Fouls" value="1" onclick="registerStats(this)">+Foul</button>
+            </td>
             <td>+/-</td>
         </tr>
-    <?php } ?>
-    <tr>
-        <td>Total</td>
-        <td>Time</td>
-        <td><?= $total->getTotalPoints($id_match, $awayTeamId) ?></td>
-        <td><?= $total->getTotalLFPoints($id_match, $awayTeamId) ?></td>
-        <td><?= $total->getTotalLFPoints($id_match, $awayTeamId) . "/" . $total->getTotalLFAttempts($id_match, $awayTeamId) ?></td>
-        <td><?= $total->getTotalLFPercentage($id_match, $awayTeamId) . "%" ?></td>
-        <td><?= $total->getTotal2PT($id_match, $awayTeamId) ?></td>
-        <td><?= $total->getTotal2PTMade($id_match, $awayTeamId) . "/" . $total->getTotal2PTAttempts($id_match, $awayTeamId) ?></td>
-        <td><?= $total->getTotal2PTPercentage($id_match, $awayTeamId) . "%" ?></td>
-        <td><?= $total->getTotal3PT($id_match, $awayTeamId) ?></td>
-        <td><?= $total->getTotal3PTMade($id_match, $awayTeamId) . "/" . $total->getTotal3PTAttempts($id_match, $awayTeamId) ?></td>
-        <td><?= $total->getTotal3PTPercentage($id_match, $awayTeamId) . "%" ?></td>
-        <td><?= $total->getTotalOffReb($id_match, $awayTeamId) ?></td>
-        <td><?= $total->getTotalDefReb($id_match, $awayTeamId) ?></td>
-        <td><?= $total->getTotalReb($id_match, $awayTeamId) ?></td>
-        <td><?= $total->getTotalTurnOver($id_match, $awayTeamId) ?></td>
-        <td><?= $total->getTotalFouls($id_match, $awayTeamId) ?></td>
-        <td><?= "+/-" ?></td>
-    </tr>
-    </tbody>
-</table>
+        <?php } ?>
+        <tr>
+            <td>Total</td>
+            <td>Time</td>
+            <td><?= $total->getTotalPoints($id_match, $awayTeamId) ?></td>
+            <td><?= $total->getTotalLFPoints($id_match, $awayTeamId) ?></td>
+            <td><?= $total->getTotalLFPoints($id_match, $awayTeamId) . "/" . $total->getTotalLFAttempts($id_match,
+                $awayTeamId) ?>
+            </td>
+            <td><?= $total->getTotalLFPercentage($id_match, $awayTeamId) . "%" ?></td>
+            <td><?= $total->getTotal2PT($id_match, $awayTeamId) ?></td>
+            <td><?= $total->getTotal2PTMade($id_match, $awayTeamId) . "/" . $total->getTotal2PTAttempts($id_match,
+                $awayTeamId) ?>
+            </td>
+            <td><?= $total->getTotal2PTPercentage($id_match, $awayTeamId) . "%" ?></td>
+            <td><?= $total->getTotal3PT($id_match, $awayTeamId) ?></td>
+            <td><?= $total->getTotal3PTMade($id_match, $awayTeamId) . "/" . $total->getTotal3PTAttempts($id_match,
+                $awayTeamId) ?>
+            </td>
+            <td><?= $total->getTotal3PTPercentage($id_match, $awayTeamId) . "%" ?></td>
+            <td><?= $total->getTotalOffReb($id_match, $awayTeamId) ?></td>
+            <td><?= $total->getTotalDefReb($id_match, $awayTeamId) ?></td>
+            <td><?= $total->getTotalReb($id_match, $awayTeamId) ?></td>
+            <td><?= $total->getTotalTurnOver($id_match, $awayTeamId) ?></td>
+            <td><?= $total->getTotalFouls($id_match, $awayTeamId) ?></td>
+            <td><?= "+/-" ?></td>
+        </tr>
+        </tbody>
+    </table>
 
     <form action="" name="myForm" method="POST">
         <select name="idPlayer">

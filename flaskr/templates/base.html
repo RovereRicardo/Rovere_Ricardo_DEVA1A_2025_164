@@ -8,6 +8,44 @@
     <link rel="stylesheet" href="../static/style.css">
     <link rel="stylesheet" href="../static/bootstrap.min.css">
     <link rel="stylesheet" href="../static/font-awesome-4.7.0/css/font-awesome.min.css">
+        <script>
+        window.onload = function () {
+            var minutes = 0;
+            var seconds = 0;
+            //set mins and secs into session (new timer)
+            //get sessionmins and secs
+            var appendSecs = document.getElementById("seconds")
+            var appendMins = document.getElementById("minutes")
+            var buttonStart = document.getElementById('button-start');
+            var buttonStop = document.getElementById('button-stop');
+            var Interval;
+            buttonStart.onclick = function () {
+                clearInterval(Interval);
+                Interval = setInterval(startTimer, 1000);
+            }
+            buttonStop.onclick = function () {
+                clearInterval(Interval);
+            }
+            function startTimer() {
+                seconds++;
+                if (seconds <= 9) {
+                    appendSecs.innerHTML = "0" + seconds;
+                }
+
+                if (seconds > 9) {
+                    appendSecs.innerHTML = seconds;
+                }
+
+                if (seconds > 60) {
+                    console.log("seconds");
+                    minutes++;
+                    appendMins.innerHTML = minutes;
+                    seconds = 0;
+                    appendSecs.innerHTML = "0" + 0;
+                }
+            }
+        }
+    </script>
     {% endblock %}
 </head>
 <body>

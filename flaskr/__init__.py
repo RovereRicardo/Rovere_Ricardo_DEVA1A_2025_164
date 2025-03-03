@@ -6,6 +6,8 @@ from flask import Flask, redirect, url_for, render_template, session, request
 from flaskr.database.db import connection, import_dump
 from datetime import timedelta
 
+from flaskr.models.players import Player
+
 
 def create_app():
     app = Flask(__name__)
@@ -136,6 +138,14 @@ def create_app():
         iduser = session.get('id_user')
 
         return render_template("/matchs/edit_match.html", match=match, username=username, iduser=iduser)
+
+    @app.route("/matches/view_match")
+    def view_match():
+        username = session.get('username')
+        iduser = session.get('id_user')
+
+
+        return render_template("/matchs/view_matchs.html", match=match, username=username, iduser=iduser)
 
     @app.template_filter('b64encode')
     def b64encode_filter(data):

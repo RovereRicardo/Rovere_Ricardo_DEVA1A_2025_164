@@ -12,7 +12,6 @@
                 <th>Home Team</th>
                 <th>Away Team</th>
                 <th>Score</th>
-                <th>Boxscore</th>
                 <th>Action</th>
                 {% if session.username %}
                 <th>Play Game</th>
@@ -28,12 +27,7 @@
                 <td>{{ match.away_team }}</td>
                 <td>{{ match.home_score | default(0, true) }} - {{ match.away_score | default(0, true) }}</td>
                 <td>
-                    <a href="" class="mr-3" title="View Match">
-                        <span class="fa fa-eye"></span>
-                    </a>
-                </td>
-                <td>
-                    <a href="" class="mr-3" title="View Match">
+                    <a href="{{ url_for('match.view_match', id_match = match.id_match) }}" class="mr-3" title="View Match">
                         <span class="fa fa-eye"></span>
                     </a>
                     {% if session.username %}

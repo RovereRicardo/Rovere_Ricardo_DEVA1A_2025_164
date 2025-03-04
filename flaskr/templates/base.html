@@ -8,6 +8,94 @@
     <link rel="stylesheet" href="../static/style.css">
     <link rel="stylesheet" href="../static/bootstrap.min.css">
     <link rel="stylesheet" href="../static/font-awesome-4.7.0/css/font-awesome.min.css">
+    <script>
+        window.onload = function () {
+            var timers = {}; // Store timers for each player
+
+            function startTimer(playerID) {
+                let appendMins = document.getElementById("minutes_" + playerID);
+                let appendSecs = document.getElementById("seconds_" + playerID);
+
+                if (!timers[playerID]) {
+                    timers[playerID] = {minutes: 0, seconds: 0, interval: null};
+                }
+
+                // Get saved time from localStorage (default to "00:00" if empty)
+                let savedTime = localStorage.getItem("timer_" + playerID) || "00:00";
+                let [savedMinutes, savedSeconds] = savedTime.split(":").map(Number);
+
+                if (isNaN(savedMinutes) || isNaN(savedSeconds)) {
+                    savedMinutes = 0;
+                    savedSeconds = 0;
+                }
+
+                // Set initial saved time to the player jf it was started
+                timers[playerID].minutes = savedMinutes;
+                timers[playerID].seconds = savedSeconds;
+
+                // Clear running interval
+                clearInterval(timers[playerID].interval);
+
+                // Start the timer interval for the player
+                timers[playerID].interval = setInterval(function () {
+                    timers[playerID].seconds++;
+                    if (timers[playerID].seconds > 59) {
+                        timers[playerID].minutes++;
+                        timers[playerID].seconds = 0;
+                    }
+
+                    // Update localStorage with the current time string
+                    let timeString = timers[playerID].minutes.toString().padStart(2, "0") + ":" + timers[playerID].seconds.toString().padStart(2, "0");
+                    localStorage.setItem("timer_" + playerID, timeString);
+
+                    // Update minutes and seconds
+                    appendMins.innerHTML = timers[playerID].minutes.toString().padStart(2, "0");
+                    appendSecs.innerHTML = timers[playerID].seconds.toString().padStart(2, "0");
+                }, 1000);
+            }
+
+            function stopTimer(playerID) {
+                if (timers[playerID]) {
+                    clearInterval(timers[playerID].interval);
+                    timers[playerID].interval = null; // Pause timer
+                }
+            }
+
+            function loadTimers() {
+                document.querySelectorAll(".player-row").forEach(row => {
+                    let playerID = row.getAttribute("data-player-id");
+
+                    // Get from local storage otherwise default 00:00
+                    let savedTime = localStorage.getItem("timer_" + playerID) || "00:00";
+                    let [savedMinutes, savedSeconds] = savedTime.split(":");
+
+                    if (isNaN(savedMinutes)) savedMinutes = 0;
+                    if (isNaN(savedSeconds)) savedSeconds = 0;
+
+                    document.getElementById("minutes_" + playerID).innerHTML = savedMinutes.toString().padStart(2, "0");
+                    document.getElementById("seconds_" + playerID).innerHTML = savedSeconds.toString().padStart(2, "0");
+                });
+            }
+
+            // Start Button
+            document.querySelectorAll(".button-start").forEach(button => {
+                button.addEventListener("click", function () {
+                    let playerID = this.getAttribute("data-player-id");
+                    startTimer(playerID);
+                });
+            });
+            // Stop Button
+            document.querySelectorAll(".button-stop").forEach(button => {
+                button.addEventListener("click", function () {
+                    let playerID = this.getAttribute("data-player-id");
+                    stopTimer(playerID);
+                });
+            });
+            // Load timer on reload/refresh
+            loadTimers();
+        };
+    </script>
+
     {% endblock %}
 </head>
 <body>
@@ -28,13 +116,13 @@
 <br>
 {% block content %}{% endblock %}
 {% block error %} {% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <ul class=flashes>
+{% if messages %}
+<ul class=flashes>
     {% for message in messages %}
-      <li>{{ message }}</li>
+    <li>{{ message }}</li>
     {% endfor %}
-    </ul>
-  {% endif %}
+</ul>
+{% endif %}
 {% endwith %}
 {% endblock %}
 

@@ -7,6 +7,7 @@ from flaskr.database.db import connection, import_dump
 from datetime import timedelta
 
 from flaskr.models.players import Player
+from flaskr.models.stats import Stats
 
 
 def create_app():
@@ -146,6 +147,24 @@ def create_app():
 
 
         return render_template("/matchs/view_matchs.html", match=match, username=username, iduser=iduser)
+
+    @app.route('/register_stat', methods=['POST'])
+    def register_stat():
+        id_player = request.form.get('idPlayer')
+        id_match = request.form.get('idMatch')
+        stat_type = request.form.get('statType')
+        stat_value = request.form.get('statValue')
+
+        # Fetch the corresponding stat type ID from the database
+        stat_type_id = Stats.get_stats_by_name(stat_type)
+
+        if stat_type_id:
+            # Create a Stats instance and register it
+            new_stat = Stats(stat_type_id, id_player, id_match, stat_value)
+            new_stat.register_stat()
+            return redirect(url_for('match.view_match', id_match=id_match))
+        else:
+            return "Error: Stat type not found", 400
 
     @app.template_filter('b64encode')
     def b64encode_filter(data):

@@ -7,6 +7,7 @@ from flaskr.models.matchs import Matchs
 from flaskr.models.players import Player
 from flaskr.models.teams import Team
 from flaskr.models.stats import Stats
+from flaskr.models.total import Total
 
 match = Blueprint('match', __name__)
 
@@ -104,6 +105,7 @@ def view_match():
         Matchs.add_player_to_mach(match.id_match, request.form['idPlayer'])
 
     players_playing = Matchs.get_players_playing(match.id_match,match.id_home_team)
-    players_points = {player['id_player']: Stats.get_player_points(player['id_player']) for player in players_playing}
+    players_playing_away = Matchs.get_players_playing(match.id_match, match.id_away_team)
 
-    return render_template('matchs/view_match.html', match=match, home_players=home_players, away_players=away_players, players_playing=players_playing, players_points=players_points )
+
+    return render_template('matchs/view_match.html',Total=Total, Stats=Stats, match=match, home_players=home_players, away_players=away_players, players_playing=players_playing, players_playing_away=players_playing_away)

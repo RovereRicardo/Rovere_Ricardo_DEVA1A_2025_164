@@ -4,8 +4,8 @@
 <section class="players-section">
     <span id="minutes_">00</span>:
     <span id="seconds_">00</span>
-    <button class="btn btn-success button-start" >Start</button>
-    <button class="btn btn-danger button-stop" >Pause</button>
+    <button class="btn btn-success button-start">Start</button>
+    <button class="btn btn-danger button-stop">Pause</button>
 </section>
 <section class="players-section">
     <h3>{{ match.home_team }}</h3>
@@ -39,8 +39,12 @@
             <td>
                 <span id="minutes_{{ playersPlaying.id_player }}">00</span>:
                 <span id="seconds_{{ playersPlaying.id_player }}">00</span>
-                <button class="btn btn-success button-start" data-player-id="{{ playersPlaying.id_player }}">In</button>
-                <button class="btn btn-danger button-stop" data-player-id="{{ playersPlaying.id_player }}">Out</button>
+                <form action="" method="POST">
+                    <button class="btn btn-success button-start" value="in" data-player-id="{{ playersPlaying.id_player }}">In
+                    </button>
+                    <button class="btn btn-danger button-stop" value="out" data-player-id="{{ playersPlaying.id_player }}">Out
+                    </button>
+                </form>
             </td>
             <td>{{ Stats.get_player_points(playersPlaying.id_player, match.id_match)['total_points'] }}
             </td>

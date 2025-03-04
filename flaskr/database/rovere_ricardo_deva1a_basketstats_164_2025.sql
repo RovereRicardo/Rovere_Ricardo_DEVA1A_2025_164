@@ -157,27 +157,28 @@ INSERT INTO `t_player` (`id_player`, `name`, `family_name`, `picture`, `number`,
 DROP TABLE IF EXISTS `t_players_match`;
 CREATE TABLE `t_players_match` (
   `id_match` int(11) NOT NULL,
-  `id_player` int(11) NOT NULL
+  `id_player` int(11) NOT NULL,
+    `subbed` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `t_players_match`
 --
 
-INSERT INTO `t_players_match` (`id_match`, `id_player`) VALUES
-(42, 60),
-(51, 60),
-(53, 60),
-(41, 61),
-(52, 61),
-(51, 64),
-(51, 72),
-(51, 74),
-(51, 76),
-(53, 76),
-(51, 77),
-(52, 77),
-(51, 80);
+INSERT INTO `t_players_match` (`id_match`, `id_player`, `subbed`) VALUES
+(42, 60,0),
+(51, 60,0),
+(53, 60,1),
+(41, 61, 1),
+(52, 61,0),
+(51, 64,0),
+(51, 72,0),
+(51, 74,0),
+(51, 76,0),
+(53, 76,0),
+(51, 77,0),
+(52, 77,0),
+(51, 80,0);
 
 -- --------------------------------------------------------
 

@@ -8,140 +8,138 @@
     <link rel="stylesheet" href="../static/style.css">
     <link rel="stylesheet" href="../static/bootstrap.min.css">
     <link rel="stylesheet" href="../static/font-awesome-4.7.0/css/font-awesome.min.css">
-<script>
-    window.onload = function () {
-        var timers = {}; // Store timers for each player
-        var matchTimer = {minutes: 0, seconds: 0, interval: null, running: false};
+    <script>
+        window.onload = function () {
+            var timers = {}; // Store timers for each player
+            var matchTimer = {minutes: 0, seconds: 0, interval: null, running: false};
 
-        function startMatchTimer() {
-            if (!matchTimer.running) {
-                matchTimer.running = true;
-                matchTimer.interval = setInterval(() => {
-                    matchTimer.seconds++;
-                    if (matchTimer.seconds > 59) {
-                        matchTimer.minutes++;
-                        matchTimer.seconds = 0;
-                    }
+            function startMatchTimer() {
+                if (!matchTimer.running) {
+                    matchTimer.running = true;
+                    matchTimer.interval = setInterval(() => {
+                        matchTimer.seconds++;
+                        if (matchTimer.seconds > 59) {
+                            matchTimer.minutes++;
+                            matchTimer.seconds = 0;
+                        }
 
-                    // Save match time in localStorage
-                    localStorage.setItem("match_timer", matchTimer.minutes.toString().padStart(2, "0") + ":" + matchTimer.seconds.toString().padStart(2, "0"));
+                        // Save match time in localStorage
+                        localStorage.setItem("match_timer", matchTimer.minutes.toString().padStart(2, "0") + ":" + matchTimer.seconds.toString().padStart(2, "0"));
 
-                    // Update UI
-                    document.getElementById("minutes_").innerHTML = matchTimer.minutes.toString().padStart(2, "0");
-                    document.getElementById("seconds_").innerHTML = matchTimer.seconds.toString().padStart(2, "0");
+                        // Update UI
+                        document.getElementById("minutes_").innerHTML = matchTimer.minutes.toString().padStart(2, "0");
+                        document.getElementById("seconds_").innerHTML = matchTimer.seconds.toString().padStart(2, "0");
 
-                }, 1000);
+                    }, 1000);
 
-                // Start all player timers when match timer starts
-                document.querySelectorAll(".player-row").forEach(row => {
-                    let playerID = row.getAttribute("data-player-id");
-                    startTimer(playerID);
-                });
-            }
-        }
-
-        function pauseMatchTimer() {
-            if (matchTimer.running) {
-                clearInterval(matchTimer.interval);
-                matchTimer.running = false;
-
-                // Stop all player timers when match timer stops
-                document.querySelectorAll(".player-row").forEach(row => {
-                    let playerID = row.getAttribute("data-player-id");
-                    stopTimer(playerID);
-                });
-            }
-        }
-
-        function startTimer(playerID) {
-            let appendMins = document.getElementById("minutes_" + playerID);
-            let appendSecs = document.getElementById("seconds_" + playerID);
-
-            if (!timers[playerID]) {
-                timers[playerID] = {minutes: 0, seconds: 0, interval: null};
+                    // Start all player timers when match timer starts
+                    document.querySelectorAll(".player-row").forEach(row => {
+                        let playerID = row.getAttribute("data-player-id");
+                        startTimer(playerID);
+                    });
+                }
             }
 
-            // Get saved time from localStorage (default to "00:00" if empty)
-            let savedTime = localStorage.getItem("timer_" + playerID) || "00:00";
-            let [savedMinutes, savedSeconds] = savedTime.split(":").map(Number);
+            function pauseMatchTimer() {
+                if (matchTimer.running) {
+                    clearInterval(matchTimer.interval);
+                    matchTimer.running = false;
 
-            if (isNaN(savedMinutes) || isNaN(savedSeconds)) {
-                savedMinutes = 0;
-                savedSeconds = 0;
+                    // Stop all player timers when match timer stops
+                    document.querySelectorAll(".player-row").forEach(row => {
+                        let playerID = row.getAttribute("data-player-id");
+                        stopTimer(playerID);
+                    });
+                }
             }
 
-            // Set initial saved time to the player jf it was started
-            timers[playerID].minutes = savedMinutes;
-            timers[playerID].seconds = savedSeconds;
+            function startTimer(playerID) {
+                let appendMins = document.getElementById("minutes_" + playerID);
+                let appendSecs = document.getElementById("seconds_" + playerID);
 
-            // Clear running interval
-            clearInterval(timers[playerID].interval);
-
-            // Start the timer interval for the player
-            timers[playerID].interval = setInterval(function () {
-                timers[playerID].seconds++;
-                if (timers[playerID].seconds > 59) {
-                    timers[playerID].minutes++;
-                    timers[playerID].seconds = 0;
+                if (!timers[playerID]) {
+                    timers[playerID] = {minutes: 0, seconds: 0, interval: null};
                 }
 
-                // Update localStorage with the current time string
-                let timeString = timers[playerID].minutes.toString().padStart(2, "0") + ":" + timers[playerID].seconds.toString().padStart(2, "0");
-                localStorage.setItem("timer_" + playerID, timeString);
-
-                // Update minutes and seconds
-                appendMins.innerHTML = timers[playerID].minutes.toString().padStart(2, "0");
-                appendSecs.innerHTML = timers[playerID].seconds.toString().padStart(2, "0");
-            }, 1000);
-        }
-
-        function stopTimer(playerID) {
-            if (timers[playerID]) {
-                clearInterval(timers[playerID].interval);
-                timers[playerID].interval = null;
-            }
-        }
-
-        function loadTimers() {
-
-            // Get from local storage otherwise default 00:00 (match)
-            let matchTime = localStorage.getItem("match_timer") || "00:00";
-            let [matchMinutes, matchSeconds] = matchTime.split(":").map(Number);
-
-            if (isNaN(matchMinutes)) matchMinutes = 0;
-            if (isNaN(matchSeconds)) matchSeconds = 0;
-
-            matchTimer.minutes = matchMinutes;
-            matchTimer.seconds = matchSeconds;
-
-            document.getElementById("minutes_").innerHTML = matchMinutes.toString().padStart(2, "0");
-            document.getElementById("seconds_").innerHTML = matchSeconds.toString().padStart(2, "0");
-
-            document.querySelectorAll(".player-row").forEach(row => {
-                let playerID = row.getAttribute("data-player-id");
-
-                // Get from local storage otherwise default 00:00 (players)
+                // Get saved time from localStorage (default to "00:00" if empty)
                 let savedTime = localStorage.getItem("timer_" + playerID) || "00:00";
                 let [savedMinutes, savedSeconds] = savedTime.split(":").map(Number);
 
-                if (isNaN(savedMinutes)) savedMinutes = 0;
-                if (isNaN(savedSeconds)) savedSeconds = 0;
+                if (isNaN(savedMinutes) || isNaN(savedSeconds)) {
+                    savedMinutes = 0;
+                    savedSeconds = 0;
+                }
 
-                document.getElementById("minutes_" + playerID).innerHTML = savedMinutes.toString().padStart(2, "0");
-                document.getElementById("seconds_" + playerID).innerHTML = savedSeconds.toString().padStart(2, "0");
-            });
-        }
-        // Event listeners for match timer
-        document.querySelector(".players-section .button-start").addEventListener("click", startMatchTimer);
-        document.querySelector(".players-section .button-stop").addEventListener("click", pauseMatchTimer);
+                // Set initial saved time to the player jf it was started
+                timers[playerID].minutes = savedMinutes;
+                timers[playerID].seconds = savedSeconds;
 
-        // Load timers on page refresh
-        loadTimers();
-    };
-</script>
+                // Clear running interval
+                clearInterval(timers[playerID].interval);
 
+                // Start the timer interval for the player
+                timers[playerID].interval = setInterval(function () {
+                    timers[playerID].seconds++;
+                    if (timers[playerID].seconds > 59) {
+                        timers[playerID].minutes++;
+                        timers[playerID].seconds = 0;
+                    }
 
+                    // Update localStorage with the current time string
+                    let timeString = timers[playerID].minutes.toString().padStart(2, "0") + ":" + timers[playerID].seconds.toString().padStart(2, "0");
+                    localStorage.setItem("timer_" + playerID, timeString);
 
+                    // Update minutes and seconds
+                    appendMins.innerHTML = timers[playerID].minutes.toString().padStart(2, "0");
+                    appendSecs.innerHTML = timers[playerID].seconds.toString().padStart(2, "0");
+                }, 1000);
+            }
+
+            function stopTimer(playerID) {
+                if (timers[playerID]) {
+                    clearInterval(timers[playerID].interval);
+                    timers[playerID].interval = null;
+                }
+            }
+
+            function loadTimers() {
+
+                // Get from local storage otherwise default 00:00 (match)
+                let matchTime = localStorage.getItem("match_timer") || "00:00";
+                let [matchMinutes, matchSeconds] = matchTime.split(":").map(Number);
+
+                if (isNaN(matchMinutes)) matchMinutes = 0;
+                if (isNaN(matchSeconds)) matchSeconds = 0;
+
+                matchTimer.minutes = matchMinutes;
+                matchTimer.seconds = matchSeconds;
+
+                document.getElementById("minutes_").innerHTML = matchMinutes.toString().padStart(2, "0");
+                document.getElementById("seconds_").innerHTML = matchSeconds.toString().padStart(2, "0");
+
+                document.querySelectorAll(".player-row").forEach(row => {
+                    let playerID = row.getAttribute("data-player-id");
+
+                    // Get from local storage otherwise default 00:00 (players)
+                    let savedTime = localStorage.getItem("timer_" + playerID) || "00:00";
+                    let [savedMinutes, savedSeconds] = savedTime.split(":").map(Number);
+
+                    if (isNaN(savedMinutes)) savedMinutes = 0;
+                    if (isNaN(savedSeconds)) savedSeconds = 0;
+
+                    document.getElementById("minutes_" + playerID).innerHTML = savedMinutes.toString().padStart(2, "0");
+                    document.getElementById("seconds_" + playerID).innerHTML = savedSeconds.toString().padStart(2, "0");
+                });
+            }
+
+            // Event listeners for match timer
+            document.querySelector(".players-section .button-start").addEventListener("click", startMatchTimer);
+            document.querySelector(".players-section .button-stop").addEventListener("click", pauseMatchTimer);
+
+            // Load timers on page refresh
+            loadTimers();
+        };
+    </script>
     {% endblock %}
 </head>
 <body>

@@ -2,6 +2,12 @@
 {% block title %} Match {% endblock %}
 {% block content %}
 <section class="players-section">
+    <span id="minutes_">00</span>:
+    <span id="seconds_">00</span>
+    <button class="btn btn-success button-start" >Start</button>
+    <button class="btn btn-danger button-stop" >Pause</button>
+</section>
+<section class="players-section">
     <h3>{{ match.home_team }}</h3>
     <table class="table table-bordered table-hover">
         <thead>

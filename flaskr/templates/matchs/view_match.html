@@ -28,12 +28,13 @@
         </thead>
         <tbody>
         {% for playersPlaying in players_playing %}
-        <tr data-player-id="{{ playersPlaying.id_player }}">
+        <tr class="player-row" data-player-id="{{ playersPlaying.id_player }}">
             <td> {{ playersPlaying.name }}</td>
             <td>
-                <span id="minutes">00</span>:<span id="seconds">00</span>
-                <button class="btn btn-success" id="button-start">In</button>
-                <button class="btn btn-danger" id="button-stop">Out</button>
+                <span id="minutes_{{ playersPlaying.id_player }}">00</span>:
+                <span id="seconds_{{ playersPlaying.id_player }}">00</span>
+                <button class="btn btn-success button-start" data-player-id="{{ playersPlaying.id_player }}">In</button>
+                <button class="btn btn-danger button-stop" data-player-id="{{ playersPlaying.id_player }}">Out</button>
             </td>
             <td>{{ Stats.get_player_points(playersPlaying.id_player, match.id_match)['total_points'] }}
             </td>

@@ -1,8 +1,13 @@
+
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 
+from flaskr.controller.players import player
 from flaskr.database.db import connection
 from flaskr.models.matchs import Matchs
+from flaskr.models.players import Player
 from flaskr.models.teams import Team
+from flaskr.models.stats import Stats
+from flaskr.models.total import Total
 
 match = Blueprint('match', __name__)
 
@@ -80,3 +85,26 @@ def edit_match(id_match):
         return redirect(url_for('index'))
 
     return render_template("/matchs/edit_match.html", match=match, teams=teams)
+
+@match.route('/view_match', methods=['GET', 'POST'])
+def view_match():
+    id_match = request.args.get('id_match')
+
+    match_data = Matchs.get_match_by_id(id_match)
+
+    if not match_data:
+        flash("Match does not exist.", "danger")
+        return redirect(url_for('index'))
+
+    match = Matchs(**match_data)
+
+    home_players = Player.get_by_team(match.id_home_team)
+    away_players = Player.get_by_team(match.id_away_team)
+
+    players_playing = Matchs.get_players_playing(match.id_match,match.id_home_team)
+    players_playing_away = Matchs.get_players_playing(match.id_match, match.id_away_team)
+    print(players_playing)
+    print(players_playing_away)
+
+
+    return render_template('matchs/view_match.html',Total=Total, Stats=Stats, match=match, home_players=home_players, away_players=away_players, players_playing=players_playing, players_playing_away=players_playing_away)

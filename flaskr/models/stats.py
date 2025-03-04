@@ -85,7 +85,10 @@ class Stats:
     def get_player_lf_percent(id_player, id_match):
         made = Stats.get_player_lf(id_player, id_match)
         total_lf = Stats.get_player_total_lf(id_player, id_match)
-        total_percent = round((made['total_LFMade'] / total_lf) * 100, 2)
+        if total_lf == 0:
+            return 0
+        else:
+            total_percent = round((made['total_LFMade'] / total_lf) * 100, 2)
         return total_percent
 
     @staticmethod
@@ -133,7 +136,10 @@ class Stats:
     def get_player_2pt_percent(id_player, id_match):
         made = Stats.get_player_2pt_made(id_player, id_match)
         total_2pt = Stats.get_player_2pt_total(id_player, id_match)
-        total_percent = round((made['total_2pt_made'] / total_2pt) * 100, 2)
+        if total_2pt == 0:
+            return 0
+        else:
+            total_percent = round((made['total_2pt_made'] / total_2pt) * 100, 2)
         return total_percent
 
     @staticmethod
@@ -180,7 +186,10 @@ class Stats:
     def get_player_3pt_percent(id_player, id_match):
         made = Stats.get_player_3pt_made(id_player, id_match)
         total_3pt = Stats.get_player_3pt_total(id_player, id_match)
-        total_percent = round((made['total_3pt_made'] / total_3pt) * 100, 2)
+        if total_3pt == 0:
+            return 0
+        else:
+            total_percent = round((made['total_3pt_made'] / total_3pt) * 100, 2)
         return total_percent
 
     @staticmethod

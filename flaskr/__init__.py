@@ -6,6 +6,7 @@ from flask import Flask, redirect, url_for, render_template, session, request
 from flaskr.database.db import connection, import_dump
 from datetime import timedelta
 
+from flaskr.models.matchs import Matchs
 from flaskr.models.players import Player
 from flaskr.models.stats import Stats
 
@@ -148,6 +149,7 @@ def create_app():
 
         return render_template("/matchs/view_matchs.html", match=match, username=username, iduser=iduser)
 
+
     @app.route('/register_stat', methods=['POST'])
     def register_stat():
         id_player = request.form.get('idPlayer')
@@ -155,7 +157,6 @@ def create_app():
         stat_type = request.form.get('statType')
         stat_value = request.form.get('statValue')
 
-        # Fetch the corresponding stat type ID from the database
         stat_type_id = Stats.get_stats_by_name(stat_type)
 
         if stat_type_id:
@@ -165,6 +166,42 @@ def create_app():
             return redirect(url_for('match.view_match', id_match=id_match))
         else:
             return "Error: Stat type not found", 400
+
+    @app.route('/submit_score', methods=['POST'])
+    def submit_score():
+        home_team_score = request.form.get('homeTeamScore')
+        away_team_score = request.form.get('awayTeamScore')
+        id_home_team = request.form.get('id_home_team')
+        id_away_team = request.form.get('id_away_team')
+        id_match = request.form.get('idMatch')
+
+        Matchs.submit_score(id_match, home_team_score, away_team_score)
+
+        if home_team_score > away_team_score:
+            Matchs.set_win(id_home_team)
+            Matchs.set_lose(id_away_team)
+        else:
+            Matchs.set_win(id_away_team)
+            Matchs.set_lose(id_home_team)
+
+        return redirect(url_for('match.view_match', id_match=id_match))
+
+    @app.route('/add_player_home', methods=['POST'])
+    def add_player_home():
+        id_player = request.form.get('idPlayerHome')
+        id_match = request.form.get('id_match')
+        Matchs.add_player_to_mach(id_match, id_player)
+
+        return redirect(url_for('match.view_match', id_match=id_match))
+
+    @app.route('/add_player_away', methods=['POST'])
+    def add_player_away():
+        id_player = request.form.get('idPlayerAway')
+        id_match = request.form.get('id_match')
+        Matchs.add_player_to_mach(id_match, id_player)
+
+        return redirect(url_for('match.view_match', id_match=id_match))
+
 
     @app.template_filter('b64encode')
     def b64encode_filter(data):

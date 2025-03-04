@@ -101,11 +101,10 @@ def view_match():
     home_players = Player.get_by_team(match.id_home_team)
     away_players = Player.get_by_team(match.id_away_team)
 
-    if request.method == 'POST':
-        Matchs.add_player_to_mach(match.id_match, request.form['idPlayer'])
-
     players_playing = Matchs.get_players_playing(match.id_match,match.id_home_team)
     players_playing_away = Matchs.get_players_playing(match.id_match, match.id_away_team)
+    print(players_playing)
+    print(players_playing_away)
 
 
     return render_template('matchs/view_match.html',Total=Total, Stats=Stats, match=match, home_players=home_players, away_players=away_players, players_playing=players_playing, players_playing_away=players_playing_away)

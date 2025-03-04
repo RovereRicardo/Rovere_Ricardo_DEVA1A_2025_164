@@ -1,3 +1,9 @@
+from logging import exception
+from warnings import catch_warnings
+
+from click import confirm
+from flask import flash
+
 from flaskr.database.db import connection
 
 
@@ -66,12 +72,17 @@ class Matchs:
 
     @staticmethod
     def add_player_to_mach(id_match, id_player):
-        cursor = connection.cursor()
-        cursor.execute(
-            "INSERT INTO t_players_match (id_match, id_player) VALUES (%s, %s)", (id_match,id_player)
-        )
-        connection.commit()
-        cursor.close()
+        try:
+            cursor = connection.cursor()
+            cursor.execute(
+                "INSERT INTO t_players_match (id_match, id_player) VALUES (%s, %s)", (id_match, id_player)
+            )
+            connection.commit()
+            cursor.close()
+            flash("Player added successfully!", "success")
+        except Exception as e:  # Catch the exact error
+            print("Error adding player to match:", e)  # Debugging output
+            flash(f"Error: {str(e)}", "danger")  # Show the actual error in the UI
 
     @staticmethod
     def get_players_playing(id_match, id_team):
@@ -86,3 +97,33 @@ class Matchs:
         cursor.close()
 
         return players
+
+    @staticmethod
+    def submit_score(id_match,home_score,away_score):
+        cursor = connection.cursor()
+        cursor.execute(
+            "UPDATE t_match SET home_score = %s, away_score = %s WHERE id_match = %s",
+            (home_score, away_score, id_match)
+        )
+        connection.commit()
+        cursor.close()
+
+    @staticmethod
+    def set_win(id_team):
+        cursor = connection.cursor()
+        cursor.execute(
+            "UPDATE t_team SET wins = wins + 1 WHERE id_team = %s",
+            (id_team,)
+        )
+        connection.commit()
+        cursor.close()
+
+    @staticmethod
+    def set_lose(id_team):
+        cursor = connection.cursor()
+        cursor.execute(
+            "UPDATE t_team SET loses = loses + 1 WHERE id_team = %s",
+            (id_team,)
+        )
+        connection.commit()
+        cursor.close()

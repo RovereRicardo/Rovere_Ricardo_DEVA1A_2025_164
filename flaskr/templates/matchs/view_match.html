@@ -126,8 +126,9 @@
         </tr>
         </tbody>
     </table>
-    <form action="" name="myForm" method="POST">
-        <select name="idPlayer">
+    <form action="{{ url_for('add_player_home') }}" name="myForm" method="POST">
+        <input type="hidden" name="id_match" value="{{ match.id_match }}">
+        <select name="idPlayerHome">
             {% for homePlayer in home_players %}
             <option name=""
                     value="{{ homePlayer.id_player }}">{{ homePlayer.name }}
@@ -164,66 +165,70 @@
         </tr>
         </thead>
         <tbody>
-        {% for playersPlaying in players_playing_away %}
-        <tr data-player-id="{{ playersPlaying.id_player }}">
-            <td> {{ playersPlaying.name }}</td>
+        {% for playersPlayingAway in players_playing_away %}
+        <tr data-player-id="{{ playersPlayingAway.id_player }}">
+            <td> {{ playersPlayingAway.name }}</td>
             <td>
                 <span id="minutes">00</span>:<span id="seconds">00</span>
                 <button class="btn btn-success" id="button-start">In</button>
                 <button class="btn btn-danger" id="button-stop">Out</button>
             </td>
-            <td>{{ Stats.get_player_points(playersPlaying.id_player, match.id_match)['total_points'] }}
+            <td>{{ Stats.get_player_points(playersPlayingAway.id_player, match.id_match)['total_points'] }}
             </td>
 
             <td>
                 <button class="btn btn-success" name="LF" value="1" onclick="registerStats(this)">+1</button>
                 <button class="btn btn-danger" name="LF_Miss" value="1" onclick="registerStats(this)">-1</button>
             </td>
-            <td>{{ Stats.get_player_lf(playersPlaying.id_player, match.id_match)['total_LFMade'] }}
-                / {{ Stats.get_player_total_lf(playersPlaying.id_player, match.id_match) }}
+            <td>{{ Stats.get_player_lf(playersPlayingAway.id_player, match.id_match)['total_LFMade'] }}
+                / {{ Stats.get_player_total_lf(playersPlayingAway.id_player, match.id_match) }}
             </td>
-            <td> {{ Stats.get_player_lf_percent(playersPlaying.id_player, match.id_match) }}%</td>
+            <td> {{ Stats.get_player_lf_percent(playersPlayingAway.id_player, match.id_match) }}%</td>
 
             <td>
                 <button class="btn btn-success" name="2PT" value="2" onclick="registerStats(this)">+2PT</button>
                 <button class="btn btn-danger" name="2PT_Miss" value="1" onclick="registerStats(this)">-2PT</button>
             </td>
-            <td>{{ Stats.get_player_2pt_made(playersPlaying.id_player, match.id_match)['total_2pt_made'] }}/{{
-                Stats.get_player_2pt_total(playersPlaying.id_player, match.id_match)}}
+            <td>{{ Stats.get_player_2pt_made(playersPlayingAway.id_player, match.id_match)['total_2pt_made'] }}/{{
+                Stats.get_player_2pt_total(playersPlayingAway.id_player, match.id_match)}}
             </td>
-            <td>{{ Stats.get_player_2pt_percent(playersPlaying.id_player, match.id_match) }}%</td>
+            <td>{{ Stats.get_player_2pt_percent(playersPlayingAway.id_player, match.id_match) }}%</td>
 
             <td>
                 <button class="btn btn-success" name="3PT" value="3" onclick="registerStats(this)">+3PT</button>
                 <button class="btn btn-danger" name="3PT_Miss" value="1" onclick="registerStats(this)">-3PT</button>
             </td>
-            <td>{{ Stats.get_player_3pt_made(playersPlaying.id_player, match.id_match)['total_3pt_made']}}/{{
-                Stats.get_player_3pt_total(playersPlaying.id_player, match.id_match) }}
+            <td>{{ Stats.get_player_3pt_made(playersPlayingAway.id_player, match.id_match)['total_3pt_made']}}/{{
+                Stats.get_player_3pt_total(playersPlayingAway.id_player, match.id_match) }}
             </td>
-            <td>{{ Stats.get_player_3pt_percent(playersPlaying.id_player, match.id_match) }}%</td>
+            <td>{{ Stats.get_player_3pt_percent(playersPlayingAway.id_player, match.id_match) }}%</td>
 
-            <td> {{ Stats.get_player_offensive_rebounds(playersPlaying.id_player, match.id_match)['total_offensive'] |
+            <td> {{ Stats.get_player_offensive_rebounds(playersPlayingAway.id_player, match.id_match)['total_offensive']
+                |
                 default(0, true)
                 }}
                 <br>
                 <button class="btn btn-success" name="OReb" value="1" onclick="registerStats(this)">+OReb</button>
             </td>
-            <td> {{ Stats.get_player_defensive_rebounds(playersPlaying.id_player, match.id_match)['total_defensive'] |
+            <td> {{ Stats.get_player_defensive_rebounds(playersPlayingAway.id_player, match.id_match)['total_defensive']
+                |
                 default(0, true)
                 }}
                 <br>
                 <button class="btn btn-success" name="DReb" value="1" onclick="registerStats(this)">+DReb</button>
             </td>
-            <td>{{ Stats.get_player_total_rebounds(playersPlaying.id_player, match.id_match)['total_rebs'] | default(0,
+            <td>{{ Stats.get_player_total_rebounds(playersPlayingAway.id_player, match.id_match)['total_rebs'] |
+                default(0,
                 true) }}
             </td>
 
-            <td>{{ Stats.get_player_turnovers(playersPlaying.id_player, match.id_match)['turnovers'] | default(0, true)
+            <td>{{ Stats.get_player_turnovers(playersPlayingAway.id_player, match.id_match)['turnovers'] | default(0,
+                true)
                 }}
                 <br>
                 <button class="btn btn-warning" name="TO" value="1" onclick="registerStats(this)">+TO</button>
             </td>
-            <td>{{ Stats.get_player_fouls(playersPlaying.id_player, match.id_match)['fouls'] | default(0, true) }}
+            <td>{{ Stats.get_player_fouls(playersPlayingAway.id_player, match.id_match)['fouls'] | default(0, true) }}
                 <br>
                 <button class="btn btn-danger" name="Fouls" value="1" onclick="registerStats(this)">+Foul</button>
             </td>
@@ -263,25 +268,31 @@
         </tr>
         </tbody>
     </table>
-    <form action="" name="myForm" method="POST">
-        <select name="idPlayer">
+    <form action="{{ url_for('add_player_away') }}" name="myForm" method="POST">
+        <input type="hidden" name="id_match" value="{{ match.id_match }}">
+        <select name="idPlayerAway">
             {% for awayPlayer in away_players %}
             <option name=""
-                    value="{{ awayPlayer.name }}"> {{ awayPlayer.name }}
+                    value="{{ awayPlayer.id_player }}"> {{ awayPlayer.name }}
             </option>
             {% endfor %}
         </select>
-        <button name="addPlayerMatch" type="submit" class="btn btn-success"><i class="fa fa-plus"></i> Add
+        <button name="addPlayerMatchAway" type="submit" class="btn btn-success"><i class="fa fa-plus"></i> Add
             Player
         </button>
     </form>
-    <a href="/index" class="btn btn-secondary ml-2 pull-right">Home</a>
+    <a href="/" class="btn btn-secondary ml-2 pull-right">Home</a>
 
-    <form action="" method="POST" class="details-form">
+    <form action="{{ url_for('submit_score') }}" method="POST" class="details-form">
+        <input type="hidden" name="idMatch" value="{{ match.id_match }}">
         <label>Home Team - {{ match.home_team }}</label>
-        <input type="number" name="homeTeamScore" value="{{ Total.get_total_points(match.id_match, match.id_home_team) }}">
+        <input type="hidden" name="id_home_team" value="{{ match.id_home_team }}">
+        <input type="hidden" name="id_away_team" value="{{ match.id_away_team }}">
+        <input type="number" name="homeTeamScore"
+               value="{{ Total.get_total_points(match.id_match, match.id_home_team) }}">
         <label>Away Team - {{ match.away_team }}</label>
-        <input type="number" name="awayTeamScore" value="{{ Total.get_total_points(match.id_match, match.id_away_team) }}">
+        <input type="number" name="awayTeamScore"
+               value="{{ Total.get_total_points(match.id_match, match.id_away_team) }}">
         <button type="submit" onclick="return confirm('Are you sure you want to update the score?')" name="finalScore"
                 class="btn btn-success"><i class="fa fa-plus"></i> Submit
             Score

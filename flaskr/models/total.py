@@ -222,21 +222,30 @@ class Total:
     def get_total_lf_percent(id_match, id_team):
         total = Total.get_total_lf(id_match, id_team)
         made = Total.get_total_lf_points(id_match, id_team)
-        total_percent = round((made[0]['total_points'] / total) * 100, 2)
+        if total == 0:
+            total_percent = 0
+        else:
+            total_percent = round((made[0]['total_points'] / total) * 100, 2)
         return total_percent
 
     @staticmethod
     def get_total_2pt_percent(id_match, id_team):
         made = Total.get_total_2pts_made(id_match, id_team)
         total = Total.get_total_2pt_attempts(id_match, id_team)
-        total_percent = round((made[0]['total_points'] / total) * 100, 2)
+        if total == 0:
+            total_percent = 0
+        else:
+            total_percent = round((made[0]['total_points'] / total) * 100, 2)
         return total_percent
 
     @staticmethod
     def get_total_3pt_percent(id_match, id_team):
         made = Total.get_total_3pts_made(id_match, id_team)
         total = Total.get_total_3pt_attempts(id_match, id_team)
-        total_percent = round((made[0]['total_points'] / total) * 100, 2)
+        if total == 0:
+            total_percent = 0
+        else:
+            total_percent = round((made[0]['total_points'] / total) * 100, 2)
         return total_percent
 
     @staticmethod

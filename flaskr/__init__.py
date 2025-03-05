@@ -10,7 +10,6 @@ from flaskr.models.matchs import Matchs
 from flaskr.models.players import Player
 from flaskr.models.stats import Stats
 
-
 def create_app():
     app = Flask(__name__)
     app.config.from_mapping(

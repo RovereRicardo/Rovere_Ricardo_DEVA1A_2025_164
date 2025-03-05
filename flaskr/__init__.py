@@ -202,6 +202,16 @@ def create_app():
 
         return redirect(url_for('match.view_match', id_match=id_match))
 
+    @app.route('/update_status', methods=['POST'])
+    def update_status():
+        sub_out = request.form.get('subOut')
+        id_player = request.form.get('idPlayer')
+        id_match = request.form.get('id_match')
+
+        Matchs.update_status_out(id_player, id_match)
+
+        return redirect(url_for('match.view_match', id_match=id_match))
+
 
     @app.template_filter('b64encode')
     def b64encode_filter(data):

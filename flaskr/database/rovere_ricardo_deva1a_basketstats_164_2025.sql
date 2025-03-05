@@ -167,11 +167,11 @@ CREATE TABLE `t_players_match` (
 
 INSERT INTO `t_players_match` (`id_match`, `id_player`, `subbed`) VALUES
 (42, 60,0),
-(51, 60,0),
+(51, 60,1),
 (53, 60,1),
 (41, 61, 1),
 (52, 61,0),
-(51, 64,0),
+(51, 64,1),
 (51, 72,0),
 (51, 74,0),
 (51, 76,0),

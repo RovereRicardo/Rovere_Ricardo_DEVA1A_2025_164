@@ -39,10 +39,12 @@
             <td>
                 <span id="minutes_{{ playersPlaying.id_player }}">00</span>:
                 <span id="seconds_{{ playersPlaying.id_player }}">00</span>
-                <form action="" method="POST">
-                    <button class="btn btn-success button-start" value="in" data-player-id="{{ playersPlaying.id_player }}">In
-                    </button>
-                    <button class="btn btn-danger button-stop" value="out" data-player-id="{{ playersPlaying.id_player }}">Out
+                <form action="{{ url_for('update_status') }}" method="POST">
+                   <!-- <button class="btn btn-success button-start" name="subIn" value="in" data-player-id="{{ playersPlaying.id_player }}">In
+                    </button> -->
+                    <input type="hidden" name="idPlayer" value="{{ playersPlaying.id_player }}">
+                    <input type="hidden" name="id_match" value="{{ match.id_match }}">
+                    <button class="btn btn-danger button-stop" name="subOut" value="out" data-player-id="{{ playersPlaying.id_player }}">Out
                     </button>
                 </form>
             </td>

@@ -75,20 +75,26 @@ class Matchs:
         try:
             cursor = connection.cursor()
             cursor.execute(
-                "INSERT INTO t_players_match (id_match, id_player) VALUES (%s, %s)", (id_match, id_player)
+                "INSERT INTO t_players_match (id_match, id_player, subbed) VALUES (%s, %s,1)", (id_match, id_player)
             )
             connection.commit()
             cursor.close()
             flash("Player added successfully!", "success")
+
         except Exception as e:  # Catch the exact error
             print("Error adding player to match:", e)  # Debugging output
-            flash(f"Error: {str(e)}", "danger")  # Show the actual error in the UI
+        finally:
+            cursor = connection.cursor()
+            cursor.execute(
+                "UPDATE t_players_match SET subbed = 1 WHERE id_match = %s AND id_player = %s", (id_match,id_player)
+            )
+            cursor.close()
 
     @staticmethod
     def get_players_playing(id_match, id_team):
         cursor = connection.cursor()
         cursor.execute(
-            "SELECT pm.id_match, tm.id_team AS team_id, tm.team_name, p.id_player, p.name, p.family_name FROM t_players_match pm JOIN t_player p ON pm.id_player = p.id_player JOIN t_team_player tp ON p.id_player = tp.id_player_team JOIN t_team tm on tp.id_team_player = tm.id_team JOIN t_match m ON pm.id_match = m.id_match WHERE m.id_match = %s AND tm.id_team = %s",
+            "SELECT pm.id_match, tm.id_team AS team_id, tm.team_name, p.id_player, p.name, p.family_name, pm.subbed FROM t_players_match pm JOIN t_player p ON pm.id_player = p.id_player JOIN t_team_player tp ON p.id_player = tp.id_player_team JOIN t_team tm on tp.id_team_player = tm.id_team JOIN t_match m ON pm.id_match = m.id_match WHERE m.id_match = %s AND tm.id_team = %s AND pm.subbed = 1",
             (id_match, id_team)
         )
         players = cursor.fetchall()
@@ -124,6 +130,26 @@ class Matchs:
         cursor.execute(
             "UPDATE t_team SET loses = loses + 1 WHERE id_team = %s",
             (id_team,)
+        )
+        connection.commit()
+        cursor.close()
+
+    @staticmethod
+    def update_satus_in(id_player):
+        cursor = connection.cursor()
+        cursor.execute(
+            "UPDATE t_players_match SET subbed = 1 WHERE id_player = %s",
+            (id_player,)
+        )
+        connection.commit()
+        cursor.close()
+
+    @staticmethod
+    def update_status_out(id_player, id_match):
+        cursor = connection.cursor()
+        cursor.execute(
+            "UPDATE t_players_match SET subbed = 0 WHERE id_player = %s AND id_match = %s",
+            (id_player, id_match)
         )
         connection.commit()
         cursor.close()

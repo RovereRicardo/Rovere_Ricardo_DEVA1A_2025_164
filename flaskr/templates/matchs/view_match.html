@@ -2,6 +2,12 @@
 {% block title %} Match {% endblock %}
 {% block content %}
 <section class="players-section">
+    <span id="minutes_">00</span>:
+    <span id="seconds_">00</span>
+    <button class="btn btn-success button-start">Start</button>
+    <button class="btn btn-danger button-stop">Pause</button>
+</section>
+<section class="players-section">
     <h3>{{ match.home_team }}</h3>
     <table class="table table-bordered table-hover">
         <thead>
@@ -33,8 +39,14 @@
             <td>
                 <span id="minutes_{{ playersPlaying.id_player }}">00</span>:
                 <span id="seconds_{{ playersPlaying.id_player }}">00</span>
-                <button class="btn btn-success button-start" data-player-id="{{ playersPlaying.id_player }}">In</button>
-                <button class="btn btn-danger button-stop" data-player-id="{{ playersPlaying.id_player }}">Out</button>
+                <form action="{{ url_for('update_status') }}" method="POST">
+                   <!-- <button class="btn btn-success button-start" name="subIn" value="in" data-player-id="{{ playersPlaying.id_player }}">In
+                    </button> -->
+                    <input type="hidden" name="idPlayer" value="{{ playersPlaying.id_player }}">
+                    <input type="hidden" name="id_match" value="{{ match.id_match }}">
+                    <button class="btn btn-danger button-stop" name="subOut" value="out" data-player-id="{{ playersPlaying.id_player }}">Out
+                    </button>
+                </form>
             </td>
             <td>{{ Stats.get_player_points(playersPlaying.id_player, match.id_match)['total_points'] }}
             </td>

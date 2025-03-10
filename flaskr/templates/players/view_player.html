@@ -30,10 +30,10 @@
             </div>
         </div>
         {% if session.username %}
-        <a href="{{ url_for('player.update_player', player_id=player.id_player, team_id=team.id_team) }}"
+        <a href="{{ url_for('player.update_player', player_id=player.id_player, id_team=team.id_team) }}"
            class="btn btn-warning ml-2 pull-right">Update</a>
         {% endif %}
-        <a href="{{ url_for('team.view_team', team_id=team.id_team) }}" class="btn btn-secondary ml-2 pull-right"
+        <a href="{{ url_for('team.view_team', id_team=team.id_team) }}" class="btn btn-secondary ml-2 pull-right"
            style="margin-right: 10px">Cancel</a>
     </div>
 </section>

@@ -9,9 +9,11 @@
 </section>
 <section class="players-section">
     <h3>{{ match.home_team }}</h3>
-    {% with players = players_playing %}
-    {% include 'matchs/_match_table.html' %}
-    {% endwith %}
+    <div id="teamdata-table-{{ match.id_home_team }}" style="border: 1px solid red">
+        {% with players = players_playing , team_id = match.id_home_team, match_id = match.id_match %}
+        {% include 'matchs/_match_table.html' %}
+        {% endwith %}
+    </div>
     <form action="{{ url_for('add_player_home') }}" name="myForm" method="POST">
         <input type="hidden" name="id_match" value="{{ match.id_match }}">
         <select name="idPlayerHome">
@@ -27,9 +29,11 @@
     </form>
     <br>
     <h3>{{ match.away_team }}</h3>
-    {% with players = players_playing_away %}
-    {% include 'matchs/_match_table.html' %}
-    {% endwith %}
+    <div id="teamdata-table-{{match.id_away_team}}" style="border: 1px solid blue">
+        {% with players = players_playing_away , team_id = match.id_away_team , match_id = match.id_match %}
+        {% include 'matchs/_match_table.html' %}
+        {% endwith %}
+    </div>
     <form action="{{ url_for('add_player_away') }}" name="myForm" method="POST">
         <input type="hidden" name="id_match" value="{{ match.id_match }}">
         <select name="idPlayerAway">
@@ -61,12 +65,13 @@
         </button>
     </form>
 </section>
-<form id="statSenderForm" action="{{ url_for('register_stat') }}" method="POST">
-    <input type="hidden" name="idPlayer" value="">
-    <input type="hidden" name="idMatch" value="{{ match.id_match }}">
-    <input type="hidden" name="statType" value="">
-    <input type="hidden" name="statValue" value="">
-    <input type="hidden" name="registerNewStat" value="true">
+<form id="statSenderForm" action="javascript:;" method="POST">
+    <input type="text" name="idPlayer" value="">
+    <input type="text" name="idTeam" value="">
+    <input type="text" name="idMatch" value="{{ match.id_match }}">
+    <input type="text" name="statType" value="">
+    <input type="text" name="statValue" value="">
+    <input type="text" name="registerNewStat" value="true">
 </form>
 
 <script>
@@ -75,16 +80,30 @@
 
         // Find the player's row
         let row = button.closest("tr");
+        let table = button.closest("table");
 
         // Get the player's ID
         let playerId = row.getAttribute("data-player-id");
+        let teamId = table.getAttribute("data-team-id");
         // Populate form fields
 
         form.elements["idPlayer"].value = playerId;
+        form.elements["idTeam"].value = teamId;
         form.elements["statType"].value = button.name;
         form.elements["statValue"].value = button.value;
 
-        form.submit();
+        let formData = new FormData(form);
+
+        fetch('/view_match_table_ajax?id_match={{ match.id_match }}', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.text())
+            .then(data => {
+                console.log('teamdata-table-' + teamId)
+                document.getElementById('teamdata-table-' + teamId).innerHTML = data;
+            })
+            .catch(error => console.error('Error:', error));
     }
 
 </script>

@@ -16,18 +16,18 @@ class Player:
         self.nationality = nationality
 
     @staticmethod
-    def get_by_team(team_id):
+    def get_by_team(id_team):
         cursor = connection.cursor()
         cursor.execute(
             "SELECT p.* FROM t_player p JOIN t_team_player tp ON p.id_player = tp.id_player_team JOIN t_team t ON tp.id_team_player = t.id_team WHERE t.id_team = %s",
-            (team_id,))
+            (id_team,))
         players = cursor.fetchall()
         column_names = [desc[0] for desc in cursor.description]
         players = [dict(zip(column_names, player)) for player in players]
 
         return players
 
-    def register_player(self, team_id):
+    def register_player(self, id_team):
         cursor = connection.cursor()
 
         cursor.execute(
@@ -41,7 +41,7 @@ class Player:
 
         cursor.execute(
             "INSERT INTO t_team_player (id_team_player, id_player_team) VALUES (%s, %s)",
-            (team_id, id_player)
+            (id_team, id_player)
         )
         connection.commit()
 

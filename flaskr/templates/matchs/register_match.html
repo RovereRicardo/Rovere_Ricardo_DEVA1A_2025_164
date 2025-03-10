@@ -10,15 +10,15 @@
             <form action="" name="myForm" method="POST">
                 <div class="forms">
                     <label for="id"></label>
-                    <label>Date</label>
-                    <input type="date" name="date_match" value="">
-                    <label>Home Team</label>
+                    <label for="date">Date</label>
+                    <input type="date" id="date" name="date">
+                    {{ form.id_home_team.label }}
                     <select name="id_home_team">
                       {% for team in teams %}
                             <option value="{{ team.id_team }}">{{ team.team_name }}</option>
                        {% endfor %}
                     </select>
-                    <label>Away Team</label>
+                    {{ form.id_away_team.label }}
                     <select name="id_away_team">
                       {% for team in teams %}
                             <option value="{{ team.id_team }}">{{ team.team_name }}</option>

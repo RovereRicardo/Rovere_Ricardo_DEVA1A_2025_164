@@ -2,7 +2,7 @@ from flask import render_template, session
 from flaskr.database.db import connection
 
 class Team:
-    def __init__(self, id_team, team_name, team_logo, address, city, wins, loses, draws, points, id_coach_creator):
+    def __init__(self, id_team, team_name, team_logo, address, city, wins, loses, draws, points, id_coach_creator, is_deleted=None):
         self.id_team = id_team
         self.team_name = team_name
         self.team_logo = team_logo
@@ -13,6 +13,7 @@ class Team:
         self.draws = draws
         self.points = points
         self.id_coach_creator = id_coach_creator
+        self.is_deleted = is_deleted
 
     def register_team(self):
         cursor = connection.cursor()

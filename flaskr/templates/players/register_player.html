@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %} New Player {% endblock %}
 {% block content %}
-{% if username %}
+{% if session.username %}
 <section class="details">
     <div class="last-played">
         <br>
@@ -28,11 +28,12 @@
                 <input type="date" name="birthday" value="">
                 <label>Nationality</label>
                 <input type="text" name="nationality" value="">
+                <input type="hidden" name="id_team" value="{{ id_team }}">
             </div>
             <br>
             <div>
                 <input type="submit" name="newplayer" id="newplayer" class="btn btn-primary" value="Submit">
-                <a href="{{ url_for('team.view_team', team_id=id_team) }}" class="btn btn-secondary ml-2">Cancel</a>
+                <a href="{{ url_for('team.view_team', id_team=id_team) }}" class="btn btn-secondary ml-2">Cancel</a>
             </div>
         </form>
     </div>

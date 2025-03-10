@@ -9,7 +9,7 @@ from flaskr.database.db import connection
 
 class Matchs:
     def __init__(self, id_match, date_match, id_home_team, id_away_team, home_score=None, away_score=None,
-                 home_team=None, away_team=None):
+                 home_team=None, away_team=None, is_deleted=None):
         self.id_match = id_match
         self.date_match = date_match
         self.id_home_team = id_home_team
@@ -18,6 +18,7 @@ class Matchs:
         self.away_score = away_score
         self.home_team = home_team
         self.away_team = away_team
+        self.is_deleted = is_deleted
 
     @staticmethod
     def get_match_by_id(id_match):
@@ -55,7 +56,8 @@ class Matchs:
     def delete_match(self):
         cursor = connection.cursor()
         cursor.execute(
-            "DELETE FROM t_match WHERE id_match = %s",
+            "UPDATE t_match SET is_deleted = 1 WHERE id_match = %s",
+            #"DELETE FROM t_match WHERE id_match = %s",
             (self.id_match)
         )
 

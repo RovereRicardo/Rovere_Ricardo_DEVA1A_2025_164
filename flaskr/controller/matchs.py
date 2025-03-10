@@ -1,6 +1,7 @@
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 
+from flaskr.WTForms.RegistrationForm import RegistrationForm, RegisterMatch, DeleteMatch, EditMatch
 from flaskr.controller.players import player
 from flaskr.database.db import connection
 from flaskr.models.matchs import Matchs
@@ -13,7 +14,7 @@ match = Blueprint('match', __name__)
 
 @match.route('/matchs/register_match', methods=['GET', 'POST'])
 def register_match():
-
+    form = RegisterMatch(request.form)
     cursor = connection.cursor()
     cursor.execute('SELECT id_team, team_name FROM t_team')
     teams = cursor.fetchall()
@@ -21,10 +22,10 @@ def register_match():
     column_names = [desc[0] for desc in cursor.description]
     teams = [dict(zip(column_names, team)) for team in teams]
 
-    if request.method == 'POST':
-        date = request.form['date_match']
-        id_home_team = request.form['id_home_team']
-        id_away_team = request.form['id_away_team']
+    if request.method == 'POST' and form.validate():
+        date = form.date.data
+        id_home_team = form.id_home_team.data
+        id_away_team = form.id_away_team.data
 
         if not id_home_team or not id_away_team:
             flash("Teams required.", "danger")
@@ -35,12 +36,13 @@ def register_match():
 
         flash("Match Registered!", "success")
         return redirect(url_for('index'))
-    return render_template('/matchs/register_match.html', teams=teams)
+    return render_template('/matchs/register_match.html', teams=teams, form=form)
 
 @match.route('/matchs/delete_match', methods=['POST'])
 def delete_match():
-    if request.method == 'POST':
-        id_match = request.form['id_match']
+    form = DeleteMatch(request.form)
+    if request.method == 'POST' and form.validate():
+        id_match = form.id_match.data
 
         match_data = Matchs.get_by_id(id_match)
 
@@ -52,7 +54,7 @@ def delete_match():
         match.delete_match()
 
         flash("Match Deleted!", "success")
-        return redirect(url_for('index'))
+        return redirect(url_for('index', form=form))
 
 @match.route('/edit_match/<int:id_match>', methods=['GET','POST'])
 def edit_match(id_match):
@@ -72,19 +74,20 @@ def edit_match(id_match):
 
     match = Matchs(**match_data)
 
-    if request.method == 'POST':
-        match.date_match = request.form['date_match']
-        match.id_home_team = request.form['id_home_team']
-        match.id_away_team = request.form['id_away_team']
-        match.home_score = request.form['home_score']
-        match.away_score = request.form['away_score']
+    form = EditMatch(request.form)
+    if request.method == 'POST' and form.validate():
+        match.date_match = form.date_match.data
+        match.id_home_team = form.id_home_team.data
+        match.id_away_team = form.id_away_team.data
+        match.home_score = form.home_score.data
+        match.away_score = form.away_score.data
 
 
         match.edit_match()
         flash("Match Edited!", "success")
         return redirect(url_for('index'))
 
-    return render_template("/matchs/edit_match.html", match=match, teams=teams)
+    return render_template("/matchs/edit_match.html", match=match, teams=teams, form=form)
 
 @match.route('/view_match', methods=['GET', 'POST'])
 def view_match():
@@ -108,3 +111,26 @@ def view_match():
 
 
     return render_template('matchs/view_match.html',Total=Total, Stats=Stats, match=match, home_players=home_players, away_players=away_players, players_playing=players_playing, players_playing_away=players_playing_away)
+
+@match.route('/view_match_table_ajax', methods=['GET', 'POST'])
+def view_match_table_ajax():
+    id_player = request.form.get('idPlayer')
+    id_team = request.form.get('idTeam')
+    id_match = request.form.get('idMatch')
+    stat_type = request.form.get('statType')
+    stat_value = request.form.get('statValue')
+
+    stat_type_id = Stats.get_stats_by_name(stat_type)
+
+    if stat_type_id:
+        # Create a Stats instance and register it
+        new_stat = Stats(stat_type_id, id_player, id_match, stat_value)
+        new_stat.register_stat()
+
+    id_match = request.args.get('id_match')
+
+
+    players = Matchs.get_players_playing(id_match,id_team)
+    # print(players)
+
+    return render_template('matchs/_match_table.html',Total=Total, Stats=Stats, match_id=id_match, players=players, team_id=id_team)

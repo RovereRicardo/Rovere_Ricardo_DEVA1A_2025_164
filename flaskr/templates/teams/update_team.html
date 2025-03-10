@@ -1,29 +1,29 @@
 {% extends "base.html" %}
 {% block title %} Update Team {{ team.team_name }} {% endblock %}
 {% block content %}
-{% if session.username %}
+{% if session.username and session.id_user == team.id_coach_creator %}
 <section class="details">
     <div class="last-played">
         <h2>Update Team</h2>
         <p>Edit the form and submit to update the team details.</p>
-        <form action="{{ url_for('team.update_team', team_id=team.id_team) }}" method="POST">
+        <form action="{{ url_for('team.update_team', id_team=team.id_team) }}" method="POST">
             <div class="forms">
-            <label>Team Name</label>
-            <input type="text" name="team_name" value="{{ team.team_name }}" required>
-            <label>Team Logo</label>
-            <input type="text" name="team_logo" value="{{ team.team_logo }}">
-            <label>Address</label>
-            <input type="text" name="address" value="{{ team.address }}">
-            <label>City</label>
-            <input type="text" name="city" value="{{ team.city }}">
-            <label>Wins</label>
-            <input type="number" name="wins" value="{{ team.wins }}">
-            <label>Loses</label>
-            <input type="number" name="loses" value="{{ team.loses }}">
-            <label>Draws</label>
-            <input type="number" name="draws" value="{{ team.draws }}">
-            <label>Points</label>
-            <input type="number" name="points" value="{{ team.points }}">
+                <label>Team Name</label>
+                <input type="text" name="team_name" value="{{ team.team_name }}" required>
+                <label>Team Logo</label>
+                <input type="text" name="team_logo" value="{{ team.team_logo }}">
+                <label>Address</label>
+                <input type="text" name="address" value="{{ team.address }}">
+                <label>City</label>
+                <input type="text" name="city" value="{{ team.city }}">
+                <label>Wins</label>
+                <input type="number" name="wins" value="{{ team.wins }}" min="0">
+                <label>Loses</label>
+                <input type="number" name="loses" value="{{ team.loses }}" min="0">
+                <label>Draws</label>
+                <input type="number" name="draws" value="{{ team.draws }}" min="0">
+                <label>Points</label>
+                <input type="number" name="points" value="{{ team.points }}" min="0">
             </div>
             <br>
             <input type="submit" class="btn btn-primary" value="Update">
@@ -31,11 +31,21 @@
         </form>
     </div>
 </section>
-{% else %}
+{% elif not session.get('username') %}
 <section class="details">
     <div class="last-played">
         <br>
         <h2>You must be logged in, to be able to update a Team.</h2>
+        <a href="/" class="btn btn-secondary ml-2">Cancel</a>
+
+    </div>
+</section>
+{% else %}
+<section class="details">
+    <div class="last-played">
+        <br>
+        <h2>You cannot edit a Team that doesn't belong to you.</h2>
+        <a href="/" class="btn btn-secondary ml-2">Cancel</a>
     </div>
 </section>
 {% endif %}

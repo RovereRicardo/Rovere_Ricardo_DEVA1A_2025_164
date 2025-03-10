@@ -48,6 +48,7 @@ def create_app():
                 FROM t_match m 
                 JOIN t_team home_team ON m.id_home_team = home_team.id_team 
                 JOIN t_team away_team ON m.id_away_team = away_team.id_team 
+                WHERE m.is_deleted = 0
                 ORDER BY m.date_match ASC
             """)
             matches = cursorM.fetchall()
@@ -78,10 +79,10 @@ def create_app():
         iduser = session.get('id_user')
         return render_template("/teams/register_team.html", username=username, iduser=iduser)
 
-    @app.route("/teams/view_team/<int:team_id>")
-    def view_team(team_id):
+    @app.route("/teams/view_team/<int:id_team>")
+    def view_team(id_team):
         cursor = connection.cursor()
-        cursor.execute("SELECT * FROM t_team WHERE id_team = %s", (team_id,))
+        cursor.execute("SELECT * FROM t_team WHERE id_team = %s", (id_team,))
         team = cursor.fetchone()
         column_names = [desc[0] for desc in cursor.description]  # Get columns names
         team = dict(zip(column_names, team))  # Convert from tuple to dictionary

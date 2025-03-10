@@ -1,5 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from werkzeug.security import generate_password_hash, check_password_hash
+
+from flaskr.WTForms.RegistrationForm import RegistrationForm, LoginForm
+
 from flaskr.database.db import connection
 from flaskr.models.user import User
 
@@ -7,29 +10,25 @@ user = Blueprint('user', __name__)
 
 @user.route('/auth/register', methods=['GET', 'POST'])
 def register():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        email = request.form['email']
-        role = request.form['role']
+    form = RegistrationForm(request.form)
 
-        if not username or not password:
-            flash('Username and password are required.', 'danger')
-            return redirect(url_for('user.register'))
-
-
-        password = generate_password_hash(password)
-        user = User(None, username, email, password, role)
+    if request.method == 'POST' and form.validate():
+        password = form.password.data
+        password_hash = generate_password_hash(password)
+        user = User(None, form.username.data, form.email.data, password_hash, form.role.data)
         user.register_user()
 
+        flash("Registration successful")
         return redirect(url_for('index'))
-    return render_template('/auth/register.html')
+    return render_template('/auth/register.html', form=form)
 
 @user.route('/auth/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+    form = LoginForm(request.form)
+
+    if request.method == 'POST' and form.validate():
+        username = form.username.data
+        password = form.password.data
 
         cursor = connection.cursor()
         cursor.execute("SELECT username, id_user, password FROM t_user WHERE username = %s", (username,))

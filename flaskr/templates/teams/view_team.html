@@ -28,10 +28,10 @@
             <td>{{ player.birthday }}</td>
             <td>{{ player.nationality }}</td>
             <td>
-                <a href="{{ url_for('player.view_player', player_id=player.id_player, team_id=team.id_team) }}" class="mr-3"
+                <a href="{{ url_for('player.view_player', player_id=player.id_player, id_team=team.id_team) }}" class="mr-3"
                    title="View Player"><span class="fa fa-eye"></span></a>
                 {% if username %}
-                <a href="{{ url_for('player.update_player', player_id=player.id_player, team_id=team.id_team) }}"
+                <a href="{{ url_for('player.update_player', player_id=player.id_player, id_team=team.id_team) }}"
                    class="mr-3" title="Update Player">
                     <span class="fa fa-pencil"></span>
                 </a>

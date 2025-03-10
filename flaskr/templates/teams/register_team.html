@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %} New Team {% endblock %}
 {% block content %}
-{% if username %}
+{% if session.username %}
 <section class="details">
     <div class="last-played">
         <br>
@@ -25,6 +25,7 @@
                 <input type="number" id="draws" name="draws" value="">
                 <label for="points">Points</label>
                 <input type="number" id="points" name="points" value="">
+                <input type="hidden" name="id_user" value="{{ session.id_user }}">
             </div>
             <br>
             <div>

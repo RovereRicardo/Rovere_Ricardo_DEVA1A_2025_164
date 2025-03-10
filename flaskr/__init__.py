@@ -78,10 +78,10 @@ def create_app():
         iduser = session.get('id_user')
         return render_template("/teams/register_team.html", username=username, iduser=iduser)
 
-    @app.route("/teams/view_team/<int:team_id>")
-    def view_team(team_id):
+    @app.route("/teams/view_team/<int:id_team>")
+    def view_team(id_team):
         cursor = connection.cursor()
-        cursor.execute("SELECT * FROM t_team WHERE id_team = %s", (team_id,))
+        cursor.execute("SELECT * FROM t_team WHERE id_team = %s", (id_team,))
         team = cursor.fetchone()
         column_names = [desc[0] for desc in cursor.description]  # Get columns names
         team = dict(zip(column_names, team))  # Convert from tuple to dictionary

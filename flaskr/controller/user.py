@@ -12,7 +12,7 @@ user = Blueprint('user', __name__)
 def register():
     form = RegistrationForm(request.form)
 
-    if request.method == 'POST' and form.validate():
+    if request.method == 'POST':
         password = form.password.data
         password_hash = generate_password_hash(password)
         user = User(None, form.username.data, form.email.data, password_hash, form.role.data)
@@ -33,19 +33,26 @@ def login():
         cursor = connection.cursor()
         cursor.execute("SELECT username, id_user, password FROM t_user WHERE username = %s", (username,))
         user = cursor.fetchone()
+
+        column_names = [desc[0] for desc in cursor.description]
+        if user:
+            user = dict(zip(column_names, user))
+        else:
+            user = None
+
         cursor.close()
 
-        if user is None or not check_password_hash(user[2], password): # Compare the password from form with password in db
+        if user is None or not check_password_hash(user['password'], password): # Compare the password from form with password in db
             flash('Invalid username or password.', 'error')
             return redirect(url_for('user.login'))
 
         session.permanent = True  # Permanent session
-        session['username'] = user[0]
-        session['id_user'] = user[1]
+        session['username'] = user['username']
+        session['id_user'] = user['id_user']
         flash('Login successful!', 'success')
         return redirect(url_for('index'))
 
-    return render_template('/auth/login.html')
+    return render_template('/auth/login.html', form=form)
 
 @user.route("/logout", methods=["POST"])
 def logout():

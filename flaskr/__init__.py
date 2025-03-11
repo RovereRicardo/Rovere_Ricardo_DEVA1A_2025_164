@@ -5,6 +5,7 @@ import pymysql
 from flask import Flask, redirect, url_for, render_template, session, request
 from flaskr.database.db import connection, import_dump
 from datetime import timedelta
+from flask_bootstrap import Bootstrap5
 
 from flaskr.models.matchs import Matchs
 from flaskr.models.players import Player
@@ -12,6 +13,7 @@ from flaskr.models.stats import Stats
 
 def create_app():
     app = Flask(__name__)
+    bootstrap = Bootstrap5(app)
     app.config.from_mapping(
         SECRET_KEY='dev',
         DATABASE=os.getenv("NAME_BD_MYSQL"),
@@ -57,7 +59,7 @@ def create_app():
 
             # Second cursor for teams
             cursorT = connection.cursor()
-            cursorT.execute("SELECT * FROM t_team")
+            cursorT.execute("SELECT * FROM t_team WHERE is_deleted = 0")
             teams = cursorT.fetchall()
             column_namesT = [desc[0] for desc in cursorT.description]
             cursorT.close()
@@ -73,12 +75,6 @@ def create_app():
         except pymysql.MySQLError as e:
             return f"Database error: {str(e)}", 500
 
-    @app.route("/teams/register_team")
-    def register_team():
-        username = session.get('username')
-        iduser = session.get('id_user')
-        return render_template("/teams/register_team.html", username=username, iduser=iduser)
-
     @app.route("/teams/view_team/<int:id_team>")
     def view_team(id_team):
         cursor = connection.cursor()
@@ -89,27 +85,12 @@ def create_app():
 
         cursor.execute(
             "SELECT p.* FROM t_player p JOIN t_team_player tp ON p.id_player = tp.id_player_team JOIN t_team t ON tp.id_team_player = t.id_team WHERE t.id_team = %s",
-            (team_id,))
+            (id_team,))
         players = cursor.fetchall()
         column_names = [desc[0] for desc in cursor.description]
         players = [dict(zip(column_names, player)) for player in players]
 
         return render_template("/teams/view_team.html", team=team, username=session.get('username'), players=players)
-
-    @app.route("/teams/update_team/", methods=('GET', 'POST'))
-    def update_team():
-        username = session.get('username')
-        iduser = session.get('id_user')
-
-        return render_template('teams/update_team.html', team=team, username=username, iduser=iduser)
-
-    @app.route("/players/register_player")
-    def register_player():
-        username = session.get('username')
-        iduser = session.get('id_user')
-        id_team = request.args.get('id_team')
-
-        return render_template("/players/register_player.html", username=username, iduser=iduser, id_team=id_team)
 
     @app.route("/players/update_player")
     def update_player():

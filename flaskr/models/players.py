@@ -20,7 +20,7 @@ class Player:
     def get_by_team(id_team):
         cursor = connection.cursor()
         cursor.execute(
-            "SELECT p.* FROM t_player p JOIN t_team_player tp ON p.id_player = tp.id_player_team JOIN t_team t ON tp.id_team_player = t.id_team WHERE t.id_team = %s",
+            "SELECT p.* FROM t_player p JOIN t_team_player tp ON p.id_player = tp.id_player_team JOIN t_team t ON tp.id_team_player = t.id_team WHERE t.id_team = %s AND p.is_deleted = 0",
             (id_team,))
         players = cursor.fetchall()
         column_names = [desc[0] for desc in cursor.description]

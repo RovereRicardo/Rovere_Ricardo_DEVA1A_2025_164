@@ -117,4 +117,14 @@ footer {
     padding: 10px 20px;
 }
 
+a {
+    text-align: center;
+}
+
+.forms-align {
+    display: inline;
+    justify-content: center;
+    align-content: center;
+}
+
 

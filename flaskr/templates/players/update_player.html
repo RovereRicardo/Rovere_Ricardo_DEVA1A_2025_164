@@ -1,47 +1,28 @@
+{% from "macros/forms.html" import render_text_field %}
+{% from 'bootstrap5/form.html' import render_form %}
+
 {% extends "base.html" %}
 {% block title %} Update Player {{ player.name }} {% endblock %}
 {% block content %}
-{% if session.username %}
-<section class="details">
-    <div class="last-played">
-        <br>
-        <h2>Update Player</h2>
-        <p>Fill the form and submit to update Player details.</p>
-        <form action="" name="myForm" method="POST">
-            <div class="forms">
-                <label for="id_player"></label>
-                <label>Player Name</label>
-                <input type="text" name="name" value="{{ player.name }}" required>
-                <label>Player Family Name</label>
-                <input type="text" name="family_name" value="{{ player.family_name }}">
-                <label>Player Number</label>
-                <input type="number" name="number" value="{{ player.number }}">
-                <label>Position</label>
-                <input type="number" min="1" max="5" name="position" value="{{ player.position }}">
-                <label>Position Name</label>
-                <input type="text" name="position_name" value="{{ player.position_name }}">
-                <label>Height</label>
-                <input type="number" name="height" value="{{ player.height }}">
-                <label>Birthday</label>
-                <input type="date" name="birthday" value="{{ player.birthday }}">
-                <label>Nationality</label>
-                <input type="text" name="nationality" value="{{ player.nationality }}">
+    {% if session.username %}
+        <section class="details">
+            <div class="last-played">
+                <br>
+                <h2>Update Player</h2>
+                <p>Fill the form and submit to update Player details.</p>
+                {{ render_form(form, extra_classes="forms") }}
+                <br>
+                <a href="{{ url_for('team.view_team', id_team=team.id_team) }}"
+                   class="btn btn-secondary col-lg">Cancel</a>
             </div>
-            <br>
-            <div>
-                <input type="submit" class="btn btn-primary" value="Submit">
-                <a href="{{ url_for('team.view_team', id_team=team.id_team) }}" class="btn btn-secondary ml-2">Cancel</a>
+        </section>
+    {% else %}
+        <section class="details">
+            <div class="last-played">
+                <br>
+                <h2>You must be Logged in, to be able to update a Player</h2>
             </div>
-        </form>
-    </div>
-</section>
-{% else %}
-<section class="details">
-    <div class="last-played">
-        <br>
-        <h2>You must be Logged in, to be able to update a Player</h2>
-    </div>
-</section>
-{% endif %}
-<br>
+        </section>
+    {% endif %}
+    <br>
 {% endblock %}

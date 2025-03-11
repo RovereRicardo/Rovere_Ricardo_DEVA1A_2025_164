@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 
 from flaskr.WTForms.RegistrationForm import RegisterMatchForm, DeleteMatchForm, EditMatchForm
 from flaskr.controller.players import player
@@ -34,8 +34,7 @@ def register_match():
 
         flash("Match Registered!", "success")
         return redirect(url_for('index'))
-    return render_template('/matchs/register_match.html', teams=teams, form=form)
-
+    return render_template('/matchs/register_match.html', username=session.get('username'), teams=teams, form=form)
 
 
 @match.route('/matchs/delete_match', methods=['POST'])
@@ -58,6 +57,7 @@ def delete_match():
         flash(f"Error deleting match: {str(e)}", "danger")
     return redirect(url_for('index', form=form))
 
+
 @match.route('/edit_match/<int:id_match>', methods=['GET', 'POST'])
 def edit_match(id_match):
     form = EditMatchForm(request.form)
@@ -71,15 +71,14 @@ def edit_match(id_match):
     teams = [dict(zip(column_names, team)) for team in teams]
 
     # Assign teams to choices
-    form.id_home_team.choices = form.id_away_team.choices =  [(str(team['id_team']), team['team_name']) for team in teams]
+    form.id_home_team.choices = form.id_away_team.choices = [(str(team['id_team']), team['team_name']) for team in
+                                                             teams]
 
     if not match_data:
         flash("Match does not exist.", "danger")
         return redirect(url_for('index'))
 
     match = Matchs(**match_data)
-    print("Home Team ID:", match_data['id_home_team'])
-    print("Away Team ID:", match_data['id_away_team'])
 
     if request.method == 'GET':
         form.date_match.data = match.date_match
@@ -99,7 +98,8 @@ def edit_match(id_match):
         flash("Match Edited!", "success")
         return redirect(url_for('index'))
 
-    return render_template("/matchs/edit_match.html", match=match, teams=teams, form=form)
+    return render_template("/matchs/edit_match.html", username=session.get('username'), match=match, teams=teams,
+                           form=form)
 
 
 @match.route('/view_match', methods=['GET', 'POST'])
@@ -124,7 +124,52 @@ def view_match():
 
     return render_template('matchs/view_match.html', Total=Total, Stats=Stats, match=match, home_players=home_players,
                            away_players=away_players, players_playing=players_playing,
-                           players_playing_away=players_playing_away)
+                           players_playing_away=players_playing_away, username=session.get('username'))
+
+@match.route('/submit_score', methods=['POST'])
+def submit_score():
+    home_team_score = request.form.get('homeTeamScore')
+    away_team_score = request.form.get('awayTeamScore')
+    id_home_team = request.form.get('id_home_team')
+    id_away_team = request.form.get('id_away_team')
+    id_match = request.form.get('idMatch')
+
+    Matchs.submit_score(id_match, home_team_score, away_team_score)
+
+    if home_team_score > away_team_score:
+        Matchs.set_win(id_home_team)
+        Matchs.set_lose(id_away_team)
+    else:
+        Matchs.set_win(id_away_team)
+        Matchs.set_lose(id_home_team)
+
+    return redirect(url_for('match.view_match', id_match=id_match))
+
+@match.route('/add_player_home', methods=['POST'])
+def add_player_home():
+    id_player = request.form.get('idPlayerHome')
+    id_match = request.form.get('id_match')
+    Matchs.add_player_to_mach(id_match, id_player)
+
+    return redirect(url_for('match.view_match', id_match=id_match))
+
+@match.route('/add_player_away', methods=['POST'])
+def add_player_away():
+    id_player = request.form.get('idPlayerAway')
+    id_match = request.form.get('id_match')
+    Matchs.add_player_to_mach(id_match, id_player)
+
+    return redirect(url_for('match.view_match', id_match=id_match))
+
+@match.route('/update_status', methods=['POST'])
+def update_status():
+    sub_out = request.form.get('subOut')
+    id_player = request.form.get('idPlayer')
+    id_match = request.form.get('id_match')
+
+    Matchs.update_status_out(id_player, id_match)
+
+    return redirect(url_for('match.view_match', id_match=id_match))
 
 
 @match.route('/view_match_table_ajax', methods=['GET', 'POST'])

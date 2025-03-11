@@ -28,7 +28,7 @@
         <td>
             <span id="minutes_{{ player.id_player }}">00</span>:
             <span id="seconds_{{ player.id_player }}">00</span>
-            <form action="{{ url_for('update_status') }}" method="POST">
+            <form action="{{ url_for('match.update_status') }}" method="POST">
                 <!-- <button class="btn btn-success button-start" name="subIn" value="in" data-player-id="{{ player.id_player }}">In
                  </button> -->
                 <input type="hidden" name="idPlayer" value="{{ player.id_player }}">

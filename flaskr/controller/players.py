@@ -1,5 +1,5 @@
 
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 
 from flaskr.WTForms.RegistrationForm import RegisterPlayerForm, EditPlayerForm, DeletePlayerForm
 from flaskr.models.players import Player
@@ -97,7 +97,7 @@ def update_player():
         flash("Player updated successfully.", "success")
         return redirect(url_for('team.view_team', id_team=id_team))
 
-    return render_template("players/update_player.html", player=player, team=team, form=form)
+    return render_template("players/update_player.html", username= session.get('username'), player=player, team=team, form=form)
 
 @player.route('/view_player', methods=['GET', 'POST'])
 def view_player():
@@ -121,5 +121,5 @@ def view_player():
 
     player = Player(**player_data)
 
-    return render_template("players/view_player.html", player=player, id_team=id_team, team=team)
+    return render_template("players/view_player.html", username=session.get('username'), player=player, id_team=id_team, team=team)
 

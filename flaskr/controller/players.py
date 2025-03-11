@@ -1,7 +1,7 @@
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 
-from flaskr.WTForms.RegistrationForm import RegisterPlayer, EditPlayer, DeletePlayer
+from flaskr.WTForms.RegistrationForm import RegisterPlayerForm, EditPlayerForm, DeletePlayerForm
 from flaskr.models.players import Player
 from flaskr.models.teams import Team
 
@@ -9,8 +9,8 @@ player = Blueprint('player', __name__)
 
 @player.route('/players/register_player', methods=['GET', 'POST'])
 def register_player():
-    form = RegisterPlayer(request.form)
-    if request.method == 'POST' and form.validate():
+    form = RegisterPlayerForm(request.form)
+    if request.method == 'POST':
         name = form.name.data
         family_name = form.family_name.data
         picture = form.picture.data
@@ -20,7 +20,8 @@ def register_player():
         height = form.height.data
         birthday = form.birthday.data
         nationality = form.nationality.data
-        id_team = form.id_team.data
+
+        id_team = request.args.get('id_team')
 
         if picture:
             picture_data = picture.read()  # Read the file content as binary data
@@ -34,13 +35,16 @@ def register_player():
         new_player = Player(name, family_name, picture_data, number, position, position_name, height, birthday, nationality)
         new_player.register_player(id_team)  # Call register function
         flash("Player registered successfully.", "success")
+
         return redirect(url_for('team.view_team', id_team=id_team, form=form))
-    return render_template('/players/register_player.html')
+    flash("error", "danger")
+    print(form.errors)
+    return render_template('/players/register_player.html' , id_team=request.args.get('id_team'), form=form)
 
 
 @player.route('/delete_player', methods=['POST'])
 def delete_player():
-    form = DeletePlayer(request.form)
+    form = DeletePlayerForm(request.form)
     id_player = form.id_player.data
     id_team = form.id_team.data
 
@@ -58,7 +62,7 @@ def delete_player():
 
 @player.route('/update_player', methods=['POST', 'GET'])
 def update_player():
-    form = EditPlayer(request.form)
+    form = EditPlayerForm(request.form)
     player_id = request.args.get('player_id', type=int)  # Get player_id from query string/link
     id_team = request.args.get('id_team', type=int)  # Get team_id from query string/link
 
@@ -81,6 +85,15 @@ def update_player():
             team = Team(**team_data)  # Convert data to Team object
 
     # Team data needed to render template
+    if request.method == 'GET':
+        form.name.data = player.name
+        form.family_name.data = player.family_name
+        form.number.data = player.number
+        form.position.data = player.position
+        form.position_name.data = player.position_name
+        form.height.data = player.height
+        form.birthday.data = player.birthday
+        form.nationality.data = player.nationality
 
     if request.method == 'POST' and form.validate():
         player.name = form.name.data
@@ -101,7 +114,7 @@ def update_player():
 @player.route('/view_player', methods=['GET', 'POST'])
 def view_player():
     player_id = request.args.get('player_id', type=int)
-    id_team = request.args.get('team_id', type=int)
+    id_team = request.args.get('id_team', type=int)
 
     team = None
     if id_team:

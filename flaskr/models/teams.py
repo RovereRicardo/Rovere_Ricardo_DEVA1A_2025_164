@@ -26,7 +26,7 @@ class Team:
     def delete_team(self):
         cursor = connection.cursor()
         cursor.execute(
-            "DELETE FROM t_team WHERE id_team = %s",
+            "UPDATE t_team SET is_deleted = 1 WHERE id_team = %s",
             (self.id_team,)  # Ensure it's a tuple
         )
         connection.commit()

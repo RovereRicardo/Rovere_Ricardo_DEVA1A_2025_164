@@ -1,7 +1,7 @@
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 
-from flaskr.WTForms.RegistrationForm import RegistrationForm, RegisterMatch, DeleteMatch, EditMatch
+from flaskr.WTForms.RegistrationForm import RegisterMatchForm, DeleteMatchForm, EditMatchForm
 from flaskr.controller.players import player
 from flaskr.database.db import connection
 from flaskr.models.matchs import Matchs
@@ -14,7 +14,7 @@ match = Blueprint('match', __name__)
 
 @match.route('/matchs/register_match', methods=['GET', 'POST'])
 def register_match():
-    form = RegisterMatch(request.form)
+    form = RegisterMatchForm(request.form)
     cursor = connection.cursor()
     cursor.execute('SELECT id_team, team_name FROM t_team')
     teams = cursor.fetchall()
@@ -40,7 +40,7 @@ def register_match():
 
 @match.route('/matchs/delete_match', methods=['POST'])
 def delete_match():
-    form = DeleteMatch(request.form)
+    form = DeleteMatchForm(request.form)
     if request.method == 'POST' and form.validate():
         id_match = form.id_match.data
 
@@ -74,7 +74,7 @@ def edit_match(id_match):
 
     match = Matchs(**match_data)
 
-    form = EditMatch(request.form)
+    form = EditMatchForm(request.form)
     if request.method == 'POST' and form.validate():
         match.date_match = form.date_match.data
         match.id_home_team = form.id_home_team.data

@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 
-from flaskr.WTForms.RegistrationForm import RegisterTeam, DeleteTeam, EditTeam
+from flaskr.WTForms.RegistrationForm import RegisterTeamForm, DeleteTeamForm, EditTeamForm
 from flaskr.models.teams import Team  # Import the Team model
 from flaskr.models.players import Player # Import Player model
 
@@ -8,7 +8,7 @@ team = Blueprint('team', __name__)
 
 @team.route('/teams/register_team', methods=['GET', 'POST'])
 def register_team():
-    form = RegisterTeam(request.form)
+    form = RegisterTeamForm(request.form)
     if request.method == 'POST' and form.validate():
         team_name = form.team_name.data
         team_logo = form.team_logo.data #int for now change to picture
@@ -33,7 +33,7 @@ def register_team():
 
 @team.route('/teams/delete_team', methods=['POST'])
 def delete_team():
-    form = DeleteTeam(request.form)
+    form = DeleteTeamForm(request.form)
     if request.method == 'POST' and form.validate():
         id_team = form.id_team.data
 
@@ -43,15 +43,13 @@ def delete_team():
             flash("Team does not exist.", "danger")
             return redirect(url_for('index'))
 
-        try:
-            team = Team(**team_data)
-            if (team.id_coach_creator == session.get('id_user')):
-                team.delete_team()
-                flash("Team deleted!", "success")
-            else:
-                flash("You are not the coach of this team.", "danger")
-        except Exception as e:
-            flash("This team has matchs and cannot be deleted!", "danger")
+
+        team = Team(**team_data)
+        if (team.id_coach_creator == session.get('id_user')):
+            team.delete_team()
+            flash("Team deleted!", "success")
+        else:
+            flash("You are not the coach of this team.", "danger")
 
         return redirect(url_for('index', form=form))
 
@@ -64,7 +62,7 @@ def update_team(id_team):
 
     team = Team(**team_data)  # Create an instance of the Team class with the retrieved Data
 
-    form = EditTeam(request.form)
+    form = EditTeamForm(request.form)
     if request.method == "POST" and form.validate():
         team.team_name = form.team_name.data
         team.team_logo = form.team_logo.data

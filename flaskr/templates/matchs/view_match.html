@@ -1,110 +1,89 @@
 {% extends "base.html" %}
 {% block title %} Match {% endblock %}
 {% block content %}
-<section class="players-section">
-    <span id="minutes_">00</span>:
-    <span id="seconds_">00</span>
-    <button class="btn btn-success button-start">Start</button>
-    <button class="btn btn-danger button-stop">Pause</button>
-</section>
-<section class="players-section">
-    <h3>{{ match.home_team }}</h3>
-    <div id="teamdata-table-{{ match.id_home_team }}" style="border: 1px solid red">
-        {% with players = players_playing , team_id = match.id_home_team, match_id = match.id_match %}
-        {% include 'matchs/_match_table.html' %}
-        {% endwith %}
-    </div>
-    <form action="{{ url_for('match.add_player_home') }}" name="myForm" method="POST">
-        <input type="hidden" name="id_match" value="{{ match.id_match }}">
-        <select name="idPlayerHome">
-            {% for homePlayer in home_players %}
-            <option name=""
-                    value="{{ homePlayer.id_player }}">{{ homePlayer.name }}
-            </option>
-            {% endfor %}
-        </select>
-        <button name="addPlayerMatch" type="submit" class="btn btn-success"><i class="fa fa-plus"></i> Add
-            Player
-        </button>
+    <section class="players-section">
+        <span id="minutes_">00</span>:
+        <span id="seconds_">00</span>
+        <button class="btn btn-success button-start">Start</button>
+        <button class="btn btn-danger button-stop">Pause</button>
+    </section>
+    <section class="players-section">
+        <h3>{{ match.home_team }}</h3>
+        <div id="teamdata-table-{{ match.id_home_team }}" style="border: 1px solid red">
+            {% with players = players_playing , team_id = match.id_home_team, match_id = match.id_match %}
+                {% include 'matchs/_match_table.html' %}
+            {% endwith %}
+        </div>
+        <form action="{{ url_for('match.add_player_home') }}" name="myForm" method="POST">
+            <input type="hidden" name="id_match" value="{{ match.id_match }}">
+            <select name="idPlayerHome">
+                {% for homePlayer in home_players %}
+                    <option name=""
+                            value="{{ homePlayer.id_player }}">{{ homePlayer.name }}
+                    </option>
+                {% endfor %}
+            </select>
+            <button name="addPlayerMatch" type="submit" class="btn btn-success"><i class="fa fa-plus"></i> Add
+                Player
+            </button>
+        </form>
+        <br>
+        <h3>{{ match.away_team }}</h3>
+        <div id="teamdata-table-{{ match.id_away_team }}" style="border: 1px solid blue">
+            {% with players = players_playing_away , team_id = match.id_away_team , match_id = match.id_match %}
+                {% include 'matchs/_match_table.html' %}
+            {% endwith %}
+        </div>
+        <form action="{{ url_for('match.add_player_away') }}" name="myForm" method="POST">
+            <input type="hidden" name="id_match" value="{{ match.id_match }}">
+            <select name="idPlayerAway">
+                {% for awayPlayer in away_players %}
+                    <option name=""
+                            value="{{ awayPlayer.id_player }}"> {{ awayPlayer.name }}
+                    </option>
+                {% endfor %}
+            </select>
+            <button name="addPlayerMatchAway" type="submit" class="btn btn-success"><i class="fa fa-plus"></i> Add
+                Player
+            </button>
+        </form>
+        <a href="/" class="btn btn-secondary ml-2 pull-right">Home</a>
+
+        <form action="{{ url_for('match.submit_score') }}" method="POST" class="details-form">
+            <input type="hidden" name="idMatch" value="{{ match.id_match }}">
+            <label>Home Team - {{ match.home_team }}</label>
+            <input type="hidden" name="id_home_team" value="{{ match.id_home_team }}">
+            <input type="hidden" name="id_away_team" value="{{ match.id_away_team }}">
+            <input type="number" name="homeTeamScore"
+                   value="{{ Total.get_total_points(match.id_match, match.id_home_team) }}">
+            <label>Away Team - {{ match.away_team }}</label>
+            <input type="number" name="awayTeamScore"
+                   value="{{ Total.get_total_points(match.id_match, match.id_away_team) }}">
+            <button type="submit" onclick="return confirm('Are you sure you want to update the score?')"
+                    name="finalScore"
+                    class="btn btn-success"><i class="fa fa-plus"></i> Submit
+                Score
+            </button>
+        </form>
+        <div id="scoredata-table-{{ match.id_away_team }}" style="border: 1px solid deeppink">
+            <form id="submitScoreForm" action="javascript:;" method="POST">
+                <input type="hidden" name="idMatch" value="{{ match.id_match }}">
+                <input type="number" name="homeTeamScore" value="">
+                <input type="number" name="awayTeamScore" value="">
+                <button class="btn btn-warning" name="submitScore" value="" id="submitScoreButton">Submit Score</button>
+                </button>
+            </form>
+        </div>
+    </section>
+    <form id="statSenderForm" action="javascript:;" method="POST">
+        <input type="text" name="idPlayer" value="">
+        <input type="text" name="idTeam" value="">
+        <input type="text" name="idMatch" value="{{ match.id_match }}">
+        <input type="text" name="statType" value="">
+        <input type="text" name="statValue" value="">
+        <input type="text" name="registerNewStat" value="true">
     </form>
-    <br>
-    <h3>{{ match.away_team }}</h3>
-    <div id="teamdata-table-{{match.id_away_team}}" style="border: 1px solid blue">
-        {% with players = players_playing_away , team_id = match.id_away_team , match_id = match.id_match %}
-        {% include 'matchs/_match_table.html' %}
-        {% endwith %}
-    </div>
-    <form action="{{ url_for('match.add_player_away') }}" name="myForm" method="POST">
-        <input type="hidden" name="id_match" value="{{ match.id_match }}">
-        <select name="idPlayerAway">
-            {% for awayPlayer in away_players %}
-            <option name=""
-                    value="{{ awayPlayer.id_player }}"> {{ awayPlayer.name }}
-            </option>
-            {% endfor %}
-        </select>
-        <button name="addPlayerMatchAway" type="submit" class="btn btn-success"><i class="fa fa-plus"></i> Add
-            Player
-        </button>
-    </form>
-    <a href="/" class="btn btn-secondary ml-2 pull-right">Home</a>
 
-    <form action="{{ url_for('match.submit_score') }}" method="POST" class="details-form">
-        <input type="hidden" name="idMatch" value="{{ match.id_match }}">
-        <label>Home Team - {{ match.home_team }}</label>
-        <input type="hidden" name="id_home_team" value="{{ match.id_home_team }}">
-        <input type="hidden" name="id_away_team" value="{{ match.id_away_team }}">
-        <input type="number" name="homeTeamScore"
-               value="{{ Total.get_total_points(match.id_match, match.id_home_team) }}">
-        <label>Away Team - {{ match.away_team }}</label>
-        <input type="number" name="awayTeamScore"
-               value="{{ Total.get_total_points(match.id_match, match.id_away_team) }}">
-        <button type="submit" onclick="return confirm('Are you sure you want to update the score?')" name="finalScore"
-                class="btn btn-success"><i class="fa fa-plus"></i> Submit
-            Score
-        </button>
-    </form>
-</section>
-<form id="statSenderForm" action="javascript:;" method="POST">
-    <input type="text" name="idPlayer" value="">
-    <input type="text" name="idTeam" value="">
-    <input type="text" name="idMatch" value="{{ match.id_match }}">
-    <input type="text" name="statType" value="">
-    <input type="text" name="statValue" value="">
-    <input type="text" name="registerNewStat" value="true">
-</form>
-
-<script>
-    function registerStats(button) {
-        let form = document.getElementById("statSenderForm");
-
-        // Find the player's row
-        let row = button.closest("tr");
-        let table = button.closest("table");
-
-        // Get the player's ID
-        let playerId = row.getAttribute("data-player-id");
-        let teamId = table.getAttribute("data-team-id");
-        // Populate form fields
-
-        form.elements["idPlayer"].value = playerId;
-        form.elements["idTeam"].value = teamId;
-        form.elements["statType"].value = button.name;
-        form.elements["statValue"].value = button.value;
-
-        let formData = new FormData(form);
-
-        fetch('/view_match_table_ajax?id_match={{ match.id_match }}', {
-            method: 'POST',
-            body: formData
-        })
-            .then(response => response.text())
-            .then(data => {
-                console.log('teamdata-table-' + teamId)
-                document.getElementById('teamdata-table-' + teamId).innerHTML = data;
-            })
-            .catch(error => console.error('Error:', error));
-    }
-
-</script>
+    <script src="{{ url_for('static', filename='js/script.js') }}">
+    </script>
 {% endblock %}

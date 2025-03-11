@@ -23,27 +23,32 @@ def register_team():
         return redirect(url_for('index'))
     return render_template('/teams/register_team.html', form=form)
 
+
+
 @team.route('/teams/delete_team', methods=['POST'])
 def delete_team():
     form = DeleteTeamForm(request.form)
-    if request.method == 'POST' and form.validate():
-        id_team = form.id_team.data
 
-        team_data = Team.get_by_id(id_team)
+    if not form.id_team.data:
+        flash("Team does not exist.", "danger")
+        return redirect(url_for('index'))
 
+    try:
+        team_data = Team.get_by_id(form.id_team.data)
         if not team_data:
             flash("Team does not exist.", "danger")
             return redirect(url_for('index'))
 
-
         team = Team(**team_data)
-        if (team.id_coach_creator == session.get('id_user')):
+
+        if(team.id_coach_creator == session.get('id_user')):
             team.delete_team()
             flash("Team deleted!", "success")
         else:
             flash("You are not the coach of this team.", "danger")
-
-        return redirect(url_for('index', form=form))
+    except Exception as e:
+        flash(f"Error deleting team: {str(e)}", "danger")
+    return redirect(url_for('index', form=form))
 
 @team.route("/update/<int:id_team>", methods=["GET", "POST"])
 def update_team(id_team):

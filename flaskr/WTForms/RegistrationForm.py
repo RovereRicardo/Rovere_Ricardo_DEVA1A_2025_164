@@ -1,9 +1,8 @@
-from dominate.tags import address
-from flask import url_for
+
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed
-from markupsafe import Markup
-from wtforms import Form, StringField, PasswordField, FileField, IntegerField, DateField , validators
+from wtforms import StringField, PasswordField, FileField, IntegerField, DateField , validators
+from wtforms.fields.choices import SelectField
 from wtforms.fields.simple import HiddenField, SubmitField, URLField
 from wtforms.validators import Length, NumberRange
 
@@ -56,21 +55,22 @@ class DeletePlayerForm(FlaskForm):
 
 ### MATCH FORM ###
 
-class RegisterMatchForm(Form):
+class RegisterMatchForm(FlaskForm):
     date = DateField('Date', validators=[validators.DataRequired()])
-    id_home_team = IntegerField('Home Team', validators=[validators.DataRequired()])
-    id_away_team = IntegerField('Away Team', validators=[validators.DataRequired()])
+    id_home_team = SelectField('Home Team', validators=[validators.DataRequired()])
+    id_away_team = SelectField('Away Team', validators=[validators.DataRequired()])
+    submit = SubmitField('Register Match')
 
-class DeleteMatchForm(Form):
+class DeleteMatchForm(FlaskForm):
     id_match = IntegerField('Match ID', validators=[validators.DataRequired()])
 
-class EditMatchForm(Form):
+class EditMatchForm(FlaskForm):
     date_match = DateField('Date', validators=[validators.DataRequired()])
-    id_home_team = IntegerField('Home Team', validators=[validators.DataRequired()])
-    id_away_team = IntegerField('Away Team', validators=[validators.DataRequired()])
+    id_home_team = SelectField('Home Team', validators=[validators.DataRequired()])
+    id_away_team = SelectField('Away Team', validators=[validators.DataRequired()])
     home_score = IntegerField('Home Score', validators=[validators.DataRequired()])
     away_score = IntegerField('Away Score', validators=[validators.DataRequired()])
-
+    submit = SubmitField('Update Match')
 ### TEAM FORM ###
 
 class RegisterTeamForm(FlaskForm):

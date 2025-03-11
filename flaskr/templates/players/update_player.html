@@ -10,10 +10,10 @@
                 <br>
                 <h2>Update Player</h2>
                 <p>Fill the form and submit to update Player details.</p>
-                {{ render_form(form) }}
+                {{ render_form(form, extra_classes="forms") }}
                 <br>
                 <a href="{{ url_for('team.view_team', id_team=team.id_team) }}"
-                   class="btn btn-secondary ml-0">Cancel</a>
+                   class="btn btn-secondary col-lg">Cancel</a>
             </div>
         </section>
     {% else %}

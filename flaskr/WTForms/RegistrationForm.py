@@ -2,23 +2,27 @@ from dominate.tags import address
 from flask import url_for
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed
+from markupsafe import Markup
 from wtforms import Form, StringField, PasswordField, FileField, IntegerField, DateField , validators
-from wtforms.fields.simple import HiddenField, SubmitField
+from wtforms.fields.simple import HiddenField, SubmitField, URLField
 from wtforms.validators import Length, NumberRange
 
 
 ### USER FORM ###
 
-class RegistrationForm(Form):
+class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[validators.DataRequired()])
     email = StringField('Email', validators=[validators.DataRequired(), validators.Email()])
-    password = PasswordField('Password', validators=[validators.DataRequired(), validators.EqualTo('confirm', message='Passwords must match')])
+    password = PasswordField('Password', validators=[validators.DataRequired(), validators.EqualTo('confirm', message='Passwords must match'), Length(5,150)])
     confirm = PasswordField('Confirm Password', validators=[validators.DataRequired()])
     role =  StringField('Role', validators=[validators.DataRequired()])
+    submit = SubmitField('Register')
 
-class LoginForm(Form):
+class LoginForm(FlaskForm):
     username = StringField('Username', validators=[validators.DataRequired()])
-    password = PasswordField('Password', validators=[validators.DataRequired()])
+    password = PasswordField('Password', validators=[validators.DataRequired(), Length(5,150)])
+    submit = SubmitField()
+
 
 ### PLAYER FORM ###
 
@@ -28,7 +32,7 @@ class RegisterPlayerForm(FlaskForm):
     picture = FileField('Picture', validators=[FileAllowed(['jpg', 'png'])])
     number = IntegerField('Number', validators=[validators.DataRequired(), NumberRange(0, 99)])
     position = IntegerField('Position Number', validators=[validators.DataRequired(), NumberRange(1,5)])
-    position_name = StringField('Position Name', validators=[validators.DataRequired(), NumberRange(1,5)])
+    position_name = StringField('Position Name', validators=[validators.DataRequired(), Length(1,2)])
     height = IntegerField('Height', validators=[validators.DataRequired()])
     birthday = DateField('Birthday', validators=[validators.DataRequired()])
     nationality = StringField('Nationality', validators=[validators.DataRequired(), Length(1, 2)])

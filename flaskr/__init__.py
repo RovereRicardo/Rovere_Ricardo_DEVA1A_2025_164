@@ -75,12 +75,6 @@ def create_app():
         except pymysql.MySQLError as e:
             return f"Database error: {str(e)}", 500
 
-    @app.route("/teams/register_team")
-    def register_team():
-        username = session.get('username')
-        iduser = session.get('id_user')
-        return render_template("/teams/register_team.html", username=username, iduser=iduser)
-
     @app.route("/teams/view_team/<int:id_team>")
     def view_team(id_team):
         cursor = connection.cursor()
@@ -97,15 +91,6 @@ def create_app():
         players = [dict(zip(column_names, player)) for player in players]
 
         return render_template("/teams/view_team.html", team=team, username=session.get('username'), players=players)
-
-    @app.route("/teams/update_team/", methods=('GET', 'POST'))
-    def update_team():
-        username = session.get('username')
-        iduser = session.get('id_user')
-
-        return render_template('teams/update_team.html', team=team, username=username, iduser=iduser)
-
-
 
     @app.route("/players/update_player")
     def update_player():

@@ -50,7 +50,7 @@ class EditPlayerForm(FlaskForm):
     submit = SubmitField()
 
 
-class DeletePlayerForm(Form):
+class DeletePlayerForm(FlaskForm):
     id_player = IntegerField('Player ID', validators=[validators.DataRequired()])
     id_team = IntegerField('Team ID', validators=[validators.DataRequired()])
 
@@ -73,7 +73,7 @@ class EditMatchForm(Form):
 
 ### TEAM FORM ###
 
-class RegisterTeamForm(Form):
+class RegisterTeamForm(FlaskForm):
     team_name = StringField('Team Name', validators=[validators.DataRequired()])
     team_logo = IntegerField('Team Logo', validators=[validators.DataRequired()])
     address = StringField('Address', validators=[validators.DataRequired()])
@@ -82,12 +82,13 @@ class RegisterTeamForm(Form):
     loses = IntegerField('Loses', validators=[validators.InputRequired(), validators.NumberRange(min=0)])
     draws = IntegerField('Draws', validators=[validators.InputRequired(), validators.NumberRange(min=0)])
     points = IntegerField('Points', validators=[validators.InputRequired(), validators.NumberRange(min=0)])
-    id_user = IntegerField('ID User', validators=[validators.DataRequired()])
+    submit = SubmitField('Register Team')
+    id_user = HiddenField('ID User', validators=[validators.DataRequired()])
 
-class DeleteTeamForm(Form):
+class DeleteTeamForm(FlaskForm):
     id_team = IntegerField('Team ID', validators=[validators.DataRequired()])
 
-class EditTeamForm(Form):
+class EditTeamForm(FlaskForm):
     team_name = StringField('Team Name', validators=[validators.DataRequired()])
     team_logo = IntegerField('Team Logo', validators=[validators.DataRequired()])
     address = StringField('Address', validators=[validators.DataRequired()])
@@ -96,3 +97,4 @@ class EditTeamForm(Form):
     loses = IntegerField('Loses', validators=[validators.InputRequired(), validators.NumberRange(min=0)])
     draws = IntegerField('Draws', validators=[validators.InputRequired(), validators.NumberRange(min=0)])
     points = IntegerField('Points', validators=[validators.InputRequired(), validators.NumberRange(min=0)])
+    submit = SubmitField('Edit Team')

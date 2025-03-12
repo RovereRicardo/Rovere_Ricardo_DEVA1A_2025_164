@@ -1,45 +1,25 @@
 {% extends "base.html" %}
+{% from 'bootstrap5/form.html' import render_form %}
 {% block title %} New Match {% endblock %}
 {% block content %}
-{% if session.username %}
-    <section class="details">
-        <div class="last-played">
-            <br>
-            <h2>Create New Match</h2>
-            <p>Fill the form and submit to create a new match.</p>
-            <form action="" name="myForm" method="POST">
-                <div class="forms">
-                    <label for="id"></label>
-                    <label>Date</label>
-                    <input type="date" name="date_match" value="">
-                    <label>Home Team</label>
-                    <select name="id_home_team">
-                      {% for team in teams %}
-                            <option value="{{ team.id_team }}">{{ team.team_name }}</option>
-                       {% endfor %}
-                    </select>
-                    <label>Away Team</label>
-                    <select name="id_away_team">
-                      {% for team in teams %}
-                            <option value="{{ team.id_team }}">{{ team.team_name }}</option>
-                      {% endfor %}
-                    </select>
-                </div>
+    {% if session.username %}
+        <section class="details">
+            <div class="last-played">
                 <br>
-                <div>
-                    <input type="submit" name="newteam" class="btn btn-primary" value="Submit">
-                    <a href="/" class="btn btn-secondary ml-2">Cancel</a>
-                </div>
-            </form>
-        </div>
-    </section>
-{% else %}
-    <section class="details">
-        <div class="last-played">
-            <br>
-            <h2>You must be Logged in, to be able to Create a new Match</h2>
-        </div>
-    </section>
-{% endif %}
-<br>
+                <h2>Create New Match</h2>
+                <p>Fill the form and submit to create a new match.</p>
+                {{ render_form(form, extra_classes="forms") }}
+                <br>
+                <a href="/" class="btn btn-secondary col-lg">Cancel</a>
+            </div>
+        </section>
+    {% else %}
+        <section class="details">
+            <div class="last-played">
+                <br>
+                <h2>You must be Logged in, to be able to Create a new Match</h2>
+            </div>
+        </section>
+    {% endif %}
+    <br>
 {% endblock %}

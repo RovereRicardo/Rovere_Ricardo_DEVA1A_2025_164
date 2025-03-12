@@ -13,9 +13,6 @@ PORT_MYSQL = int(os.getenv("PORT_MYSQL", 3306))
 DATABASE_NAME = os.getenv("NAME_BD_MYSQL")
 DUMP_FILE_PATH = os.getenv("NAME_FILE_DUMP_SQL_BD")
 
-# Print current working directory (debugging)
-print(f"Current working directory: {os.getcwd()}")
-
 # Convert relative path to an absolute path
 absolute_dump_path = os.path.abspath(DUMP_FILE_PATH)
 print(f"Absolute path to dump file: {absolute_dump_path}")

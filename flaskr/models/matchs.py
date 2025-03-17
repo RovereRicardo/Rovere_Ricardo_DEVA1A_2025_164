@@ -9,7 +9,7 @@ from flaskr.database.db import connection
 
 class Matchs:
     def __init__(self, id_match, date_match, id_home_team, id_away_team, home_score=None, away_score=None,
-                 home_team=None, away_team=None, is_deleted=None):
+                 home_team=None, away_team=None, is_deleted=None, is_played=0):
         self.id_match = id_match
         self.date_match = date_match
         self.id_home_team = id_home_team
@@ -19,12 +19,13 @@ class Matchs:
         self.home_team = home_team
         self.away_team = away_team
         self.is_deleted = is_deleted
+        self.is_played = is_played
 
     @staticmethod
     def get_match_by_id(id_match):
         cursor = connection.cursor()
         cursor.execute(
-            "SELECT m.id_match, m.id_home_team, m.id_away_team, home_team.team_name AS home_team, away_team.team_name AS away_team, m.date_match, m.home_score, m.away_score FROM t_match m JOIN t_team home_team ON m.id_home_team = home_team.id_team JOIN t_team away_team ON m.id_away_team = away_team.id_team WHERE id_match = %s",
+            "SELECT m.is_played, m.id_match, m.id_home_team, m.id_away_team, home_team.team_name AS home_team, away_team.team_name AS away_team, m.date_match, m.home_score, m.away_score FROM t_match m JOIN t_team home_team ON m.id_home_team = home_team.id_team JOIN t_team away_team ON m.id_away_team = away_team.id_team WHERE id_match = %s",
             (id_match,))
         match = cursor.fetchone()
 
@@ -152,6 +153,16 @@ class Matchs:
         cursor.execute(
             "UPDATE t_players_match SET subbed = 0 WHERE id_player = %s AND id_match = %s",
             (id_player, id_match)
+        )
+        connection.commit()
+        cursor.close()
+
+    @staticmethod
+    def end_game(id_match):
+        cursor = connection.cursor()
+        cursor.execute(
+            "UPDATE t_match SET is_played = 1 WHERE id_match = %s",
+            (id_match,)
         )
         connection.commit()
         cursor.close()

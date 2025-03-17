@@ -127,4 +127,36 @@ a {
     align-content: center;
 }
 
+.parent {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+}
+
+.div1 {
+    grid-area: 2 / 2 / 3 / 3;
+    text-align: center;
+    font-size: 100px;
+}
+
+.div2 {
+    grid-area: 4 / 2 / 5 / 3;
+    text-align: center;
+    font-size: 100px;
+}
+
+.div3 {
+    grid-area: 4 / 4 / 5 / 5;
+    text-align: center;
+    font-size: 100px;
+}
+
+.div4 {
+    grid-area: 2 / 4 / 3 / 5;
+    text-align: center;
+    font-size: 100px;
+}
+
 

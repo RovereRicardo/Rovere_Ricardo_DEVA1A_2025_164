@@ -1,107 +1,114 @@
 {% extends "base.html" %}
-{% block title %} BasketStats {% endblock%}
+{% block title %} BasketStats {% endblock %}
 {% block content %}
-<section class="details">
-    <div class="last-played">
-        <h2>Matches</h2>
-        <table class="table table-bordered table-hover">
-            <thead>
-            <tr>
-                <th>Match</th>
-                <th>Date</th>
-                <th>Home Team</th>
-                <th>Away Team</th>
-                <th>Score</th>
-                <th>Action</th>
-                {% if session.username %}
-                <th>Play Game</th>
-                {% endif %}
-            </tr>
-            </thead>
-            <tbody>
-            {% for match in matches %}
-            <tr>
-                <td>{{ match.id_match }}</td>
-                <td>{{ match.date_match }}</td>
-                <td>{{ match.home_team }}</td>
-                <td>{{ match.away_team }}</td>
-                <td>{{ match.home_score | default(0, true) }} - {{ match.away_score | default(0, true) }}</td>
-                <td>
-                    <a href="{{ url_for('match.view_match', id_match = match.id_match) }}" class="mr-3" title="View Match">
-                        <span class="fa fa-eye"></span>
-                    </a>
-                    {% if session.username %}
-                    <a href="{{ url_for('match.edit_match', id_match = match.id_match) }}" class="mr-3" title="Update Match">
-                        <span class="fa fa-pencil"></span>
-                    </a>
-                    <form action="{{ url_for('match.delete_match') }}" method="POST" style="display: inline;">
-                        <input type="hidden" name="id_match" value="{{ match.id_match }}">
-                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?')">
-                            <span class="fa fa-trash"></span>
-                        </button>
-                    </form>
-                </td>
-                <td>
-                    <a href="" class="mr-3" title="Play Game">
-                        <span class="fa fa-play"></span>
-                    </a>
-                </td>
-                {% endif %}
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-        <br>
-        <a href="{{ url_for('match.register_match') }}" class="btn btn-success pull-right">
-            <i class="fa fa-plus"></i> Add New Match
-        </a>
+    <div class="parent">
+        <div class="div1"><a href="index.html"><i class="bi bi-calendar2-date"></i><br>
+            <h3>Matchs</h3></a></div>
+        <div class="div2"><a href="index.html"><i class="bi bi-person-vcard"></i><br>
+            <h3>Players</h3></a></div>
+        <div class="div3"><a href="index.html"><i class="bi bi-diagram-2-fill"></i><br>
+            <h3>Ranking</h3></a></div>
+        <div class="div4"><a href="index.html"><i class="bi bi-shield-shaded"></i><br>
+            <h3>Teams</h3></a></div>
     </div>
+    <section class="details">
+        <div class="last-played">
+            <h2>Matches</h2>
+            <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th>Match</th>
+                    <th>Date</th>
+                    <th>Home Team</th>
+                    <th>Away Team</th>
+                    <th>Score</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for match in matches %}
+                    <tr>
+                        <td>{{ match.id_match }}</td>
+                        <td>{{ match.date_match }}</td>
+                        <td>{{ match.home_team }}</td>
+                        <td>{{ match.away_team }}</td>
+                        <td>{{ match.home_score | default(0, true) }} - {{ match.away_score | default(0, true) }}</td>
+                        <td>
+                            <a href="{{ url_for('match.view_match', id_match = match.id_match) }}" class="mr-3"
+                               title="View Match">
+                                <span class="fa fa-eye"></span>
+                            </a>
+                            {% if session.username %}
+                                <a href="{{ url_for('match.edit_match', id_match = match.id_match) }}" class="mr-3"
+                                   title="Update Match">
+                                    <span class="fa fa-pencil"></span>
+                                </a>
+                                <form action="{{ url_for('match.delete_match') }}" method="POST"
+                                      style="display: inline;">
+                                    <input type="hidden" name="id_match" value="{{ match.id_match }}">
+                                    <button type="submit" class="btn btn-danger"
+                                            onclick="return confirm('Are you sure?')">
+                                        <span class="fa fa-trash"></span>
+                                    </button>
+                                </form>
+                                </td>
+                            {% endif %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <br>
+            <a href="{{ url_for('match.register_match') }}" class="btn btn-success pull-right">
+                <i class="fa fa-plus"></i> Add New Match
+            </a>
+        </div>
 
-    <div class="teams-details">
-        <h2>Teams</h2>
-        <table class="table table-bordered table-hover">
-            <thead>
-            <tr>
-                <th class="bg-success">Team</th>
-                <th>Points</th>
-                <th>Wins</th>
-                <th>Loses</th>
-                <th>Action</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for team in teams %}
-            <tr>
-                <td>{{ team.team_name }}</td>
-                <td>{{ team.points }}</td>
-                <td>{{ team.wins }}</td>
-                <td>{{ team.loses }}</td>
-                <td>
-                    <a href="{{ url_for('team.view_team', id_team=team.id_team) }}" class="mr-3"
-                       title="View Team">
-                        <span class="fa fa-eye"></span>
-                    </a>
-                    {% if session.username %}
-                    <a href="{{ url_for('team.update_team', id_team=team.id_team) }}" class="mr-3"
-                       title="Update Team">
-                        <span class="fa fa-pencil"></span>
-                    </a>
-                    <form action="{{ url_for('team.delete_team') }}" method="POST" style="display:inline;">
-                        <input type="hidden" name="id_team" value="{{ team.id_team }}">
-                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?')">
-                            <span class="fa fa-trash"></span>
-                        </button>
-                    </form>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-        <br>
-        <a href="{{ url_for('team.register_team') }} " class="btn btn-success pull-right">
-            <i class="fa fa-plus"></i> Add New Team
-        </a>
-    </div>
-</section>
+        <div class="teams-details">
+            <h2>Teams</h2>
+            <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th class="bg-success">Team</th>
+                    <th>Points</th>
+                    <th>Wins</th>
+                    <th>Loses</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for team in teams %}
+                    <tr>
+                        <td>{{ team.team_name }}</td>
+                        <td>{{ team.points }}</td>
+                        <td>{{ team.wins }}</td>
+                        <td>{{ team.loses }}</td>
+                        <td>
+                            <a href="{{ url_for('team.view_team', id_team=team.id_team) }}" class="mr-3"
+                               title="View Team">
+                                <span class="fa fa-eye"></span>
+                            </a>
+                            {% if session.username %}
+                                <a href="{{ url_for('team.update_team', id_team=team.id_team) }}" class="mr-3"
+                                   title="Update Team">
+                                    <span class="fa fa-pencil"></span>
+                                </a>
+                                <form action="{{ url_for('team.delete_team') }}" method="POST" style="display:inline;">
+                                    <input type="hidden" name="id_team" value="{{ team.id_team }}">
+                                    <button type="submit" class="btn btn-danger"
+                                            onclick="return confirm('Are you sure?')">
+                                        <span class="fa fa-trash"></span>
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <br>
+            <a href="{{ url_for('team.register_team') }} " class="btn btn-success pull-right">
+                <i class="fa fa-plus"></i> Add New Team
+            </a>
+        </div>
+    </section>
 {% endblock %}

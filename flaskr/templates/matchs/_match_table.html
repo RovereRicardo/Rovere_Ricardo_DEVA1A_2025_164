@@ -23,79 +23,75 @@
     </thead>
     <tbody>
     {% for player in players %}
-    <tr class="player-row" data-player-id="{{ player.id_player }}">
-        <td> {{ player.name }}</td>
-        <td>
-            <span id="minutes_{{ player.id_player }}">00</span>:
-            <span id="seconds_{{ player.id_player }}">00</span>
-            <form action="{{ url_for('match.update_status') }}" method="POST">
-                <!-- <button class="btn btn-success button-start" name="subIn" value="in" data-player-id="{{ player.id_player }}">In
+        <tr class="player-row" data-player-id="{{ player.id_player }}">
+            <td> {{ player.name }}</td>
+            <td>
+                <span id="minutes_{{ player.id_player }}">00</span>:
+                <span id="seconds_{{ player.id_player }}">00</span>
+                <form action="{{ url_for('match.update_status') }}" method="POST">
+                    <!-- <button class="btn btn-success button-start" name="subIn" value="in" data-player-id="{{ player.id_player }}">In
                  </button> -->
-                <input type="hidden" name="idPlayer" value="{{ player.id_player }}">
-                <input type="hidden" name="id_match" value="{{ match_id }}">
-                <button class="btn btn-danger button-stop" name="subOut" value="out"
-                        data-player-id="{{ player.id_player }}">Out
-                </button>
-            </form>
-        </td>
-        <td>{{ Stats.get_player_points(player.id_player, match_id)['total_points'] }}
-        </td>
+                    <input type="hidden" name="idPlayer" value="{{ player.id_player }}">
+                    <input type="hidden" name="id_match" value="{{ match_id }}">
+                    <button class="btn btn-danger button-stop" name="subOut" value="out"
+                            data-player-id="{{ player.id_player }}">Out
+                    </button>
+                </form>
+            </td>
+            <td>{{ Stats.get_player_points(player.id_player, match_id)['total_points'] }}
+            </td>
 
-        <td>
-            <button class="btn btn-success" name="LF" value="1" onclick="registerStats(this)">+1</button>
-            <button class="btn btn-danger" name="LF_Miss" value="1" onclick="registerStats(this)">-1</button>
-        </td>
-        <td>{{ Stats.get_player_lf(player.id_player, match_id)['total_LFMade'] }}
-            / {{ Stats.get_player_total_lf(player.id_player, match_id) }}
-        </td>
-        <td> {{ Stats.get_player_lf_percent(player.id_player, match_id) }}%</td>
+            <td>
+                <button class="btn btn-success" name="LF" value="1" onclick="registerStats(this)">+1</button>
+                <button class="btn btn-danger" name="LF_Miss" value="1" onclick="registerStats(this)">-1</button>
+            </td>
+            <td>{{ Stats.get_player_lf(player.id_player, match_id)['total_LFMade'] }}
+                / {{ Stats.get_player_total_lf(player.id_player, match_id) }}
+            </td>
+            <td> {{ Stats.get_player_lf_percent(player.id_player, match_id) }}%</td>
 
-        <td>
-            <button class="btn btn-success" name="2PT" value="2" onclick="registerStats(this)">+2PT</button>
-            <button class="btn btn-danger" name="2PT_Miss" value="1" onclick="registerStats(this)">-2PT</button>
-        </td>
-        <td>{{ Stats.get_player_2pt_made(player.id_player, match_id)['total_2pt_made'] }}/{{
-            Stats.get_player_2pt_total(player.id_player, match_id)}}
-        </td>
-        <td>{{ Stats.get_player_2pt_percent(player.id_player, match_id) }}%</td>
+            <td>
+                <button class="btn btn-success" name="2PT" value="2" onclick="registerStats(this)">+2PT</button>
+                <button class="btn btn-danger" name="2PT_Miss" value="1" onclick="registerStats(this)">-2PT</button>
+            </td>
+            <td>{{ Stats.get_player_2pt_made(player.id_player, match_id)['total_2pt_made'] }}/{{ Stats.get_player_2pt_total(player.id_player, match_id) }}
+            </td>
+            <td>{{ Stats.get_player_2pt_percent(player.id_player, match_id) }}%</td>
 
-        <td>
-            <button class="btn btn-success" name="3PT" value="3" onclick="registerStats(this)">+3PT</button>
-            <button class="btn btn-danger" name="3PT_Miss" value="1" onclick="registerStats(this)">-3PT</button>
-        </td>
-        <td>{{ Stats.get_player_3pt_made(player.id_player, match_id)['total_3pt_made']}}/{{
-            Stats.get_player_3pt_total(player.id_player, match_id) }}
-        </td>
-        <td>{{ Stats.get_player_3pt_percent(player.id_player, match_id) }}%</td>
+            <td>
+                <button class="btn btn-success" name="3PT" value="3" onclick="registerStats(this)">+3PT</button>
+                <button class="btn btn-danger" name="3PT_Miss" value="1" onclick="registerStats(this)">-3PT</button>
+            </td>
+            <td>{{ Stats.get_player_3pt_made(player.id_player, match_id)['total_3pt_made'] }}/{{ Stats.get_player_3pt_total(player.id_player, match_id) }}
+            </td>
+            <td>{{ Stats.get_player_3pt_percent(player.id_player, match_id) }}%</td>
 
-        <td> {{ Stats.get_player_offensive_rebounds(player.id_player, match_id)['total_offensive'] |
-            default(0, true)
-            }}
-            <br>
-            <button class="btn btn-success" name="OReb" value="1" onclick="registerStats(this)">+OReb</button>
-        </td>
-        <td> {{ Stats.get_player_defensive_rebounds(player.id_player, match_id)['total_defensive'] |
-            default(0, true)
-            }}
-            <br>
-            <button class="btn btn-success" name="DReb" value="1" onclick="registerStats(this)">+DReb</button>
-        </td>
-        <td>{{ Stats.get_player_total_rebounds(player.id_player, match_id)['total_rebs'] | default(0,
+            <td> {{ Stats.get_player_offensive_rebounds(player.id_player, match_id)['total_offensive'] |
+            default(0, true) }}
+                <br>
+                <button class="btn btn-success" name="OReb" value="1" onclick="registerStats(this)">+OReb</button>
+            </td>
+            <td> {{ Stats.get_player_defensive_rebounds(player.id_player, match_id)['total_defensive'] |
+            default(0, true) }}
+                <br>
+                <button class="btn btn-success" name="DReb" value="1" onclick="registerStats(this)">+DReb</button>
+            </td>
+            <td>{{ Stats.get_player_total_rebounds(player.id_player, match_id)['total_rebs'] | default(0,
             true) }}
-        </td>
+            </td>
 
-        <td>{{ Stats.get_player_turnovers(player.id_player, match_id)['turnovers'] | default(0, true)
-            }}
-            <br>
-            <button class="btn btn-warning" name="TO" value="1" onclick="registerStats(this)">+TO</button>
-        </td>
-        <td>{{ Stats.get_player_fouls(player.id_player, match_id)['fouls'] | default(0, true) }}
-            <br>
-            <button class="btn btn-danger" name="Fouls" value="1" onclick="registerStats(this)">+Foul</button>
-        </td>
-        <td>+/-</td>
-    </tr>
+            <td>{{ Stats.get_player_turnovers(player.id_player, match_id)['turnovers'] | default(0, true) }}
+                <br>
+                <button class="btn btn-warning" name="TO" value="1" onclick="registerStats(this)">+TO</button>
+            </td>
+            <td>{{ Stats.get_player_fouls(player.id_player, match_id)['fouls'] | default(0, true) }}
+                <br>
+                <button class="btn btn-danger" name="Fouls" value="1" onclick="registerStats(this)">+Foul</button>
+            </td>
+            <td>+/-</td>
+        </tr>
     {% endfor %}
+<<<<<<< HEAD
     <tr>
         <td>Total</td>
         <td>Time</td>
@@ -127,5 +123,33 @@
         <td>{{ Total.get_total_fouls(match_id, team_id)[0]['fouls'] }}</td>
         <td><?= "+/-" ?></td>
     </tr>
+=======
+        <tr data-match-id="{{ match_id }}">
+            <td>Total</td>
+            <td>Time</td>
+            <td>{{ Total.get_total_points(match_id , team_id) }}</td>
+            <td>{{ Total.get_total_lf_points(match_id, team_id)[0]['total_points'] | default(0, true) }}</td>
+            <td>{{ Total.get_total_lf_points(match_id, team_id)[0]['total_points'] | default(0, true) }}
+                / {{ Total.get_total_lf(match_id, team_id) | default(0, true) }}
+            </td>
+            <td>{{ Total.get_total_lf_percent(match_id, team_id) }}%</td>
+            <td>{{ Total.get_total_2pts(match_id, team_id)[0]['total_points'] }}</td>
+            <td> {{ Total.get_total_2pts_made(match_id, team_id)[0]['total_points'] }} /
+                {{ Total.get_total_2pt_attempts(match_id, team_id) }}
+            </td>
+            <td>{{ Total.get_total_2pt_percent(match_id, team_id) }} %</td>
+            <td>{{ Total.get_total_3pt(match_id, team_id)[0]['total_points'] | default(0, true) }}</td>
+            <td> {{ Total.get_total_3pts_made(match_id, team_id)[0]['total_points'] | default(0,true) }}
+                / {{ Total.get_total_3pt_attempts(match_id, team_id) | default(0, true) }}
+            </td>
+            <td>{{ Total.get_total_3pt_percent(match_id, team_id) }}%</td>
+            <td>{{ Total.get_total_offensive_rebounds(match_id, team_id)[0]['total_points'] }}</td>
+            <td>{{ Total.get_total_defensive_rebounds(match_id, team_id)[0]['total_points'] }}</td>
+            <td>{{ Total.get_total_rebounds(match_id, team_id) }}</td>
+            <td>{{ Total.get_total_turnovers(match_id, team_id)[0]['turnovers'] }}</td>
+            <td>{{ Total.get_total_fouls(match_id, team_id)[0]['fouls'] }}</td>
+            <td><?= "+/-" ?></td>
+        </tr>
+>>>>>>> db3070aa886796571015395110f0d0cd5477f299
     </tbody>
 </table>

@@ -192,5 +192,20 @@ def view_match_table_ajax():
     players = Matchs.get_players_playing(id_match, id_team)
     # print(players)
 
-    return render_template('matchs/_match_table.html', Total=Total, Stats=Stats, match_id=id_match, players=players,
+    return render_template('matchs/_match_table.html', match=match, Total=Total, Stats=Stats, match_id=id_match, players=players,
                            team_id=id_team)
+
+@match.route('/view_match_end_game', methods=['GET', 'POST'])
+def view_match_end_game():
+    id_match = request.form.get('idMatch')
+    match_data = Matchs.get_match_by_id(id_match)
+
+    if not match_data:
+        flash("Match does not exist.", "danger")
+        return redirect(url_for('match.view_match', id_match=id_match))
+
+    match = Matchs(**match_data)
+
+    match.end_game(id_match)
+
+    return redirect(url_for('match.view_match', id_match=id_match, match=match))

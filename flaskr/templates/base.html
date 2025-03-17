@@ -2,171 +2,173 @@
 <html lang="en-us">
 <head>
     {% block head %}
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{% endblock %}</title>
-    <link rel="stylesheet" href="../static/style.css">
-    <link rel="stylesheet" href="../static/bootstrap.min.css">
-    <link rel="stylesheet" href="../static/font-awesome-4.7.0/css/font-awesome.min.css">
-    <script>
-        window.onload = function () {
-            var timers = {}; // Store timers for each player
-            var matchTimer = {minutes: 0, seconds: 0, interval: null, running: false};
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}{% endblock %}</title>
+        <link rel="stylesheet" href="../static/style.css">
+        <link rel="stylesheet" href="../static/bootstrap.min.css">
+        <link rel="stylesheet" href="../static/font-awesome-4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
-            function startMatchTimer() {
-                if (!matchTimer.running) {
-                    matchTimer.running = true;
-                    matchTimer.interval = setInterval(() => {
-                        matchTimer.seconds++;
-                        if (matchTimer.seconds > 59) {
-                            matchTimer.minutes++;
-                            matchTimer.seconds = 0;
-                        }
+        <script>
+            window.onload = function () {
+                var timers = {}; // Store timers for each player
+                var matchTimer = {minutes: 0, seconds: 0, interval: null, running: false};
 
-                        // Save match time in localStorage
-                        localStorage.setItem("match_timer", matchTimer.minutes.toString().padStart(2, "0") + ":" + matchTimer.seconds.toString().padStart(2, "0"));
+                function startMatchTimer() {
+                    if (!matchTimer.running) {
+                        matchTimer.running = true;
+                        matchTimer.interval = setInterval(() => {
+                            matchTimer.seconds++;
+                            if (matchTimer.seconds > 59) {
+                                matchTimer.minutes++;
+                                matchTimer.seconds = 0;
+                            }
 
-                        // Update UI
-                        document.getElementById("minutes_").innerHTML = matchTimer.minutes.toString().padStart(2, "0");
-                        document.getElementById("seconds_").innerHTML = matchTimer.seconds.toString().padStart(2, "0");
+                            // Save match time in localStorage
+                            localStorage.setItem("match_timer", matchTimer.minutes.toString().padStart(2, "0") + ":" + matchTimer.seconds.toString().padStart(2, "0"));
 
-                    }, 1000);
+                            // Update UI
+                            document.getElementById("minutes_").innerHTML = matchTimer.minutes.toString().padStart(2, "0");
+                            document.getElementById("seconds_").innerHTML = matchTimer.seconds.toString().padStart(2, "0");
 
-                    // Start all player timers when match timer starts
-                    document.querySelectorAll(".player-row").forEach(row => {
-                        let playerID = row.getAttribute("data-player-id");
-                        startTimer(playerID);
-                    });
-                }
-            }
+                        }, 1000);
 
-            function pauseMatchTimer() {
-                if (matchTimer.running) {
-                    clearInterval(matchTimer.interval);
-                    matchTimer.running = false;
-
-                    // Stop all player timers when match timer stops
-                    document.querySelectorAll(".player-row").forEach(row => {
-                        let playerID = row.getAttribute("data-player-id");
-                        stopTimer(playerID);
-                    });
-                }
-            }
-
-            function startTimer(playerID) {
-                let appendMins = document.getElementById("minutes_" + playerID);
-                let appendSecs = document.getElementById("seconds_" + playerID);
-
-                if (!timers[playerID]) {
-                    timers[playerID] = {minutes: 0, seconds: 0, interval: null};
+                        // Start all player timers when match timer starts
+                        document.querySelectorAll(".player-row").forEach(row => {
+                            let playerID = row.getAttribute("data-player-id");
+                            startTimer(playerID);
+                        });
+                    }
                 }
 
-                // Get saved time from localStorage (default to "00:00" if empty)
-                let savedTime = localStorage.getItem("timer_" + playerID) || "00:00";
-                let [savedMinutes, savedSeconds] = savedTime.split(":").map(Number);
+                function pauseMatchTimer() {
+                    if (matchTimer.running) {
+                        clearInterval(matchTimer.interval);
+                        matchTimer.running = false;
 
-                if (isNaN(savedMinutes) || isNaN(savedSeconds)) {
-                    savedMinutes = 0;
-                    savedSeconds = 0;
+                        // Stop all player timers when match timer stops
+                        document.querySelectorAll(".player-row").forEach(row => {
+                            let playerID = row.getAttribute("data-player-id");
+                            stopTimer(playerID);
+                        });
+                    }
                 }
 
-                // Set initial saved time to the player jf it was started
-                timers[playerID].minutes = savedMinutes;
-                timers[playerID].seconds = savedSeconds;
+                function startTimer(playerID) {
+                    let appendMins = document.getElementById("minutes_" + playerID);
+                    let appendSecs = document.getElementById("seconds_" + playerID);
 
-                // Clear running interval
-                clearInterval(timers[playerID].interval);
-
-                // Start the timer interval for the player
-                timers[playerID].interval = setInterval(function () {
-                    timers[playerID].seconds++;
-                    if (timers[playerID].seconds > 59) {
-                        timers[playerID].minutes++;
-                        timers[playerID].seconds = 0;
+                    if (!timers[playerID]) {
+                        timers[playerID] = {minutes: 0, seconds: 0, interval: null};
                     }
 
-                    // Update localStorage with the current time string
-                    let timeString = timers[playerID].minutes.toString().padStart(2, "0") + ":" + timers[playerID].seconds.toString().padStart(2, "0");
-                    localStorage.setItem("timer_" + playerID, timeString);
-
-                    // Update minutes and seconds
-                    appendMins.innerHTML = timers[playerID].minutes.toString().padStart(2, "0");
-                    appendSecs.innerHTML = timers[playerID].seconds.toString().padStart(2, "0");
-                }, 1000);
-            }
-
-            function stopTimer(playerID) {
-                if (timers[playerID]) {
-                    clearInterval(timers[playerID].interval);
-                    timers[playerID].interval = null;
-                }
-            }
-
-            function loadTimers() {
-
-                // Get from local storage otherwise default 00:00 (match)
-                let matchTime = localStorage.getItem("match_timer") || "00:00";
-                let [matchMinutes, matchSeconds] = matchTime.split(":").map(Number);
-
-                if (isNaN(matchMinutes)) matchMinutes = 0;
-                if (isNaN(matchSeconds)) matchSeconds = 0;
-
-                matchTimer.minutes = matchMinutes;
-                matchTimer.seconds = matchSeconds;
-
-                document.getElementById("minutes_").innerHTML = matchMinutes.toString().padStart(2, "0");
-                document.getElementById("seconds_").innerHTML = matchSeconds.toString().padStart(2, "0");
-
-                document.querySelectorAll(".player-row").forEach(row => {
-                    let playerID = row.getAttribute("data-player-id");
-
-                    // Get from local storage otherwise default 00:00 (players)
+                    // Get saved time from localStorage (default to "00:00" if empty)
                     let savedTime = localStorage.getItem("timer_" + playerID) || "00:00";
                     let [savedMinutes, savedSeconds] = savedTime.split(":").map(Number);
 
-                    if (isNaN(savedMinutes)) savedMinutes = 0;
-                    if (isNaN(savedSeconds)) savedSeconds = 0;
+                    if (isNaN(savedMinutes) || isNaN(savedSeconds)) {
+                        savedMinutes = 0;
+                        savedSeconds = 0;
+                    }
 
-                    document.getElementById("minutes_" + playerID).innerHTML = savedMinutes.toString().padStart(2, "0");
-                    document.getElementById("seconds_" + playerID).innerHTML = savedSeconds.toString().padStart(2, "0");
-                });
-            }
+                    // Set initial saved time to the player jf it was started
+                    timers[playerID].minutes = savedMinutes;
+                    timers[playerID].seconds = savedSeconds;
 
-            // Event listeners for match timer
-            document.querySelector(".players-section .button-start").addEventListener("click", startMatchTimer);
-            document.querySelector(".players-section .button-stop").addEventListener("click", pauseMatchTimer);
+                    // Clear running interval
+                    clearInterval(timers[playerID].interval);
 
-            // Load timers on page refresh
-            loadTimers();
-        };
-    </script>
+                    // Start the timer interval for the player
+                    timers[playerID].interval = setInterval(function () {
+                        timers[playerID].seconds++;
+                        if (timers[playerID].seconds > 59) {
+                            timers[playerID].minutes++;
+                            timers[playerID].seconds = 0;
+                        }
+
+                        // Update localStorage with the current time string
+                        let timeString = timers[playerID].minutes.toString().padStart(2, "0") + ":" + timers[playerID].seconds.toString().padStart(2, "0");
+                        localStorage.setItem("timer_" + playerID, timeString);
+
+                        // Update minutes and seconds
+                        appendMins.innerHTML = timers[playerID].minutes.toString().padStart(2, "0");
+                        appendSecs.innerHTML = timers[playerID].seconds.toString().padStart(2, "0");
+                    }, 1000);
+                }
+
+                function stopTimer(playerID) {
+                    if (timers[playerID]) {
+                        clearInterval(timers[playerID].interval);
+                        timers[playerID].interval = null;
+                    }
+                }
+
+                function loadTimers() {
+
+                    // Get from local storage otherwise default 00:00 (match)
+                    let matchTime = localStorage.getItem("match_timer") || "00:00";
+                    let [matchMinutes, matchSeconds] = matchTime.split(":").map(Number);
+
+                    if (isNaN(matchMinutes)) matchMinutes = 0;
+                    if (isNaN(matchSeconds)) matchSeconds = 0;
+
+                    matchTimer.minutes = matchMinutes;
+                    matchTimer.seconds = matchSeconds;
+
+                    document.getElementById("minutes_").innerHTML = matchMinutes.toString().padStart(2, "0");
+                    document.getElementById("seconds_").innerHTML = matchSeconds.toString().padStart(2, "0");
+
+                    document.querySelectorAll(".player-row").forEach(row => {
+                        let playerID = row.getAttribute("data-player-id");
+
+                        // Get from local storage otherwise default 00:00 (players)
+                        let savedTime = localStorage.getItem("timer_" + playerID) || "00:00";
+                        let [savedMinutes, savedSeconds] = savedTime.split(":").map(Number);
+
+                        if (isNaN(savedMinutes)) savedMinutes = 0;
+                        if (isNaN(savedSeconds)) savedSeconds = 0;
+
+                        document.getElementById("minutes_" + playerID).innerHTML = savedMinutes.toString().padStart(2, "0");
+                        document.getElementById("seconds_" + playerID).innerHTML = savedSeconds.toString().padStart(2, "0");
+                    });
+                }
+
+                // Event listeners for match timer
+                document.querySelector(".players-section .button-start").addEventListener("click", startMatchTimer);
+                document.querySelector(".players-section .button-stop").addEventListener("click", pauseMatchTimer);
+
+                // Load timers on page refresh
+                loadTimers();
+            };
+        </script>
     {% endblock %}
 </head>
 <body>
 <header>
     {% block header %}
-    <h1>BasketStats Tracker</h1>
-    {% if session.username %}
-    <h4>Welcome {{ session.username }}</h4>
-    <form action="{{ url_for('user.logout') }}" method="POST">
-        <button type="submit" class="btn btn-danger">Logout</button>
-    </form>
-    {% else %}
-    <a href="{{ url_for('user.login') }}" class="btn btn-success">Login</a>
-    <a href="{{ url_for('user.register') }}" class="btn btn-info">Signup</a>
-    {% endif %}
+        <h1>BasketStats Tracker</h1>
+        {% if session.username %}
+            <h4>Welcome {{ session.username }}</h4>
+            <form action="{{ url_for('user.logout') }}" method="POST">
+                <button type="submit" class="btn btn-danger">Logout</button>
+            </form>
+        {% else %}
+            <a href="{{ url_for('user.login') }}" class="btn btn-success">Login</a>
+            <a href="{{ url_for('user.register') }}" class="btn btn-info">Signup</a>
+        {% endif %}
     {% endblock %}
 </header>
 <br>
 {% block content %}{% endblock %}
 {% block error %} {% with messages = get_flashed_messages() %}
-{% if messages %}
-<ul class=flashes>
-    {% for message in messages %}
-    <li>{{ message }}</li>
-    {% endfor %}
-</ul>
-{% endif %}
+    {% if messages %}
+        <ul class=flashes>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 {% endwith %}
 {% endblock %}
 

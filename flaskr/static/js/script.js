@@ -15,6 +15,7 @@ function registerStats(button) {
     form.elements["statType"].value = button.name;
     form.elements["statValue"].value = button.value;
 
+
     let formData = new FormData(form);
 
     fetch('/view_match_table_ajax?id_match={{ match.id_match }}', {
@@ -29,30 +30,18 @@ function registerStats(button) {
         .catch(error => console.error('Error:', error));
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("submitScoreButton").addEventListener("click", function () {
-        submitScore(this);
-    });
-});
-
 function submitScore(button) {
     let form = document.getElementById("submitScoreForm");
 
-    // Find the table that the button belongs to
     let row = button.closest("tr");
-    let table = row.closest("table");
-    let matchId = table.getAttribute("data-team-id");
+    let table = button.closest("table");
 
-    // Find the cell with the total points by ID
-    let cell = table.querySelector("#totalPoints");
+    let matchId = row.getAttribute("data-match-id");
+    let teamId = table.getAttribute("data-team-id");
 
-    if (cell) {
-        let totalPoints = cell.textContent.trim();
-        form.elements['homeTeamScore'].value = totalPoints;
-    } else {
-        console.error("Total points cell not found");
-        return;
-    }
+    form.elements["homeScore"].value = button.value;
+    let total = button.value;
+
 
     let formData = new FormData(form);
 
@@ -62,10 +51,9 @@ function submitScore(button) {
     })
         .then(response => response.text())
         .then(data => {
-            console.log('scoredata-table-' + matchId);
-            document.getElementById('scoredata-table-' + matchId).innerHTML = data;
+            console.log(data);
+            document.getElementById('totaldata-' + total).innerHTML = data;
+
         })
         .catch(error => console.error('Error:', error));
-
-    console.log(matchId);
 }

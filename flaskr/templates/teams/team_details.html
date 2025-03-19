@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %} Team {% endblock %}
+{% block content %}
+<section class="players-section">
+<div class="container">
+    <div class="row">
+        <div class="col-lg">
+            <div class="text-lg-left">
+                <!-- if team.picture -->
+                {% if team.team_logo %}
+                <img src="data:image/jpeg;base64,{{ team.team_logo | b64encode }}" alt="{{ team.team_name }}'s image" style="max-width: 500px; max-height:500px">
+                <!-- else -->
+                {% else %}
+                <p>No image available</p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-lg">
+            <h2>Details</h2>
+            <br>
+            <h4><strong>Team</strong></h4>
+            <p>{{ team.team_name }}</p>
+            <h4><strong>Address</strong></h4>
+            <p>{{ team.address }}</p>
+            <h4><strong>City</strong></h4>
+            <p>{{ team.city }}</p>
+            <h4><strong>Coach</strong></h4>
+            <p>Added coach name</p>
+            <h4><strong>Active</strong></h4>
+            <p>Added is active 0 = yes no = 1</p>
+            <a href="{{ url_for('team.view_team', id_team=id_team) }}" class="btn btn-outline-success">Players</a>
+        </div>
+    </div>
+    <!-- if session username -->
+    <!-- button update -->
+    <a href="" class="btn btn-secondary ml-2 pull-right" style="margin-right: 10px">Cancel</a>
+</div>
+</section>
+{% endblock %}

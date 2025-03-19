@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %} BasketStats - Player {% endblock %}
+{% block content %}
+    <section class="players-section">
+        <table class="table table-bordered table-hover">
+            <thead>
+            <tr class="th-custom">
+                <th>Name</th>
+                <th>Number</th>
+                <th>Position</th>
+                <th>Height</th>
+                <th>Birthday</th>
+                <th>Nationality</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody id="players-list">
+            {% for player in players %}
+                <tr>
+                    <td style="display: none">{{ player.id_player }}</td>
+                    <td>{{ player.name }}</td>
+                    <td>{{ player.number }}</td>
+                    <td>{{ player.position }}</td>
+                    <td>{{ player.height }}</td>
+                    <td>{{ player.birthday }}</td>
+                    <td>{{ player.nationality }}</td>
+                    <td>
+                        <a href="{{ url_for('player.view_player', player_id=player.id_player, id_team=player.id_team) }}"
+                           class="mr-3"
+                           title="View Player"><span class="fa fa-eye"></span></a>
+                        {% if username %}
+                            <a href="{{ url_for('player.update_player', player_id=player.id_player) }}"
+                               class="mr-3" title="Update Player">
+                                <span class="fa fa-pencil"></span>
+                            </a>
+                            <form action="{{ url_for('player.delete_player') }}" method="POST" style="display:inline;">
+                                <input type="hidden" name="id_player" value="{{ player.id_player }}">
+                                <input type="hidden" name="id_team" value="{{ team.id_team }}">
+                                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?')">
+                                    <span class="fa fa-trash"></span>
+                                </button>
+                            </form>
+                            </td>
+                        {% endif %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <a href="{{ url_for('index') }}" class="btn btn-secondary ml-0 pull-right">Home</a>
+    </section>
+{% endblock %}

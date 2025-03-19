@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %} BasketStats - Teams {% endblock %}
+{% block content %}
+    <section class="details">
+        <div class="teams-details">
+            <h2>Teams</h2>
+            <table class="table table-bordered table-hover">
+                <thead>
+                <tr class="th-custom">
+                    <th>Team</th>
+                    <th>Points</th>
+                    <th>Wins</th>
+                    <th>Loses</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for team in teams %}
+                    <tr>
+                        <td>{{ team.team_name }}</td>
+                        <td>{{ team.points }}</td>
+                        <td>{{ team.wins }}</td>
+                        <td>{{ team.loses }}</td>
+                        <td>
+                            <a href="{{ url_for('team.team_details', id_team=team.id_team) }}" class="mr-3"
+                               title="View Team">
+                                <span class="fa fa-eye"></span>
+                            </a>
+                            {% if session.username %}
+                                <a href="{{ url_for('team.update_team', id_team=team.id_team) }}" class="mr-3"
+                                   title="Update Team">
+                                    <span class="fa fa-pencil"></span>
+                                </a>
+                                <form action="{{ url_for('team.delete_team') }}" method="POST" style="display:inline;">
+                                    <input type="hidden" name="id_team" value="{{ team.id_team }}">
+                                    <button type="submit" class="btn btn-danger"
+                                            onclick="return confirm('Are you sure?')">
+                                        <span class="fa fa-trash"></span>
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <br>
+            <a href="{{ url_for('index') }}" class="btn btn-secondary ml-0 pull-right">Home</a>
+            <a href="{{ url_for('team.register_team') }} " class="btn btn-success pull-right btn-gap">
+                <i class="fa fa-plus"></i> Add New Team
+            </a>
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %} BasketStats - Ranking {% endblock %}
+{% block content %}
+    <section class="players-section ranking">
+        <div class="col-xl-9">
+            <table class="table table-bordered">
+                <thead>
+                <tr class="th-custom">
+                    <th scope="col">Position</th>
+                    <th scope="col">Team</th>
+                    <th scope="col">Wins</th>
+                    <th scope="col">Loses</th>
+                    <th scope="col">Points</th>
+                    <th scope="col">Games Played</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    {% for team in teams %}
+                        <th scope="row"># {{ loop.index }}</th>
+                        <td>{{ team.team_name }}</td>
+                        <td>{{ team.wins }}</td>
+                        <td>{{ team.loses }}</td>
+                        <td>{{ team.points }}</td>
+                        <td>{{ team.matches_played }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <br>
+            <a href="{{ url_for('index') }}" class="btn btn-secondary ml-0 pull-right">Home</a>
+        </div>
+    </section>
+{% endblock %}

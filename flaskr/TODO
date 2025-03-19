@@ -1,0 +1,23 @@
+Teams -> Edit team after edit not redirecting [[Fixed]]
+Players -> View players to ViewPlayers missing id_team to see player if not logged in. [[Fixed]]
+Players -> Edit player after edit not redirecting [[Fixed]]
+Matches -> Edit matches not redirecting after edit [[Fixed]]
+Rankings -> Order by points
+navbar -> matches [[Fixed]]
+PlayersView -> Teams not showing
+Teams -> Have a Team Page with the information's of the team instead of showing the players right away.
+
+
+Ranking page -> Team --- Points --- Wins --- Loses --- Games Played [[Done]]
+
+Tables --> align text to center
+Remote Draws from database and app[[Fixed]]
+Add games played ? [[Fixed]]
+matches view 3ptA for players not counting [[Fixed]]
+
+RegisterForm -> change teamlogo field
+Players --> img not uploading to database
+Teams --> img not uploading to database
+Players --> add update img field to form
+style --> logo and picture from players and teams
+

@@ -29,47 +29,18 @@ def create_app():
 
     @app.route("/")
     def index():
+        # Ensure the connection is open
+        global connection
+        if not connection.open:
+            connection.ping(reconnect=True)
+
         # Ensure the correct database is selected
         db_name = os.getenv("NAME_BD_MYSQL")
         connection.select_db(db_name)
 
-        try:
-            # First cursor for matches
-            cursorM = connection.cursor()
-            cursorM.execute("""
-                SELECT 
-                    m.id_match, m.id_home_team, m.id_away_team, 
-                    home_team.team_name AS home_team, 
-                    away_team.team_name AS away_team, 
-                    m.date_match, m.home_score, m.away_score 
-                FROM t_match m 
-                JOIN t_team home_team ON m.id_home_team = home_team.id_team 
-                JOIN t_team away_team ON m.id_away_team = away_team.id_team 
-                WHERE m.is_deleted = 0
-                ORDER BY m.date_match ASC
-            """)
-            matches = cursorM.fetchall()
-            column_namesM = [desc[0] for desc in cursorM.description]
-            cursorM.close()
+        username = session.get('username')  # Get username from session
 
-            # Second cursor for teams
-            cursorT = connection.cursor()
-            cursorT.execute("SELECT * FROM t_team WHERE is_deleted = 0")
-            teams = cursorT.fetchall()
-            column_namesT = [desc[0] for desc in cursorT.description]
-            cursorT.close()
-
-            # Convert tuples to dictionaries
-            matches = [dict(zip(column_namesM, match)) for match in matches]
-            teams = [dict(zip(column_namesT, team)) for team in teams]
-
-            username = session.get('username')  # Get username from session
-
-            return render_template("index.html", matches=matches, teams=teams, username=username)
-
-        except pymysql.MySQLError as e:
-            return f"Database error: {str(e)}", 500
-
+        return render_template("index.html", username=username)
 
     @app.template_filter('b64encode')
     def b64encode_filter(data):

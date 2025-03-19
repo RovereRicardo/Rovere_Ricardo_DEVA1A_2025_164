@@ -11,19 +11,23 @@ def register_team():
     form = RegisterTeamForm(request.form)
     form.id_user.data = session.get('id_user')
     if request.method == 'POST' and form.validate():
+        picture = request.files['team_logo']
+
+        if picture:
+            picture_data = picture.read()
+        else:
+            picture_data = None
 
         if not form.team_name.data:
             flash("Team Name is required.", "danger")
             return redirect(url_for('team.register_team'))
 
-        new_team = Team(None, form.team_name.data, form.team_logo.data, form.address.data, form.city.data, form.wins.data, form.loses.data, form.draws.data, form.points.data, form.id_user.data) # Create team object
+        new_team = Team(None, form.team_name.data, picture_data, form.address.data, form.city.data, form.wins.data, form.loses.data, None, form.points.data, form.id_user.data,None) # Create team object
         new_team.register_team() # Call register function
 
         flash("Team Registered!", "success")
         return redirect(url_for('index'))
     return render_template('/teams/register_team.html', form=form)
-
-
 
 @team.route('/teams/delete_team', methods=['POST'])
 def delete_team():
@@ -37,7 +41,7 @@ def delete_team():
         team_data = Team.get_by_id(form.id_team.data)
         if not team_data:
             flash("Team does not exist.", "danger")
-            return redirect(url_for('index'))
+            return redirect(url_for('team.view_teams'))
 
         team = Team(**team_data)
 
@@ -48,10 +52,11 @@ def delete_team():
             flash("You are not the coach of this team.", "danger")
     except Exception as e:
         flash(f"Error deleting team: {str(e)}", "danger")
-    return redirect(url_for('index', form=form))
+    return redirect(url_for('team.view_teams', form=form))
 
-@team.route("/update/<int:id_team>", methods=["GET", "POST"])
-def update_team(id_team):
+@team.route("/update", methods=["GET", "POST"])
+def update_team():
+    id_team = request.args.get("id_team")
     form = EditTeamForm(request.form)
     team_data = Team.get_by_id(id_team)
     if not team_data:
@@ -67,27 +72,33 @@ def update_team(id_team):
         form.city.data = team.city
         form.wins.data = team.wins
         form.loses.data = team.loses
-        form.draws.data = team.draws
         form.points.data = team.points
 
     if request.method == "POST" and form.validate():
+        picture = request.files['team_logo']
+        if picture:
+            picture_data = picture.read()
+        else:
+            picture_data = None
+
         team.team_name = form.team_name.data
-        team.team_logo = form.team_logo.data
+        team.team_logo = picture_data
         team.address = form.address.data
         team.city = form.city.data
         team.wins = form.wins.data
         team.loses = form.loses.data
-        team.draws = form.draws.data
         team.points = form.points.data
+
 
         team.update_team()  # Call the update_team method
         flash("Team Updated!", "success")
-        return redirect(url_for("index"))
+        return redirect(url_for("team.view_teams"))
 
     return render_template("teams/update_team.html", team=team, form=form)
 
-@team.route('/view_team/<int:id_team>', methods=('GET', 'POST'))
-def view_team(id_team):
+@team.route('/view_team', methods=('GET', 'POST'))
+def view_team():
+    id_team = request.args.get("id_team")
     team_data = Team.get_by_id(id_team)
 
     if not team_data:
@@ -101,3 +112,27 @@ def view_team(id_team):
     players = [Player(**player_data) for player_data in player_data_list] # Create a list of players from player_data in player_data_list
 
     return render_template('/teams/view_team.html', team=team, username=session.get('username'), players=players)
+
+@team.route('/teams', methods=('GET', 'POST'))
+def view_teams():
+    teams = Team.get_all_teams(Team)
+
+    return render_template('/teams/teams.html', teams=teams)
+
+@team.route('/ranking', methods=('GET', 'POST'))
+def ranking():
+    teams = Team.get_all_teams(Team)
+    return render_template('/teams/ranking.html', teams=teams, position=1)
+
+@team.route('/team_details', methods=('GET', 'POST'))
+def team_details():
+    id_team = request.args.get('id_team')
+    team_data = Team.get_by_id(id_team)
+
+    if not team_data:
+        flash("Team not found.", "danger")
+        return redirect(url_for('index'))
+
+    team = Team(**team_data)
+
+    return render_template('/teams/team_details.html', id_team=id_team, team=team)

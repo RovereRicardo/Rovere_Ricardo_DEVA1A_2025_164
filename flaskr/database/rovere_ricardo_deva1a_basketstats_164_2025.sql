@@ -559,12 +559,12 @@ CREATE TABLE `t_team`
 (
     `id_team`          int(11) NOT NULL,
     `team_name`        varchar(50) NOT NULL,
-    `team_logo`        int(11) DEFAULT NULL,
+    `team_logo`        mediumblob,
     `address`          varchar(100) DEFAULT NULL,
     `city`             varchar(100) DEFAULT NULL,
     `wins`             int(11) DEFAULT NULL,
     `loses`            int(11) DEFAULT NULL,
-    `draws`            int(11) DEFAULT NULL,
+    `matches_played`   int(11) DEFAULT NULL,
     `points`           int(11) DEFAULT NULL,
     `id_coach_creator` int(11) DEFAULT NULL,
     `is_deleted`       tinyint(1) DEFAULT 0
@@ -574,11 +574,11 @@ CREATE TABLE `t_team`
 -- Dumping data for table `t_team`
 --
 
-INSERT INTO `t_team` (`id_team`, `team_name`, `team_logo`, `address`, `city`, `wins`, `loses`, `draws`, `points`,
+INSERT INTO `t_team` (`id_team`, `team_name`, `team_logo`, `address`, `city`, `wins`, `loses`, `matches_played`, `points`,
                       `id_coach_creator`)
-VALUES (70, 'Bulle', 1, 'Bulle', 'Bulle', 6, 1, 0, 13, 18),
-       (71, 'Sarine', 1, 'Sarine', 'Sarine', 2, 0, 0, 4, 18),
-       (72, 'Veveyse', 1, 'Veveyse', 'Veveyse', 2, 3, 0, 7, 18);
+VALUES (70, 'Bulle', 1, 'Bulle', 'Bulle', 0, 0, 0, 0, 18),
+       (71, 'Sarine', 1, 'Sarine', 'Sarine', 0, 0, 0, 0, 18),
+       (72, 'Veveyse', 1, 'Veveyse', 'Veveyse', 0, 0, 0, 0, 18);
 
 -- --------------------------------------------------------
 

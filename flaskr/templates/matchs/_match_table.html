@@ -1,6 +1,6 @@
 <table class="table table-bordered table-hover" data-team-id="{{ team_id }}">
     <thead>
-    <tr>
+    <tr class="th-custom">
         <th>Player</th>
         <th>Min</th>
         <th>PTS</th>
@@ -91,7 +91,6 @@
             <td>+/-</td>
         </tr>
     {% endfor %}
-<<<<<<< HEAD
     <tr>
         <td>Total</td>
         <td>Time</td>
@@ -123,33 +122,5 @@
         <td>{{ Total.get_total_fouls(match_id, team_id)[0]['fouls'] }}</td>
         <td><?= "+/-" ?></td>
     </tr>
-=======
-        <tr data-match-id="{{ match_id }}">
-            <td>Total</td>
-            <td>Time</td>
-            <td>{{ Total.get_total_points(match_id , team_id) }}</td>
-            <td>{{ Total.get_total_lf_points(match_id, team_id)[0]['total_points'] | default(0, true) }}</td>
-            <td>{{ Total.get_total_lf_points(match_id, team_id)[0]['total_points'] | default(0, true) }}
-                / {{ Total.get_total_lf(match_id, team_id) | default(0, true) }}
-            </td>
-            <td>{{ Total.get_total_lf_percent(match_id, team_id) }}%</td>
-            <td>{{ Total.get_total_2pts(match_id, team_id)[0]['total_points'] }}</td>
-            <td> {{ Total.get_total_2pts_made(match_id, team_id)[0]['total_points'] }} /
-                {{ Total.get_total_2pt_attempts(match_id, team_id) }}
-            </td>
-            <td>{{ Total.get_total_2pt_percent(match_id, team_id) }} %</td>
-            <td>{{ Total.get_total_3pt(match_id, team_id)[0]['total_points'] | default(0, true) }}</td>
-            <td> {{ Total.get_total_3pts_made(match_id, team_id)[0]['total_points'] | default(0,true) }}
-                / {{ Total.get_total_3pt_attempts(match_id, team_id) | default(0, true) }}
-            </td>
-            <td>{{ Total.get_total_3pt_percent(match_id, team_id) }}%</td>
-            <td>{{ Total.get_total_offensive_rebounds(match_id, team_id)[0]['total_points'] }}</td>
-            <td>{{ Total.get_total_defensive_rebounds(match_id, team_id)[0]['total_points'] }}</td>
-            <td>{{ Total.get_total_rebounds(match_id, team_id) }}</td>
-            <td>{{ Total.get_total_turnovers(match_id, team_id)[0]['turnovers'] }}</td>
-            <td>{{ Total.get_total_fouls(match_id, team_id)[0]['fouls'] }}</td>
-            <td><?= "+/-" ?></td>
-        </tr>
->>>>>>> db3070aa886796571015395110f0d0cd5477f299
     </tbody>
 </table>

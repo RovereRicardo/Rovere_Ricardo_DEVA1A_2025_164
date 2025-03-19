@@ -11,14 +11,16 @@ player = Blueprint('player', __name__)
 def register_player():
     form = RegisterPlayerForm(request.form)
     if request.method == 'POST' and form.validate():
-        picture = form.picture.data
+        picture = request.files['picture']
 
         id_team = request.args.get('id_team')
 
         if picture:
             picture_data = picture.read()  # Read the file content as binary data
+            print("Done", picture_data) #Debug
         else:
             picture_data = None  # If no picture is uploaded, set to None
+            print("No picture") #Debug
 
         if not form.name.data:
             flash('Player name is required.', 'danger')
@@ -123,3 +125,8 @@ def view_player():
 
     return render_template("players/view_player.html", username=session.get('username'), player=player, id_team=id_team, team=team)
 
+@player.route('/players', methods=['GET', 'POST'])
+def view_all_players():
+    players = Player.get_all_players(Player)
+
+    return render_template('/players/players.html', players=players, )

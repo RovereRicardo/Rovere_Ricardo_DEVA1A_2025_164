@@ -1,9 +1,11 @@
+import pymysql
+
 from flaskr.database.db import connection
 
 
 class Player:
     def __init__(self, name, family_name, picture, number, position, position_name, height, birthday, nationality,
-                 id_player=None, is_deleted=None):
+                 id_player=None, is_deleted=None, id_team=None):
         self.id_player = id_player
         self.name = name
         self.family_name = family_name
@@ -15,6 +17,7 @@ class Player:
         self.birthday = birthday
         self.nationality = nationality
         self.is_deleted = is_deleted
+        self.id_team = id_team
 
     @staticmethod
     def get_by_team(id_team):
@@ -89,3 +92,16 @@ class Player:
         player = dict(zip(column_names, player))
         cursor.close()
         return player
+
+    @staticmethod
+    def get_all_players(self):
+        cursor = connection.cursor()
+        cursor.execute(
+            "SELECT p.*, t.id_team FROM t_player p JOIN t_team_player tp ON p.id_player = tp.id_player_team JOIN t_team t ON tp.id_team_player = t.id_team WHERE p.is_deleted = 0",
+        )
+        players = cursor.fetchall()
+        cursor.close()
+        column_names = [desc[0] for desc in cursor.description]
+        players = [dict(zip(column_names, player)) for player in players]
+
+        return players

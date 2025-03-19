@@ -157,12 +157,12 @@ class Stats:
     def get_player_3pt_miss(id_player, id_match):
         cursor = connection.cursor()
         cursor.execute(
-            "SELECT COUNT(value) as total_3PT_Miss FROM t_stats WHERE id_player = %s AND id_match = %s AND id_stat_type IN (9)",
+            "SELECT COUNT(value) as total_3PT_Miss FROM t_stats WHERE id_player = %s AND id_match = %s AND id_stat_type IN (11)",
             (id_player, id_match)
         )
         points = cursor.fetchone()
         cursor.close()
-        return {'total_3pt_miss': points[0] if points and points[0] is not None else 0}
+        return {'total_3PT_Miss': points[0] if points and points[0] is not None else 0}
 
     @staticmethod
     def get_player_3pt_made(id_player, id_match):
@@ -179,7 +179,7 @@ class Stats:
     def get_player_3pt_total(id_player, id_match):
         made = Stats.get_player_3pt_made(id_player, id_match)
         missed = Stats.get_player_3pt_miss(id_player, id_match)
-        total_made = made['total_3pt_made'] + missed['total_3pt_miss']
+        total_made = made['total_3pt_made'] + missed['total_3PT_Miss']
         return total_made
 
     @staticmethod

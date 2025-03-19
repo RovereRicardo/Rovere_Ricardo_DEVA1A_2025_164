@@ -1,8 +1,9 @@
 from flask import render_template, session
+
 from flaskr.database.db import connection
 
 class Team:
-    def __init__(self, id_team, team_name, team_logo, address, city, wins, loses, draws, points, id_coach_creator, is_deleted=None):
+    def __init__(self, id_team, team_name, team_logo, address, city, wins, loses, matches_played, points, id_coach_creator, is_deleted=None):
         self.id_team = id_team
         self.team_name = team_name
         self.team_logo = team_logo
@@ -10,7 +11,7 @@ class Team:
         self.city = city
         self.wins = wins
         self.loses = loses
-        self.draws = draws
+        self.matches_played = matches_played
         self.points = points
         self.id_coach_creator = id_coach_creator
         self.is_deleted = is_deleted
@@ -18,8 +19,8 @@ class Team:
     def register_team(self):
         cursor = connection.cursor()
         cursor.execute(
-            "INSERT INTO t_team (team_name, team_logo, address, city, wins, loses, draws, points, id_coach_creator) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
-            (self.team_name, self.team_logo, self.address, self.city, self.wins, self.loses, self.draws, self.points, self.id_coach_creator))
+            "INSERT INTO t_team (team_name, team_logo, address, city, wins, loses, matches_played, points, id_coach_creator) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
+            (self.team_name, self.team_logo, self.address, self.city, self.wins, self.loses, self.matches_played, self.points, self.id_coach_creator))
         connection.commit()
         cursor.close()
 
@@ -35,8 +36,8 @@ class Team:
     def update_team(self):
         cursor = connection.cursor()
         cursor.execute(
-            "UPDATE t_team SET team_name=%s, team_logo=%s, address=%s, city=%s, wins=%s, loses=%s, draws=%s, points=%s WHERE id_team=%s",
-            (self.team_name, self.team_logo, self.address, self.city, self.wins, self.loses, self.draws, self.points, self.id_team))
+            "UPDATE t_team SET team_name=%s, team_logo=%s, address=%s, city=%s, wins=%s, loses=%s, points=%s WHERE id_team=%s",
+            (self.team_name, self.team_logo, self.address, self.city, self.wins, self.loses, self.points, self.id_team))
         connection.commit()
         cursor.close()
 
@@ -66,3 +67,14 @@ class Team:
         cursor.close()
 
         return team
+
+    @staticmethod
+    def get_all_teams(self):
+        cursor = connection.cursor()
+        cursor.execute("SELECT * FROM t_team WHERE is_deleted = 0 ORDER BY points DESC")
+        column_names = [desc[0] for desc in cursor.description]  # Get column names here
+        teams = cursor.fetchall()
+        cursor.close()
+        teams = [dict(zip(column_names, team)) for team in teams]
+        return teams
+

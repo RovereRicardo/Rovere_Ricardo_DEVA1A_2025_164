@@ -25,15 +25,6 @@ connection = pymysql.connect(
     passwd=PASS_MYSQL,
     database=DATABASE_NAME,
 )
-
-# Function to check if the database exists
-def database_exists(connection, db_name):
-    cursor = connection.cursor()
-    cursor.execute("SHOW DATABASES LIKE %s", (db_name,))
-    result = cursor.fetchone()
-    cursor.close()
-    return result is not None
-
 # Function to create the database
 def create_database(connection, db_name):
     cursor = connection.cursor()
@@ -45,16 +36,22 @@ def create_database(connection, db_name):
     finally:
         cursor.close()
 
+# Function to check if the database exists
+def database_exists(connection, db_name):
+    cursor = connection.cursor()
+    cursor.execute("SHOW DATABASES LIKE %s", (db_name,))
+    result = cursor.fetchone()
+    cursor.close()
+    return result is not None
+
 
 def import_dump():
-
     # Establish a new connection to MySQL to run the import
     connection = pymysql.connect(
         host=HOST_MYSQL,
         port=PORT_MYSQL,
         user=USER_MYSQL,
         passwd=PASS_MYSQL,
-        database=DATABASE_NAME,
     )
 
     try:
@@ -106,4 +103,5 @@ def import_dump():
         print(f"Dump file {absolute_dump_path} does not exist.")
 
     connection.close()
+
 import_dump()

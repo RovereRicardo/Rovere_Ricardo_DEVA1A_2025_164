@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% from 'bootstrap5/form.html' import render_form %}
 {% block title %} Update Match {{ match.id_match }} {% endblock %}
 {% block content %}
     {% if session.username %}
@@ -9,7 +8,7 @@
                 <p>Edit the form and submit to update the match details.</p>
                 {{ render_form(form, extra_classes="forms") }}
                 <br>
-                <a href="/" class="btn btn-secondary col-lg">Cancel</a>
+                <a href="{{ url_for('match.view_matches') }}" class="btn btn-secondary col-lg">Cancel</a>
             </div>
         </section>
     {% else %}

@@ -1,6 +1,4 @@
 {% from "macros/forms.html" import render_text_field %}
-{% from 'bootstrap5/form.html' import render_form %}
-
 {% extends "base.html" %}
 {% block title %} New Player {% endblock %}
 {% block content %}
@@ -15,7 +13,7 @@
                         {{ form[field].label }}: {{ ', '.join(errors) }}
                     </div>
                 {% endfor %}
-                {{ render_form(form, extra_classes="forms") }}
+                {{ render_form(form, extra_classes="forms", enctype="multipart/form-data") }}
             <br>
                 <a href="{{ url_for('team.view_team', id_team=id_team) }}" class="btn btn-secondary col-lg">Cancel</a>
             </div>

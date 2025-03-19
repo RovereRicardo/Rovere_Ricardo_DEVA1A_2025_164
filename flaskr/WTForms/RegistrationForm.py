@@ -1,20 +1,11 @@
 
 from flask_wtf import FlaskForm
-from flask_wtf.file import FileAllowed
+from flask_wtf.file import FileAllowed, FileSize
 from wtforms import StringField, PasswordField, FileField, IntegerField, DateField , validators
 from wtforms.fields.choices import SelectField
 from wtforms.fields.simple import HiddenField, SubmitField, URLField
 from wtforms.validators import Length, NumberRange, ValidationError
 
-
-def file_size_limit(max_size):
-    def _file_size_limit(form, field):
-        if field.data:
-            file_size = len(field.data.read())
-            field.data.seek(0)  # Reset file pointer after reading
-            if file_size > max_size:
-                raise ValidationError(f"File size must not exceed {max_size / 1024 / 1024:.2f} MB.")
-    return _file_size_limit
 
 ### USER FORM ###
 
@@ -37,7 +28,7 @@ class LoginForm(FlaskForm):
 class RegisterPlayerForm(FlaskForm):
     name = StringField('Name', validators=[validators.DataRequired(), Length(1, 20)])
     family_name = StringField('Family Name', validators=[validators.DataRequired(), Length(1, 20)])
-    picture = FileField('Picture', validators=[FileAllowed(['jpg', 'png']), file_size_limit(1 * 1024 * 1024)])
+    picture = FileField('Picture', validators=[FileAllowed(['jpg', 'png'])])
     number = IntegerField('Number', validators=[validators.DataRequired(), NumberRange(0, 99)])
     position = IntegerField('Position Number', validators=[validators.DataRequired(), NumberRange(1,5)])
     position_name = StringField('Position Name', validators=[validators.DataRequired(), Length(1,2)])
@@ -84,12 +75,11 @@ class EditMatchForm(FlaskForm):
 
 class RegisterTeamForm(FlaskForm):
     team_name = StringField('Team Name', validators=[validators.DataRequired()])
-    team_logo = FileField('Picture', validators=[FileAllowed(['jpg', 'png']), file_size_limit(5 * 1024 * 1024)])
+    team_logo = FileField('Picture', validators=[FileAllowed(['jpg', 'png']), FileSize(25,20, message="Error")])
     address = StringField('Address', validators=[validators.DataRequired()])
     city = StringField('City', validators=[validators.DataRequired()])
     wins = IntegerField('Wins', validators=[validators.InputRequired(), validators.NumberRange(min=0)])
     loses = IntegerField('Loses', validators=[validators.InputRequired(), validators.NumberRange(min=0)])
-    draws = IntegerField('Draws', validators=[validators.InputRequired(), validators.NumberRange(min=0)])
     points = IntegerField('Points', validators=[validators.InputRequired(), validators.NumberRange(min=0)])
     submit = SubmitField('Register Team')
     id_user = HiddenField('ID User', validators=[validators.DataRequired()])
@@ -99,11 +89,10 @@ class DeleteTeamForm(FlaskForm):
 
 class EditTeamForm(FlaskForm):
     team_name = StringField('Team Name', validators=[validators.DataRequired()])
-    team_logo = IntegerField('Team Logo', validators=[validators.DataRequired()])
+    team_logo = FileField('Picture', validators=[FileAllowed(['jpg', 'png'])])
     address = StringField('Address', validators=[validators.DataRequired()])
     city = StringField('City', validators=[validators.DataRequired()])
     wins = IntegerField('Wins', validators=[validators.InputRequired(), validators.NumberRange(min=0)])
     loses = IntegerField('Loses', validators=[validators.InputRequired(), validators.NumberRange(min=0)])
-    draws = IntegerField('Draws', validators=[validators.InputRequired(), validators.NumberRange(min=0)])
     points = IntegerField('Points', validators=[validators.InputRequired(), validators.NumberRange(min=0)])
     submit = SubmitField('Edit Team')

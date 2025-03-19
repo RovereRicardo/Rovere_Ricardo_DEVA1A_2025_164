@@ -1,7 +1,7 @@
 {% extends "base.html" %}
-{% from 'bootstrap5/form.html' import render_form %}
 {% block title %} Update Team {{ team.team_name }} {% endblock %}
 {% block content %}
+
 {% if session.username and session.id_user == team.id_coach_creator %}
 <section class="details">
     <div class="last-played">
@@ -9,7 +9,7 @@
         <p>Edit the form and submit to update the team details.</p>
         {{ render_form(form, extra_classes="forms") }}
             <br>
-            <a href="/" class="btn btn-secondary col-lg">Cancel</a>
+            <a href="{{ url_for('team.view_teams') }}" class="btn btn-secondary col-lg">Cancel</a>
     </div>
 </section>
 {% elif not session.get('username') %}
@@ -17,7 +17,7 @@
     <div class="last-played">
         <br>
         <h2>You must be logged in, to be able to update a Team.</h2>
-        <a href="/" class="btn btn-secondary ml-2">Cancel</a>
+        <a href="{{ url_for('user.register') }}">Don't have an account? Register</a>
 
     </div>
 </section>
@@ -26,7 +26,7 @@
     <div class="last-played">
         <br>
         <h2>You cannot edit a Team that doesn't belong to you.</h2>
-        <a href="/" class="btn btn-secondary ml-2">Cancel</a>
+        <a href="{{ url_for('user.login') }}">Login with the correct account. Login</a>
     </div>
 </section>
 {% endif %}

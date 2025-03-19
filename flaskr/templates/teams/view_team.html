@@ -7,7 +7,7 @@
 <section class="players-section">
     <table class="table table-bordered table-hover">
         <thead>
-        <tr>
+        <tr class="th-custom">
             <th>Name</th>
             <th>Number</th>
             <th>Position</th>
@@ -56,6 +56,6 @@
             class="fa fa-plus"></i> Add
         New Player</a>
     {% endif %}
-    <a href="/" class="btn btn-secondary ml-2 pull-right" style="margin-right: 10px">Cancel</a>
+    <a href="{{ url_for('team.view_teams')}}" class="btn btn-secondary ml-2 pull-right" style="margin-right: 10px">Cancel</a>
 </section>
 {% endblock %}

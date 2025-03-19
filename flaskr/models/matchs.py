@@ -21,6 +21,26 @@ class Matchs:
         self.is_deleted = is_deleted
         self.is_played = is_played
 
+
+    @staticmethod
+    def get_all_matches():
+        cursor = connection.cursor()
+        cursor.execute("""SELECT m.id_match, m.id_home_team, m.id_away_team,
+                       home_team.team_name AS home_team,
+                       away_team.team_name AS away_team,
+                       m.date_match, m.home_score, m.away_score
+                       FROM t_match m
+                       JOIN t_team home_team ON m.id_home_team = home_team.id_team
+                       JOIN t_team away_team ON m.id_away_team = away_team.id_team
+                       WHERE m.is_deleted = 0
+                       ORDER BY m.date_match ASC
+                       """)
+        matches = cursor.fetchall()
+        column_names = [desc[0] for desc in cursor.description]
+        matches = [dict(zip(column_names, match)) for match in matches]
+
+        return matches
+
     @staticmethod
     def get_match_by_id(id_match):
         cursor = connection.cursor()
@@ -71,7 +91,6 @@ class Matchs:
             "UPDATE t_match SET date_match = %s, id_home_team = %s, id_away_team = %s, home_score = %s, away_score = %s WHERE id_match=%s",
             (self.date_match, self.id_home_team, self.id_away_team, self.home_score, self.away_score, self.id_match))
         connection.commit()
-        connection.close()
 
     @staticmethod
     def add_player_to_mach(id_match, id_player):
@@ -113,6 +132,16 @@ class Matchs:
         cursor.execute(
             "UPDATE t_match SET home_score = %s, away_score = %s WHERE id_match = %s",
             (home_score, away_score, id_match)
+        )
+        connection.commit()
+        cursor.close()
+
+    @staticmethod
+    def set_matches_played(id_home_team, id_away_team):
+        cursor = connection.cursor()
+        cursor.execute(
+            "UPDATE t_team SET matches_played=matches_played+1 WHERE id_team = %s OR id_team = %s",
+            (id_home_team, id_away_team)
         )
         connection.commit()
         cursor.close()

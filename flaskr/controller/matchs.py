@@ -33,7 +33,7 @@ def register_match():
         new_match.register_match()
 
         flash("Match Registered!", "success")
-        return redirect(url_for('index'))
+        return redirect(url_for('match.view_matches'))
     return render_template('/matchs/register_match.html', username=session.get('username'), teams=teams, form=form)
 
 
@@ -48,14 +48,14 @@ def delete_match():
         match_data = Matchs.get_by_id(form.id_match.data)
         if not match_data:
             flash("Match does not exist.", "danger")
-            return redirect(url_for('index'))
+            return redirect(url_for('match.view_matches'))
 
         match = Matchs(**match_data)
         match.delete_match()
         flash("Match Deleted!", "success")
     except Exception as e:
         flash(f"Error deleting match: {str(e)}", "danger")
-    return redirect(url_for('index', form=form))
+    return redirect(url_for('match.view_matches', form=form))
 
 
 @match.route('/edit_match/<int:id_match>', methods=['GET', 'POST'])
@@ -76,7 +76,8 @@ def edit_match(id_match):
 
     if not match_data:
         flash("Match does not exist.", "danger")
-        return redirect(url_for('index'))
+        return redirect(url_for('match.view_matches'))
+
 
     match = Matchs(**match_data)
 
@@ -96,7 +97,7 @@ def edit_match(id_match):
 
         match.edit_match()
         flash("Match Edited!", "success")
-        return redirect(url_for('index'))
+        return redirect(url_for('match.view_matches'))
 
     return render_template("/matchs/edit_match.html", username=session.get('username'), match=match, teams=teams,
                            form=form)
@@ -142,6 +143,8 @@ def submit_score():
     else:
         Matchs.set_win(id_away_team)
         Matchs.set_lose(id_home_team)
+
+    Matchs.set_matches_played(id_home_team, id_away_team)
 
     return redirect(url_for('match.view_match', id_match=id_match))
 
@@ -209,3 +212,9 @@ def view_match_end_game():
     match.end_game(id_match)
 
     return redirect(url_for('match.view_match', id_match=id_match, match=match))
+
+@match.route('/matches', methods=['GET', 'POST'])
+def view_matches():
+    matches = Matchs.get_all_matches()
+
+    return render_template('matchs/matches.html', matches=matches)

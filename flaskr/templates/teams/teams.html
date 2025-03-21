@@ -8,9 +8,8 @@
                 <thead>
                 <tr class="th-custom">
                     <th>Team</th>
-                    <th>Points</th>
-                    <th>Wins</th>
-                    <th>Loses</th>
+                    <th>Address</th>
+                    <th>City</th>
                     <th>Action</th>
                 </tr>
                 </thead>
@@ -18,9 +17,8 @@
                 {% for team in teams %}
                     <tr>
                         <td>{{ team.team_name }}</td>
-                        <td>{{ team.points }}</td>
-                        <td>{{ team.wins }}</td>
-                        <td>{{ team.loses }}</td>
+                        <td>{{ team.address }}</td>
+                        <td>{{ team.city }}</td>
                         <td>
                             <a href="{{ url_for('team.team_details', id_team=team.id_team) }}" class="mr-3"
                                title="View Team">

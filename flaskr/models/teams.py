@@ -78,3 +78,13 @@ class Team:
         teams = [dict(zip(column_names, team)) for team in teams]
         return teams
 
+    def get_coach(self):
+        cursor = connection.cursor()
+        cursor.execute("SELECT name, username FROM t_user JOIN t_team WHERE id_coach_creator = %s", (self.id_coach_creator,))
+        coach = cursor.fetchone()
+        column_names = [desc[0] for desc in cursor.description]
+        coach = dict(zip(column_names, coach))
+        cursor.close()
+        return coach
+
+

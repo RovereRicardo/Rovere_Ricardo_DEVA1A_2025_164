@@ -51,11 +51,11 @@
         </tbody>
     </table>
     <br>
-    {% if username %}
+    {% if session.username %}
     <a href="{{ url_for('player.register_player', id_team=team.id_team) }}" class="btn btn-success pull-right"><i
             class="fa fa-plus"></i> Add
         New Player</a>
     {% endif %}
-    <a href="{{ url_for('team.view_teams')}}" class="btn btn-secondary ml-2 pull-right" style="margin-right: 10px">Cancel</a>
+    <a href="{{ url_for('team.team_details', id_team=team.id_team)}}" class="btn btn-secondary ml-2 pull-right" style="margin-right: 10px">Cancel</a>
 </section>
 {% endblock %}

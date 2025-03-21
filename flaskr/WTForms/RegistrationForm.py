@@ -11,6 +11,7 @@ from wtforms.validators import Length, NumberRange, ValidationError
 
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[validators.DataRequired()])
+    name = StringField('First and Last Name', validators=[validators.DataRequired()])
     email = StringField('Email', validators=[validators.DataRequired(), validators.Email()])
     password = PasswordField('Password', validators=[validators.DataRequired(), validators.EqualTo('confirm', message='Passwords must match'), Length(5,150)])
     confirm = PasswordField('Confirm Password', validators=[validators.DataRequired()])
@@ -28,7 +29,7 @@ class LoginForm(FlaskForm):
 class RegisterPlayerForm(FlaskForm):
     name = StringField('Name', validators=[validators.DataRequired(), Length(1, 20)])
     family_name = StringField('Family Name', validators=[validators.DataRequired(), Length(1, 20)])
-    picture = FileField('Picture', validators=[FileAllowed(['jpg', 'png'])])
+    picture = FileField('Picture', validators=[FileAllowed(['jpg', 'png']), FileSize(2 * 1024 * 1024, message="File size must not exceed 2MB.")])
     number = IntegerField('Number', validators=[validators.DataRequired(), NumberRange(0, 99)])
     position = IntegerField('Position Number', validators=[validators.DataRequired(), NumberRange(1,5)])
     position_name = StringField('Position Name', validators=[validators.DataRequired(), Length(1,2)])
@@ -40,6 +41,7 @@ class RegisterPlayerForm(FlaskForm):
 class EditPlayerForm(FlaskForm):
     name = StringField('Name', validators=[validators.DataRequired()])
     family_name = StringField('Family Name', validators=[validators.DataRequired()])
+    picture = FileField('Picture', validators=[FileAllowed(['jpg', 'png']), FileSize(2 * 1024 * 1024, message="File size must not exceed 2MB.")])
     number = IntegerField('Number', validators=[validators.DataRequired(), validators.NumberRange(min=00, max=99)])
     position = IntegerField('Position', validators=[validators.DataRequired(), validators.NumberRange(min=1, max=5)])
     position_name = StringField('Position Name', validators=[validators.DataRequired(), validators.Length(min=1, max=2)])
@@ -75,7 +77,7 @@ class EditMatchForm(FlaskForm):
 
 class RegisterTeamForm(FlaskForm):
     team_name = StringField('Team Name', validators=[validators.DataRequired()])
-    team_logo = FileField('Picture', validators=[FileAllowed(['jpg', 'png']), FileSize(25,20, message="Error")])
+    team_logo = FileField('Picture', validators=[FileAllowed(['jpg', 'png']), FileSize(2 * 1024 * 1024, message="File size must not exceed 2MB.")])
     address = StringField('Address', validators=[validators.DataRequired()])
     city = StringField('City', validators=[validators.DataRequired()])
     wins = IntegerField('Wins', validators=[validators.InputRequired(), validators.NumberRange(min=0)])
@@ -89,7 +91,7 @@ class DeleteTeamForm(FlaskForm):
 
 class EditTeamForm(FlaskForm):
     team_name = StringField('Team Name', validators=[validators.DataRequired()])
-    team_logo = FileField('Picture', validators=[FileAllowed(['jpg', 'png'])])
+    team_logo = FileField('Picture', validators=[FileAllowed(['jpg', 'png']), FileSize(2 * 1024 * 1024, message="File size must not exceed 2MB.")])
     address = StringField('Address', validators=[validators.DataRequired()])
     city = StringField('City', validators=[validators.DataRequired()])
     wins = IntegerField('Wins', validators=[validators.InputRequired(), validators.NumberRange(min=0)])

@@ -36,6 +36,7 @@ CREATE TABLE `t_user`
 (
     `id_user`  int(11) NOT NULL,
     `username` varchar(50)  NOT NULL,
+    `name`     varchar(50)  NOT NULL,
     `email`    varchar(100) NOT NULL,
     `password` varchar(255) NOT NULL,
     `role`     varchar(20) DEFAULT 'coach'
@@ -45,8 +46,8 @@ CREATE TABLE `t_user`
 -- Dumping data for table `t_user`
 --
 
-INSERT INTO `t_user` (`id_user`, `username`, `email`, `password`, `role`)
-VALUES (18, 'admin', 'admin@admin.com',
+INSERT INTO `t_user` (`id_user`, `username`, `name`, `email`, `password`, `role`)
+VALUES (18, 'admin', 'admin', 'admin@admin.com',
         'scrypt:32768:8:1$hRxZEHYIzCeL0Xt1$d12db159bc7208bfd053a945d8a53cfe41c354015d3edc27dc71a5f743c219594df853f94aac4042929cc2fe2057942df9bbaeb28fe10b3a85c86089a645a0c2',
         'Admin');
 
@@ -84,7 +85,7 @@ CREATE TABLE `t_match`
     `home_score`   int(11) DEFAULT NULL,
     `away_score`   int(11) DEFAULT NULL,
     `is_deleted`   tinyint(1) DEFAULT 0,
-    `is_played`   tinyint(1) DEFAULT 0
+    `is_played`    tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -574,11 +575,12 @@ CREATE TABLE `t_team`
 -- Dumping data for table `t_team`
 --
 
-INSERT INTO `t_team` (`id_team`, `team_name`, `team_logo`, `address`, `city`, `wins`, `loses`, `matches_played`, `points`,
+INSERT INTO `t_team` (`id_team`, `team_name`, `team_logo`, `address`, `city`, `wins`, `loses`, `matches_played`,
+                      `points`,
                       `id_coach_creator`)
-VALUES (70, 'Bulle', 1, 'Bulle', 'Bulle', 0, 0, 0, 0, 18),
-       (71, 'Sarine', 1, 'Sarine', 'Sarine', 0, 0, 0, 0, 18),
-       (72, 'Veveyse', 1, 'Veveyse', 'Veveyse', 0, 0, 0, 0, 18);
+VALUES (70, 'Bulle Basket', 1, 'Bulle Basket - Case postale - 1630 Bulle', 'Bulle', 0, 0, 0, 0, 18),
+       (71, 'Sarine Basket', 1, 'Rte de Ste-Appoline 16 1752 Villars-sur-Glâne', 'Sarine', 0, 0, 0, 0, 18),
+       (72, 'BBC Veveyse', 1, 'Veveyse-Oron', 'Veveyse', 0, 0, 0, 0, 18);
 
 -- --------------------------------------------------------
 

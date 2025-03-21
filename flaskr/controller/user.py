@@ -15,7 +15,7 @@ def register():
     if request.method == 'POST':
         password = form.password.data
         password_hash = generate_password_hash(password)
-        user = User(None, form.username.data, form.email.data, password_hash, form.role.data)
+        user = User(None, form.username.data, form.name.data, form.email.data, password_hash, form.role.data)
         user.register_user()
 
         flash("Registration successful")
@@ -31,7 +31,7 @@ def login():
         password = form.password.data
 
         cursor = connection.cursor()
-        cursor.execute("SELECT username, id_user, password FROM t_user WHERE username = %s", (username,))
+        cursor.execute("SELECT username, name, id_user, password FROM t_user WHERE username = %s", (username,))
         user = cursor.fetchone()
 
         column_names = [desc[0] for desc in cursor.description]

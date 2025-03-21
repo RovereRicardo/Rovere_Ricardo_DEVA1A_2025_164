@@ -9,28 +9,28 @@ player = Blueprint('player', __name__)
 
 @player.route('/players/register_player', methods=['GET', 'POST'])
 def register_player():
-    form = RegisterPlayerForm(request.form)
+    form = RegisterPlayerForm()
+
     if request.method == 'POST' and form.validate():
-        picture = request.files['picture']
+        try:
+            picture = request.files['picture']
+            id_team = request.args.get('id_team')
+            picture_data = picture.read() if picture else None
 
-        id_team = request.args.get('id_team')
+            new_player = Player(form.name.data, form.family_name.data, picture_data, form.number.data, form.position.data, form.position_name.data, form.height.data, form.birthday.data, form.nationality.data)
+            new_player.register_player(id_team)  # Call register function
 
-        if picture:
-            picture_data = picture.read()  # Read the file content as binary data
-            print("Done", picture_data) #Debug
-        else:
-            picture_data = None  # If no picture is uploaded, set to None
-            print("No picture") #Debug
+            flash("Player registered successfully.", "success")
+            return redirect(url_for('team.view_team', id_team=id_team))
 
-        if not form.name.data:
-            flash('Player name is required.', 'danger')
+        except Exception as e:
+            flash(f"An error occurred: {str(e)}", "danger")
             return redirect(url_for('player.register_player'))
 
-        new_player = Player(form.name.data, form.family_name.data, picture_data, form.number.data, form.position.data, form.position_name.data, form.height.data, form.birthday.data, form.nationality.data)
-        new_player.register_player(id_team)  # Call register function
-        flash("Player registered successfully.", "success")
-
-        return redirect(url_for('team.view_team', id_team=id_team, form=form))
+    if form.errors:
+        for field, errors in form.errors.items():
+            for error in errors:
+                flash(f"Error in {getattr(form, field).label.text}: {error}", "danger")
     return render_template('/players/register_player.html' , id_team=request.args.get('id_team'), form=form)
 
 
@@ -52,7 +52,7 @@ def delete_player():
 
 @player.route('/update_player', methods=['POST', 'GET'])
 def update_player():
-    form = EditPlayerForm(request.form)
+    form = EditPlayerForm()
     player_id = request.args.get('player_id', type=int)  # Get player_id from query string/link
     id_team = request.args.get('id_team', type=int)  # Get team_id from query string/link
 
@@ -78,6 +78,7 @@ def update_player():
     if request.method == 'GET':
         form.name.data = player.name
         form.family_name.data = player.family_name
+        form.picture.data = player.picture
         form.number.data = player.number
         form.position.data = player.position
         form.position_name.data = player.position_name
@@ -86,19 +87,30 @@ def update_player():
         form.nationality.data = player.nationality
 
     if request.method == 'POST' and form.validate():
-        player.name = form.name.data
-        player.family_name = form.family_name.data
-        player.number = form.number.data
-        player.position = form.position.data
-        player.position_name = form.position_name.data
-        player.height = form.height.data
-        player.birthday = form.birthday.data
-        player.nationality = form.nationality.data
+        try:
+            picture = request.files['picture']
+            picture_data = picture.read() if picture else None
 
-        player.update_player()
-        flash("Player updated successfully.", "success")
-        return redirect(url_for('team.view_team', id_team=id_team))
+            player.name = form.name.data
+            player.family_name = form.family_name.data
+            player.number = form.number.data
+            player.position = form.position.data
+            player.position_name = form.position_name.data
+            player.height = form.height.data
+            player.birthday = form.birthday.data
+            player.nationality = form.nationality.data
 
+            player.update_player()
+            flash("Player updated successfully.", "success")
+            return redirect(url_for('team.view_team', id_team=id_team))
+        except Exception as e:
+            flash(f"An error occurred: {str(e)}", "danger")
+            return redirect(url_for('player.update_player'))
+
+    if form.errors:
+        for field, errors in form.errors.items():
+            for error in errors:
+                flash(f"Error in {getattr(form, field).label.text}: {error}", "danger")
     return render_template("players/update_player.html", username= session.get('username'), player=player, team=team, form=form)
 
 @player.route('/view_player', methods=['GET', 'POST'])

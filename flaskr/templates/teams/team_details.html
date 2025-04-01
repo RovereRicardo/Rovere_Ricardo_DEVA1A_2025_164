@@ -39,7 +39,7 @@
                 </div>
             </div>
             {% if session.username %}
-                <a href="{{ url_for('team.update_team', id_team=team.id_team) }}"
+                <a href="{{ url_for('team.register_team',id_player=id_player, id_team=team.id_team) }}"
                    class="btn btn-warning ml-2 pull-right">Update</a>
             {% endif %}
             <a href="{{ url_for('team.view_teams') }}" class="btn btn-secondary ml-2 pull-right"

@@ -25,6 +25,7 @@ connection = pymysql.connect(
     passwd=PASS_MYSQL,
     database=DATABASE_NAME,
 )
+
 # Function to create the database
 def create_database(connection, db_name):
     cursor = connection.cursor()

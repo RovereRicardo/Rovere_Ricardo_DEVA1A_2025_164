@@ -247,3 +247,19 @@ class Stats:
         points = cursor.fetchone()
         cursor.close()
         return {'fouls': points[0] if points and points[0] is not None else 0}
+
+    @staticmethod
+    def get_player_graph(id_player, id_match, id_stat_type):
+        cursor = connection.cursor()
+        cursor.execute("SELECT COUNT(id_stat_type) AS count FROM t_stats WHERE id_player = %s AND id_match = %s AND id_stat_type = %s", (id_player, id_match, id_stat_type))
+        points = cursor.fetchone()
+        cursor.close()
+        return {'count': points[0] if points and points[0] is not None else 0}
+
+    @staticmethod
+    def get_player_graph_total(id_player, id_match):
+        cursor = connection.cursor()
+        cursor.execute("SELECT COUNT(id_stat_type) AS count FROM t_stats WHERE id_player = %s AND id_match = %s AND id_stat_type IN (1,2,3)", (id_player, id_match))
+        points = cursor.fetchone()
+        cursor.close()
+        return {'count': points[0] if points and points[0] is not None else 0}

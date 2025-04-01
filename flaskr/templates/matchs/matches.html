@@ -13,6 +13,7 @@
                     <th>Away Team</th>
                     <th>Score</th>
                     <th>Action</th>
+                    <th>ScoreSheet</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -43,6 +44,12 @@
                                 </form>
                                 </td>
                             {% endif %}
+                        <td>
+                            <a href="{{ url_for('match.view_scoresheet', id_match = match.id_match) }}"
+                               class="mr-3" title="ScoreSheet">
+                                <span class="fa fa-eye"></span>
+                            </a>
+                        </td>
                     </tr>
                 {% endfor %}
                 </tbody>

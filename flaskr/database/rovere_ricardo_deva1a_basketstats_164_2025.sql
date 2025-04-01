@@ -227,7 +227,8 @@ CREATE TABLE `t_players_match`
 (
     `id_match`  int(11) NOT NULL,
     `id_player` int(11) NOT NULL,
-    `subbed`    tinyint(1) NOT NULL
+    `subbed`    tinyint(1) NOT NULL,
+    `played` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -579,7 +580,7 @@ INSERT INTO `t_team` (`id_team`, `team_name`, `team_logo`, `address`, `city`, `w
                       `points`,
                       `id_coach_creator`)
 VALUES (70, 'Bulle Basket', 1, 'Bulle Basket - Case postale - 1630 Bulle', 'Bulle', 0, 0, 0, 0, 18),
-       (71, 'Sarine Basket', 1, 'Rte de Ste-Appoline 16 1752 Villars-sur-Glâne', 'Sarine', 0, 0, 0, 0, 18),
+       (71, 'Sarine Basket', 1, 'Rte de Ste-Appoline 16 1752 Villars-sur-Glane', 'Sarine', 0, 0, 0, 0, 18),
        (72, 'BBC Veveyse', 1, 'Veveyse-Oron', 'Veveyse', 0, 0, 0, 0, 18);
 
 -- --------------------------------------------------------

@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
+from flask_login import login_required
 
-from flaskr.WTForms.RegistrationForm import RegisterMatchForm, DeleteMatchForm, EditMatchForm
+from flaskr.WTForms.Forms import RegisterMatchForm, DeleteMatchForm, EditMatchForm
 from flaskr.controller.players import player
 from flaskr.database.db import connection
 from flaskr.models.matchs import Matchs
@@ -13,8 +14,10 @@ match = Blueprint('match', __name__)
 
 
 @match.route('/matchs/register_match', methods=['GET', 'POST'])
+@login_required
 def register_match():
     form = RegisterMatchForm(request.form)
+
     cursor = connection.cursor()
     cursor.execute('SELECT id_team, team_name FROM t_team')
     teams = cursor.fetchall()
@@ -38,6 +41,7 @@ def register_match():
 
 
 @match.route('/matchs/delete_match', methods=['POST'])
+@login_required
 def delete_match():
     form = DeleteMatchForm(request.form)
     if not form.id_match.data:
@@ -102,16 +106,15 @@ def edit_match(id_match):
     return render_template("/matchs/edit_match.html", username=session.get('username'), match=match, teams=teams,
                            form=form)
 
-
-@match.route('/view_match', methods=['GET', 'POST'])
-def view_match():
-    id_match = request.args.get('id_match')
+@match.route('/match/<int:id_match>', methods=['GET', 'POST'])
+@login_required
+def view_match(id_match):
 
     match_data = Matchs.get_match_by_id(id_match)
 
     if not match_data:
         flash("Match does not exist.", "danger")
-        return redirect(url_for('index'))
+        return redirect(url_for('match.view_matches'))
 
     match = Matchs(**match_data)
 
@@ -128,6 +131,7 @@ def view_match():
                            players_playing_away=players_playing_away, username=session.get('username'))
 
 @match.route('/submit_score', methods=['POST'])
+@login_required
 def submit_score():
     home_team_score = request.form.get('homeTeamScore')
     away_team_score = request.form.get('awayTeamScore')
@@ -146,7 +150,7 @@ def submit_score():
 
     Matchs.set_matches_played(id_home_team, id_away_team)
 
-    return redirect(url_for('match.view_match', id_match=id_match))
+    return redirect(url_for('match.view_matches', id_match=id_match))
 
 @match.route('/add_player_home', methods=['POST'])
 def add_player_home():
@@ -176,6 +180,7 @@ def update_status():
 
 
 @match.route('/view_match_table_ajax', methods=['GET', 'POST'])
+@login_required
 def view_match_table_ajax():
     id_player = request.form.get('idPlayer')
     id_team = request.form.get('idTeam')
@@ -218,3 +223,18 @@ def view_matches():
     matches = Matchs.get_all_matches()
 
     return render_template('matchs/matches.html', matches=matches)
+
+@match.route('/score_sheet/match/<int:id_match>', methods=['GET', 'POST'])
+def view_scoresheet(id_match):
+    match_data = Matchs.get_match_by_id(id_match)
+
+    if not match_data:
+        flash("Match does not exist.", "danger")
+        return redirect(url_for('match.view_matches'))
+
+    match = Matchs(**match_data)
+
+    players_home = Player.get_match_players(match.id_home_team, id_match)
+    players_away = Player.get_match_players(match.id_away_team , id_match)
+
+    return render_template('matchs/scoresheet.html', Total=Total, Stats=Stats, match=match, players_home=players_home, players_away=players_away)

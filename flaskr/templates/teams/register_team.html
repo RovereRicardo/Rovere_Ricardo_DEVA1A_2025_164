@@ -1,11 +1,15 @@
 {% extends "base.html" %}
-{% block title %} New Team {% endblock %}
+{% block title %} {% if team.id_team %} Update Team {% else %} New Team {% endif %} {% endblock %}
 {% block content %}
     {% if session.username %}
         <section class="details">
             <div class="last-played">
                 <br>
-                <h2>Create Team</h2>
+                {% if team.id_team %}
+                <h2>Update Team</h2>
+                    {% else %}
+                    <h2>Create New Team</h2>
+                    {% endif %}
                 <p>Fill the form and submit to create a new team.</p>
                 {{ render_form(form, extra_classes="forms") }}
                 <br>

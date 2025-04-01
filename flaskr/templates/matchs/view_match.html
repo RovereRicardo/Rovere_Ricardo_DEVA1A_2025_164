@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %} Match {% endblock %}
 {% block content %}
-    {% if session.username %}
+    {% if session.username == 'admin' %}
         <section class="players-section">
             <span id="minutes_">00</span>:
             <span id="seconds_">00</span>
@@ -68,7 +68,7 @@
                         <input type="number" name="awayTeamScore" id="awayTeamScore"
                                value="{{ Total.get_total_points(match.id_match, match.id_away_team) }}">
                         {% if match.home_score != 0 %}
-                            <button type="submit" name="finalScore" class="btn btn-success"><i class="fa fa-plus"></i>
+                            <button type="submit" name="finalScore" class="btn btn-success" onclick="return confirm('Are you sure ?')"><i class="fa fa-plus"></i>
                                 Submit
                                 Score
                             </button>

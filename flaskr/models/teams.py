@@ -1,9 +1,10 @@
+import pymysql
 from flask import render_template, session
 
 from flaskr.database.db import connection
 
 class Team:
-    def __init__(self, id_team, team_name, team_logo, address, city, wins, loses, matches_played, points, id_coach_creator, is_deleted=None):
+    def __init__(self, id_team=None, team_name=None, team_logo=None, address=None, city=None, wins=None, loses=None, matches_played=None, points=None, id_coach_creator=None, is_deleted=None):
         self.id_team = id_team
         self.team_name = team_name
         self.team_logo = team_logo
@@ -58,18 +59,29 @@ class Team:
         return render_template("/teams/view_team.html", team=team, username=session.get('username'), players=players)
 
     @staticmethod
-    def get_by_id(team_id):
+    def get_by_id(id_team):
         cursor = connection.cursor()
-        cursor.execute("SELECT * FROM t_team WHERE id_team = %s", (team_id,))
-        team = cursor.fetchone()
-        column_names = [desc[0] for desc in cursor.description]
-        team = dict(zip(column_names, team))
-        cursor.close()
+        try:
+            cursor.execute("SELECT * FROM t_team WHERE id_team = %s", (id_team,))
+            team = cursor.fetchone()
 
-        return team
+            if team is None:
+                return None  # No data found
+
+            # Assuming team is a tuple, we can turn it into a dictionary
+            column_names = [desc[0] for desc in cursor.description]
+            team_data = dict(zip(column_names, team))
+
+            return team_data
+
+        except pymysql.MySQLError as e:
+            print(f"Error querying MySQL: {e}")
+            return None
+        finally:
+            cursor.close()
 
     @staticmethod
-    def get_all_teams(self):
+    def get_all_teams():
         cursor = connection.cursor()
         cursor.execute("SELECT * FROM t_team WHERE is_deleted = 0 ORDER BY points DESC")
         column_names = [desc[0] for desc in cursor.description]  # Get column names here
@@ -82,9 +94,9 @@ class Team:
         cursor = connection.cursor()
         cursor.execute("SELECT name, username FROM t_user JOIN t_team WHERE id_coach_creator = %s", (self.id_coach_creator,))
         coach = cursor.fetchone()
+        cursor.close()
         column_names = [desc[0] for desc in cursor.description]
         coach = dict(zip(column_names, coach))
-        cursor.close()
         return coach
 
 

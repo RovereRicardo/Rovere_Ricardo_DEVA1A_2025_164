@@ -6,20 +6,29 @@ Rankings -> Order by points[[Fixed]]
 navbar -> matches [[Fixed]]
 PlayersView -> Teams not showing [[Fixed]]
 Teams -> Have a Team Page with the information's of the team instead of showing the players right away.[[Fixed]]
-
-
 Ranking page -> Team --- Points --- Wins --- Loses --- Games Played [[Done]]
-
 Tables --> align text to center[[Fixed]]
 Remote Draws from database and app[[Fixed]]
 Add games played ? [[Fixed]]
 matches view 3ptA for players not counting [[Fixed]]
-
 RegisterForm -> change teamlogo field [[Fixed]]
 Players --> img not uploading to database [[Fixed]]
 Teams --> img not uploading to database[[Fixed]]
 Players --> add update img field to form[[Fixed]]
-style --> logo and picture from players and teams
+style --> logo and picture from players and teams [[Fixed]]
+RegisterForm --> FileField => size limit giving error max_allowed_packet[[Fixed]]
+Matchs view -> Add scoresheet page withoud modifications showing all players that played and their stats [[Fixed]]
+DB -> Player time played --> Player played_match [[Fixed]]
+change routes --> singular plusar remove arguments [[match Done]] -> [[players Done]] -->[[teams done]]
+Matches game -> Submit score redirect. [[Fixed]]
 
-RegisterForm --> FileField => size limit giving error max_allowed_packet
 
+
+merge update and register player [[Form = Done]] [[Route Done]] [[Change html filename]]
+
+DB -> Change matches data + add players for the teams.
+
+Teams --> Add player from a list of players if its a known player else fill the form. (add radial or checkbox with associated id_team) Add to the relation table.) (Populate form from the Selected option)
+Stats --> Graphs  --> [[Done with tabs and Bokeh]]
+
+Flask-Security

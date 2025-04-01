@@ -1,20 +1,18 @@
-{% from "macros/forms.html" import render_text_field %}
 {% extends "base.html" %}
-{% block title %} New Player {% endblock %}
+{% block title %} {% if player.id_player %} Update Player {% else %} New Player {% endif %}{% endblock %}
 {% block content %}
     {% if session.username %}
         <section class="details">
             <div class="last-played">
                 <br>
-                <h2>Create Player</h2>
+                {% if player.id_player %}
+                    <h2>Update Player</h2>
+                {% else %}
+                    <h2>Create Player</h2>
+                {% endif %}
                 <p>Fill the form and submit to create a new Player.</p>
-                {% for field, errors in form.errors.items() %}
-                    <div class="alert alert-error">
-                        {{ form[field].label }}: {{ ', '.join(errors) }}
-                    </div>
-                {% endfor %}
-                {{ render_form(form, extra_classes="forms", enctype="multipart/form-data") }}
-            <br>
+                {{ render_form(form, extra_classes="forms") }}
+                <br>
                 <a href="{{ url_for('team.view_team', id_team=id_team) }}" class="btn btn-secondary col-lg">Cancel</a>
             </div>
         </section>
@@ -28,5 +26,3 @@
     {% endif %}
     <br>
 {% endblock %}
-
-

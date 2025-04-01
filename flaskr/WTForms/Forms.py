@@ -1,11 +1,9 @@
-
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileSize
-from wtforms import StringField, PasswordField, FileField, IntegerField, DateField , validators
+from wtforms import StringField, PasswordField, FileField, IntegerField, DateField , validators, widgets
 from wtforms.fields.choices import SelectField
-from wtforms.fields.simple import HiddenField, SubmitField, URLField
-from wtforms.validators import Length, NumberRange, ValidationError
-
+from wtforms.fields.simple import HiddenField, SubmitField
+from wtforms.validators import Length, NumberRange
 
 ### USER FORM ###
 
@@ -26,7 +24,7 @@ class LoginForm(FlaskForm):
 
 ### PLAYER FORM ###
 
-class RegisterPlayerForm(FlaskForm):
+class PlayerForm(FlaskForm):
     name = StringField('Name', validators=[validators.DataRequired(), Length(1, 20)])
     family_name = StringField('Family Name', validators=[validators.DataRequired(), Length(1, 20)])
     picture = FileField('Picture', validators=[FileAllowed(['jpg', 'png']), FileSize(2 * 1024 * 1024, message="File size must not exceed 2MB.")])
@@ -36,20 +34,8 @@ class RegisterPlayerForm(FlaskForm):
     height = IntegerField('Height', validators=[validators.DataRequired()])
     birthday = DateField('Birthday', validators=[validators.DataRequired()])
     nationality = StringField('Nationality', validators=[validators.DataRequired(), Length(1, 2)])
+   # teams = SelectMultipleField('Teams')
     submit = SubmitField()
-
-class EditPlayerForm(FlaskForm):
-    name = StringField('Name', validators=[validators.DataRequired()])
-    family_name = StringField('Family Name', validators=[validators.DataRequired()])
-    picture = FileField('Picture', validators=[FileAllowed(['jpg', 'png']), FileSize(2 * 1024 * 1024, message="File size must not exceed 2MB.")])
-    number = IntegerField('Number', validators=[validators.DataRequired(), validators.NumberRange(min=00, max=99)])
-    position = IntegerField('Position', validators=[validators.DataRequired(), validators.NumberRange(min=1, max=5)])
-    position_name = StringField('Position Name', validators=[validators.DataRequired(), validators.Length(min=1, max=2)])
-    height = IntegerField('Height', validators=[validators.DataRequired()])
-    birthday = DateField('Birthday', validators=[validators.DataRequired()])
-    nationality = StringField('Nationality', validators=[validators.DataRequired(), validators.Length(min=1, max=2)])
-    submit = SubmitField()
-
 
 class DeletePlayerForm(FlaskForm):
     id_player = IntegerField('Player ID', validators=[validators.DataRequired()])
@@ -75,7 +61,7 @@ class EditMatchForm(FlaskForm):
     submit = SubmitField('Update Match')
 ### TEAM FORM ###
 
-class RegisterTeamForm(FlaskForm):
+class TeamForm(FlaskForm):
     team_name = StringField('Team Name', validators=[validators.DataRequired()])
     team_logo = FileField('Picture', validators=[FileAllowed(['jpg', 'png']), FileSize(2 * 1024 * 1024, message="File size must not exceed 2MB.")])
     address = StringField('Address', validators=[validators.DataRequired()])
@@ -84,17 +70,8 @@ class RegisterTeamForm(FlaskForm):
     loses = IntegerField('Loses', validators=[validators.InputRequired(), validators.NumberRange(min=0)])
     points = IntegerField('Points', validators=[validators.InputRequired(), validators.NumberRange(min=0)])
     submit = SubmitField('Register Team')
-    id_user = HiddenField('ID User', validators=[validators.DataRequired()])
+    id_user = HiddenField('ID User',)
 
 class DeleteTeamForm(FlaskForm):
     id_team = IntegerField('Team ID', validators=[validators.DataRequired()])
 
-class EditTeamForm(FlaskForm):
-    team_name = StringField('Team Name', validators=[validators.DataRequired()])
-    team_logo = FileField('Picture', validators=[FileAllowed(['jpg', 'png']), FileSize(2 * 1024 * 1024, message="File size must not exceed 2MB.")])
-    address = StringField('Address', validators=[validators.DataRequired()])
-    city = StringField('City', validators=[validators.DataRequired()])
-    wins = IntegerField('Wins', validators=[validators.InputRequired(), validators.NumberRange(min=0)])
-    loses = IntegerField('Loses', validators=[validators.InputRequired(), validators.NumberRange(min=0)])
-    points = IntegerField('Points', validators=[validators.InputRequired(), validators.NumberRange(min=0)])
-    submit = SubmitField('Edit Team')

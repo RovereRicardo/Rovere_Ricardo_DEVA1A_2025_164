@@ -4,7 +4,7 @@ from flaskr.database.db import connection
 
 
 class Player:
-    def __init__(self, name, family_name, picture, number, position, position_name, height, birthday, nationality,
+    def __init__(self, name=None, family_name=None, picture=None, number=None, position=None, position_name=None, height=None, birthday=None, nationality=None,
                  id_player=None, is_deleted=None, id_team=None):
         self.id_player = id_player
         self.name = name
@@ -51,6 +51,16 @@ class Player:
 
         cursor.close()
 
+    @staticmethod
+    def get_match_players(id_team, id_match):
+        cursor = connection.cursor()
+        cursor.execute("SELECT pm.id_match, tm.id_team AS team_id, tm.team_name, p.id_player, p.name, p.family_name, pm.subbed, pm.played FROM t_players_match pm JOIN t_player p ON pm.id_player = p.id_player JOIN t_team_player tp ON p.id_player = tp.id_player_team JOIN t_team tm on tp.id_team_player = tm.id_team JOIN t_match m ON pm.id_match = m.id_match WHERE m.id_match = %s AND tm.id_team = %s AND pm.played = 1",
+                       (id_match, id_team,))
+        players = cursor.fetchall()
+        column_names = [desc[0] for desc in cursor.description]
+        players = [dict(zip(column_names, player)) for player in players]
+        return players
+
     def delete_player(id_player, id_team):
         cursor = connection.cursor()
 
@@ -89,9 +99,9 @@ class Player:
         player = cursor.fetchone()
 
         column_names = [desc[0] for desc in cursor.description]
-        player = dict(zip(column_names, player))
+        player_dict = dict(zip(column_names, player))
         cursor.close()
-        return player
+        return Player(**player_dict)
 
     @staticmethod
     def get_all_players(self):

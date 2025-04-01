@@ -97,7 +97,7 @@ class Matchs:
         try:
             cursor = connection.cursor()
             cursor.execute(
-                "INSERT INTO t_players_match (id_match, id_player, subbed) VALUES (%s, %s,1)", (id_match, id_player)
+                "INSERT INTO t_players_match (id_match, id_player, subbed, played) VALUES (%s, %s,1,1)", (id_match, id_player)
             )
             connection.commit()
             cursor.close()
@@ -108,7 +108,7 @@ class Matchs:
         finally:
             cursor = connection.cursor()
             cursor.execute(
-                "UPDATE t_players_match SET subbed = 1 WHERE id_match = %s AND id_player = %s", (id_match,id_player)
+                "UPDATE t_players_match SET subbed = 1, played = 1 WHERE id_match = %s AND id_player = %s", (id_match,id_player)
             )
             cursor.close()
 

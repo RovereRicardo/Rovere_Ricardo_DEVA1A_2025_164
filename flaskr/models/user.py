@@ -1,7 +1,9 @@
-from flask import redirect, url_for, flash
+import pymysql
+from flask_login import UserMixin
+from werkzeug.security import check_password_hash
 from flaskr.database.db import connection
 
-class User:
+class User(UserMixin):
     def __init__(self, id_user, username, name, email, password, role):
         self.id_user = id_user
         self.username = username
@@ -10,30 +12,42 @@ class User:
         self.password = password
         self.role = role
 
-    def register_user(self):
-
-        cursor = connection.cursor()
-        cursor.execute("SELECT id_user FROM t_user WHERE username = %s", (self.username,))
-        exists = cursor.fetchone()
-
-        if exists:
-            flash('Username already taken', 'error')
-            return redirect(url_for('user.register'))
-
-        cursor.execute("INSERT INTO t_user (username, name, email, password, role) VALUES (%s, %s, %s, %s, %s)",
-                       (self.username, self.name, self.email, self.password, self.role))
-
-        user_id = cursor.lastrowid
-        connection.commit()
-
-        cursor.execute("INSERT INTO t_coach(id_user) VALUES (%s)", (user_id))
-        connection.commit()
+    @staticmethod
+    def get_by_username(username):
+        cursor = connection.cursor(pymysql.cursors.DictCursor)
+        cursor.execute("SELECT * FROM t_user WHERE username = %s", (username,))
+        user_data = cursor.fetchone()
         cursor.close()
+        if user_data:
+            return User(
+                id_user=user_data['id_user'],
+                username=user_data['username'],
+                name=user_data['name'],
+                email=user_data['email'],
+                password=user_data['password'],
+                role=user_data['role']
+            )
+        return None
 
     @staticmethod
-    def get_coach(id_user):
-        cursor = connection.cursor()
-        cursor.execute("SELECT * FROM t_user WHERE id_user = %s",(id_user,))
-        user = cursor.fetchone()
+    def get_by_id(user_id):
+        cursor = connection.cursor(pymysql.cursors.DictCursor)
+        cursor.execute("SELECT * FROM t_user WHERE id_user = %s", (user_id,))
+        user_data = cursor.fetchone()
+        cursor.close()
+        if user_data:
+            return User(
+                id_user=user_data['id_user'],
+                username=user_data['username'],
+                name=user_data['name'],
+                email=user_data['email'],
+                password=user_data['password'],
+                role=user_data['role']
+            )
+        return None
 
-        return user
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
+
+    def get_id(self):
+        return str(self.id_user)

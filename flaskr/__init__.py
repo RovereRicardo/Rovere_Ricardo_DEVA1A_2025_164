@@ -1,23 +1,33 @@
 import os
 import base64
+from flask import Flask, render_template, session
+from flask_login import LoginManager
 
-import pymysql
-from flask import Flask, redirect, url_for, render_template, session, request
 from flaskr.database.db import connection, import_dump
 from datetime import timedelta
 from flask_bootstrap import Bootstrap5
-
 from flaskr.models.matchs import Matchs
 from flaskr.models.players import Player
 from flaskr.models.stats import Stats
+from flaskr.models.user import User
+
 
 def create_app():
     app = Flask(__name__)
-    bootstrap = Bootstrap5(app)
     app.config.from_mapping(
-        SECRET_KEY='dev',
+        SECRET_KEY= os.urandom(24),
         DATABASE=os.getenv("NAME_BD_MYSQL"),
     )
+
+    login_manager = LoginManager()
+    login_manager.init_app(app)
+    login_manager.login_view = "user.login"
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        return User.get_by_id(int(user_id))
+
+    bootstrap = Bootstrap5(app)
 
     app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=1)
     app.config['SESSION_PERMANENT'] = True

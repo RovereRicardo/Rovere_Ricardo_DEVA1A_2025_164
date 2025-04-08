@@ -45,11 +45,11 @@ class Stats:
             "SELECT SUM(value) FROM t_stats WHERE id_player = %s AND id_match = %s AND id_stat_type IN (1, 2, 3)",
             (id_player,id_match)
         )
-        points = cursor.fetchone()  # Returns a tuple like (10,) or (None,)
+        points = cursor.fetchone()
 
         cursor.close()
 
-        # Extract value from tuple and return as a dictionary
+        # Extraction des valeurs du tuple pour retournée le dictionnaire
         return {'total_points': points[0] if points else 0}
 
     @staticmethod

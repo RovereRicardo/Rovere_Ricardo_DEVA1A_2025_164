@@ -31,7 +31,7 @@ class Team:
         cursor = connection.cursor()
         cursor.execute(
             "UPDATE t_team SET is_deleted = 1 WHERE id_team = %s",
-            (self.id_team,)  # Ensure it's a tuple
+            (self.id_team,)
         )
         connection.commit()
         cursor.close()

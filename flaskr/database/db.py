@@ -2,10 +2,10 @@ import pymysql
 import os
 from dotenv import load_dotenv
 
-# Load environment variables
+# chargement des variables de environment
 load_dotenv()
 
-# Fetch database configuration from environment variables
+# Fetch database config depuis les variables de environnement
 HOST_MYSQL = os.getenv("HOST_MYSQL")
 USER_MYSQL = os.getenv("USER_MYSQL")
 PASS_MYSQL = os.getenv("PASS_MYSQL")
@@ -13,16 +13,12 @@ PORT_MYSQL = int(os.getenv("PORT_MYSQL", 3306))
 DATABASE_NAME = os.getenv("NAME_BD_MYSQL")
 DUMP_FILE_PATH = os.getenv("NAME_FILE_DUMP_SQL_BD")
 
-# Convert relative path to an absolute path
+# conversion du patch du dump
 absolute_dump_path = os.path.abspath(DUMP_FILE_PATH)
 print(f"Absolute path to dump file: {absolute_dump_path}")
 
-
-
-# Function to create the database
-
 def import_dump():
-    # Establish a new connection to MySQL to run the import
+    # connection pour faire l import du dump
     print("Importing dump...")
     connection = pymysql.connect(
         host=HOST_MYSQL,
@@ -34,28 +30,28 @@ def import_dump():
     # TODO: Uncomment for development
     try:
         cursor = connection.cursor()
-        print(f"Attempting to create database '{DATABASE_NAME}'...")
+        print(f"Tentative de création de la base de données '{DATABASE_NAME}'...")
         cursor.execute(f"CREATE DATABASE IF NOT EXISTS `{DATABASE_NAME}`;")
         connection.commit()
-        print(f"Database '{DATABASE_NAME}' created or already exists.")
+        print(f"La base de données '{DATABASE_NAME}' a été créée ou existe déjà.")
     except Exception as e:
-        print(f"Error creating database '{DATABASE_NAME}': {e}")
+        print(f"Erreur dans la creation de la base de données '{DATABASE_NAME}': {e}")
         cursor.close()
         connection.close()
         return
 
 
     try:
-        print(f"Attempting to select database '{DATABASE_NAME}'...")
+        print(f"Tentative de sélection de la base de données '{DATABASE_NAME}'...")
         connection.select_db(DATABASE_NAME)
-        print(f"Selected database '{DATABASE_NAME}'.")
+        print(f"Base de données sélectionnée '{DATABASE_NAME}'.")
     except Exception as e:
-        print(f"Error selecting database '{DATABASE_NAME}': {e}")
+        print(f"Erreur lors de la sélection de la base de données '{DATABASE_NAME}': {e}")
         connection.close()
         return
 
     if os.path.exists(absolute_dump_path):
-        print(f"Dump file found at {absolute_dump_path}. Starting import...")
+        print(f"Fichier de sauvegarde trouvé à l'emplacement {absolute_dump_path}. Début de l'importation...")
         with open(absolute_dump_path, 'r') as dump_file:
             sql = dump_file.read()
 
@@ -72,14 +68,14 @@ def import_dump():
                         cursor.execute(statement)
 
                 connection.commit()
-                print(f"Database dump from {absolute_dump_path} imported successfully.")
+                print(f"La sauvegarde de la base de données depuis {absolute_dump_path} a été importée avec succès.")
             except Exception as e:
-                print(f"Error importing dump: {e}")
+                print(f"Erreur lors de la l'importation de la sauvegarde : {e}")
                 connection.rollback()
             finally:
                 cursor.close()
     else:
-        print(f"Dump file {absolute_dump_path} does not exist.")
+        print(f"Le fichier de sauvegarde {absolute_dump_path} n'existe pas.")
 
     connection.close()
 

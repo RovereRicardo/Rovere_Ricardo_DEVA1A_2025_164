@@ -20,13 +20,13 @@ player = Blueprint('player', __name__)
 @login_required
 def register_player(id_player):
     form = PlayerForm()
-    id_team = request.args.get('id_team', type=int)  # Get the team ID from the query string
+    id_team = request.args.get('id_team', type=int)  # Get du team ID
 
-    # Get the existing player or create a new one
+    # Get du joueur si non cree un
     player = Player.get_by_id(id_player) if id_player else Player()
 
     if request.method == 'GET':
-        # Fill form with existing data if the player exists
+        # remplie le form avec les donnees existants si l jouer existe
         if id_player:
             form = PlayerForm(**vars(player))  # Fill the form with existing data
 
@@ -61,7 +61,7 @@ def delete_player():
         return redirect(url_for('index'))
 
     try:
-        Player.delete_player(form.id_player.data, form.id_team.data)  # Call the delete function
+        Player.delete_player(form.id_player.data, form.id_team.data)  # delete function
         flash("Player deleted successfully.", "success")
     except Exception as e:
         flash(f"Error deleting player: {str(e)}", "danger")
@@ -76,7 +76,7 @@ def view_player(id_player, id_team):
     if id_team:
         team_data = Team.get_by_id(id_team)
         if team_data:
-            team = Team(**vars(team_data))  # Convert data to Team object
+            team = Team(**vars(team_data))  # conversion des donnee pour objet
 
     if not id_player:
         flash("Player ID is missing.", "danger")
@@ -102,45 +102,10 @@ def view_all_players():
 
     return render_template('/players/players.html', players=players, username=session.get('username'))
 
-"""
-@player.route('/view_player_ajax', methods=['GET', 'POST'])
-def view_player_ajax():
-    id_player = request.args.get('id_player')
-    stat_type = request.args.get('stat_type')
-
-    print(f"Request Arguments: id_player={id_player}, stat_type={stat_type}")
-
-    # Fetch all matches and the stat for the player
-    matches = Matchs.get_all_matches()
-
-    x = [str(match['id_match']) for match in matches]
-    y = [
-        int(Stats.get_player_graph(id_player, match['id_match'], stat_type).get('count', 0))
-        for match in matches
-    ]
-
-    # Log the data to check the response
-    print(f"x: {x}")
-    print(f"y: {y}")
-
-    # Generate the Bokeh graph
-    p = figure(x_range=x, height=600, width=1440, toolbar_location=None, tools="")
-    p.vbar(x=x, top=y, width=0.5)
-    p.y_range.start = 0
-    p.ygrid.visible = False
-
-    script, div = components(p)
-
-    print(f"Generated Div: {div}")
-    print(f"Generated Script: {script}")
-
-    return div + script
-    """
-
 def generate_plot(id_player, stat_type):
     matches = Matchs.get_all_matches()
 
-    # Get match IDs and corresponding stats
+    # Get match ID et les stats
     x = [str(match['id_match']) for match in matches]
     y = [
         int(Stats.get_player_graph(id_player, match['id_match'], stat_type).get('count', 0))
@@ -162,7 +127,7 @@ def generate_plot(id_player, stat_type):
     p.y_range.start = 0
     p.ygrid.visible = False
 
-    # Generate the script and div for embedding
+    # creation du script et div pour le graph
     script, div = components(p)
 
     return script, div

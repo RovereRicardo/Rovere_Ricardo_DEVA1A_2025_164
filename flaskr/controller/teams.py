@@ -42,7 +42,7 @@ def register_team(id_team):
 
         return redirect(url_for('team.view_teams'))
 
-    # Display form validation errors
+    # form validation errors
     if form.errors:
         for field, errors in form.errors.items():
             for error in errors:
@@ -87,9 +87,9 @@ def view_team(id_team):
 
     team = Team(**vars(team_data))
 
-    player_data_list = Player.get_by_team(id_team)  # Returns a list of dictionaries
+    player_data_list = Player.get_by_team(id_team)  #retour de la list de dictionnaire
 
-    players = [Player(**player_data) for player_data in player_data_list] # Create a list of players from player_data in player_data_list
+    players = [Player(**player_data) for player_data in player_data_list] # creation des players depuis les donnes player_data en player_data_list
 
 
     return render_template('/teams/view_team.html', team=team, players=players, id_team=id_team, username=session.get('id_user'))

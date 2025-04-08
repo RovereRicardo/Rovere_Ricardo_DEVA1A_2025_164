@@ -20,7 +20,7 @@ def register_stat():
     stat_type_id = Stats.get_stats_by_name(stat_type)
 
     if stat_type_id:
-        # Create a Stats instance and register it
+        # creation de la stat et la registre
         new_stat = Stats(stat_type_id, id_player, id_match, stat_value)
         new_stat.register_stat()
         return redirect(url_for('match.view_match', id_match=id_match))
@@ -29,7 +29,6 @@ def register_stat():
 
 @stat.route('/player_stats/<int:id_player>/team/<int:id_team>', methods=['GET','POST'])
 def player_stats(id_player, id_team):
-    #x_values = list range of matchs
 
     matches = Matchs.get_all_matches()
     player = Player.get_by_id(id_player)
@@ -51,6 +50,5 @@ def player_stats(id_player, id_team):
         count = Stats.get_player_graph(id_player, match['id_match'])['count']
         print(f"Match ID: {match['id_match']}, Count: {count}")
 
-    #return render_template("_index.html", script=script, div=div)
     return render_template("players/view_player.html",team=team ,player=player, script=script, div=div, id_team=id_team,id_player=id_player)
 

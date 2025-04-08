@@ -62,4 +62,4 @@ def login():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for("index"))  # Redirects to homepage
+    return redirect(url_for("index"))  # redirects to homepage

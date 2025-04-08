@@ -39,12 +39,11 @@ def create_app():
 
     @app.route("/")
     def index():
-        # Ensure the connection is open
+
         global connection
         if not connection.open:
             connection.ping(reconnect=True)
 
-        # Ensure the correct database is selected
         db_name = os.getenv("NAME_BD_MYSQL")
         connection.select_db(db_name)
 

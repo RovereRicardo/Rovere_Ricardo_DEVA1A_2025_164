@@ -74,7 +74,6 @@ def edit_match(id_match):
     column_names = [desc[0] for desc in cursor.description]
     teams = [dict(zip(column_names, team)) for team in teams]
 
-    # Assign teams to choices
     form.id_home_team.choices = form.id_away_team.choices = [(str(team['id_team']), team['team_name']) for team in
                                                              teams]
 

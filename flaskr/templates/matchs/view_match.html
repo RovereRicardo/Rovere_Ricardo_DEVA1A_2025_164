@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %} Match {% endblock %}
 {% block content %}
-    {% if current_user.is_authenticated %}
+    {% if current_user.username == 'admin' or current_user.get_id()|int == id_coach_home.id_coach_creator or current_user.get_id()|int == id_coach_away.id_coach_creator %}
         <section class="players-section">
             <span id="minutes_">00</span>:
             <span id="seconds_">00</span>

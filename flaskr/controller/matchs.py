@@ -130,9 +130,12 @@ def view_match(id_match):
     print(players_playing)
     print(players_playing_away)
 
-    return render_template('matchs/view_match.html', Total=Total, Stats=Stats, match=match, home_players=home_players,
+    id_coach_home = Team.get_coach_id(match.id_home_team)
+    id_coach_away = Team.get_coach_id(match.id_away_team)
+
+    return render_template('matchs/view_match.html', id_coach_away=id_coach_away, id_coach_home=id_coach_home, Total=Total, Stats=Stats, match=match, home_players=home_players,
                            away_players=away_players, players_playing=players_playing,
-                           players_playing_away=players_playing_away, username=session.get('username'))
+                           players_playing_away=players_playing_away)
 
 @match.route('/submit_score', methods=['POST'])
 @login_required

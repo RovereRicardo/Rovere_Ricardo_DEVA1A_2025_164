@@ -38,7 +38,7 @@
                        class="btn btn-outline-success">Players</a>
                 </div>
             </div>
-            {% if current_user.is_authenticated %}
+            {% if current_user.username == 'admin' or current_user.get_id()|int == coach.id_coach_creator %}
                 <a href="{{ url_for('team.register_team',id_player=id_player, id_team=team.id_team) }}"
                    class="btn btn-warning ml-2 pull-right">Update</a>
             {% endif %}

@@ -12,6 +12,7 @@ team = Blueprint('team', __name__)
 @team.route('/teams/team/<int:id_team>', methods=['GET', 'POST'])
 @login_required
 def register_team(id_team):
+    id_coach = Team.get_coach_id(id_team)
     form = TeamForm()
     form.id_user.data = current_user.get_id()
 
@@ -48,7 +49,7 @@ def register_team(id_team):
             for error in errors:
                 flash(f"Error in {getattr(form, field).label.text}: {error}", "danger")
 
-    return render_template('/teams/register_team.html', form=form, team=team)
+    return render_template('/teams/register_team.html', id_coach=id_coach, form=form, team=team)
 
 @team.route('/teams/delete_team', methods=['POST'])
 @login_required
@@ -115,6 +116,6 @@ def team_details(id_team):
 
     team = Team(**vars(team_data))
 
-    coach = Team.get_coach(team)
+    coach = Team.get_coach_id(id_team)
 
     return render_template('/teams/team_details.html', id_team=id_team, team=team, coach=coach)

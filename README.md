@@ -67,18 +67,68 @@ Username: admin
 password: admin
 ```
 
+### APP Logins Coaches
+```text
+Bulle :
+username: bulle
+password: bullebasket
+
+Sarine:
+username: sarine
+password: sarinebasket
+
+Veveyse:
+username: veveyse
+password: veveysebasket
+
+Villars:
+username: villars
+password: villarsbasket
+
+Payerne:
+username: payerne
+password: payernebasket
+
+Fribourg:
+username: fribourg
+password: fribourgbasket
+
+Courtepin:
+username: courtepin
+password: courtepinbasket
+
+Marly:
+username: marly
+password: marlybasket
+
+```
+
 ## Flask Application Structure 
 ```
 .
+|───────Project
+|────────README.md
+|────────Rovere_Paulo_DEVA1A_Cahier_Charges.pdf
+|────────run_app.py
 |──────flaskr/
 | |────controller/
+| | |────matchs.py
 | | |────players.py
+| | |────stats.py
 | | |────teams.py
 | | |────user.py
-| |────models/
+| |────database/
+| | |────__init__.py
 | | |────db.py
+| | |────rovere_ricardo_deva1a_basketstats_164_2025.sql
+| |────Doc/
+| | |────Files for the DOC
+| |────models/
+| | |────matchs.py
 | | |────players.py
+| | |────stats.py
 | | |────teams.py
+| | |────total.py
 | | |────user.py
 | |────static/
 | |────bootstrap.bundle.min.js
@@ -102,15 +152,33 @@ password: admin
 | | |────auth/
 | | | |────login.html
 | | | |────register.html
+| | |────macros/
+| | | |────forms.html
+| | |────matchs/
+| | | |────_match_table.html
+| | | |────_scoresheet.html
+| | | |────edit_match.html
+| | | |────matches.html
+| | | |────register_match.html
+| | | |────scoresheet.html
+| | | |────view_match.html
 | | |────players/
+| | | |────_graph.html
+| | | |────players.html
 | | | |────register_player.html
 | | | |────update_player.html
 | | | |────view_player.html
 | | |────teams/
+| | | |────ranking.html
 | | | |────register_team.html
+| | | |────team_details.html
+| | | |────teams.html
 | | | |────update_team.html
 | | | |────view_team.html
+| | |────WTForms/
+| | | |────Forms.py
 |──────__init__.py
+|──────.env
 
 ```
 ## Flask configuration

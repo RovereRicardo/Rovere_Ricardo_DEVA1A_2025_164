@@ -32,3 +32,5 @@ Teams --> Add player from a list of players if its a known player else fill the 
 Stats --> Graphs  --> [[Done with tabs and Bokeh]]
 
 Flask-Security
+
+Score-Sheet [  ]

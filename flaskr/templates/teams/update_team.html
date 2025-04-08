@@ -2,7 +2,7 @@
 {% block title %} Update Team {{ team.team_name }} {% endblock %}
 {% block content %}
 
-{% if session.username and session.id_user == team.id_coach_creator %}
+{% if current_user.is_authenticated %}
 <section class="details">
     <div class="last-played">
         <h2>Update Team</h2>
@@ -12,7 +12,7 @@
             <a href="{{ url_for('team.view_teams') }}" class="btn btn-secondary col-lg">Cancel</a>
     </div>
 </section>
-{% elif not session.get('username') %}
+{% elif not current_user.is_authenticated %}
 <section class="details">
     <div class="last-played">
         <br>

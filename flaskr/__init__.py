@@ -1,7 +1,7 @@
 import os
 import base64
-from flask import Flask, render_template, session
-from flask_login import LoginManager
+from flask import Flask, render_template, session, flash
+from flask_login import LoginManager, current_user
 
 from flaskr.database.db import connection, import_dump
 from datetime import timedelta
@@ -15,7 +15,7 @@ from flaskr.models.user import User
 def create_app():
     app = Flask(__name__)
     app.config.from_mapping(
-        SECRET_KEY= os.urandom(24),
+        SECRET_KEY= os.getenv("SECRET_KEY"),
         DATABASE=os.getenv("NAME_BD_MYSQL"),
     )
 
@@ -48,9 +48,8 @@ def create_app():
         db_name = os.getenv("NAME_BD_MYSQL")
         connection.select_db(db_name)
 
-        username = session.get('username')  # Get username from session
-
-        return render_template("index.html", username=username)
+        print(current_user.get_id())
+        return render_template("index.html")
 
     @app.template_filter('b64encode')
     def b64encode_filter(data):

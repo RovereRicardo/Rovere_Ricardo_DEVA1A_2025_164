@@ -19,7 +19,6 @@ player = Blueprint('player', __name__)
 @player.route('/players/player/<int:id_player>', methods=['GET', 'POST'])
 @login_required
 def register_player(id_player):
-
     form = PlayerForm()
     id_team = request.args.get('id_team', type=int)  # Get the team ID from the query string
 
@@ -40,7 +39,6 @@ def register_player(id_player):
 
         setattr(player, 'picture', picture_data)
         setattr(player, 'id_team', id_team)
-
 
         if id_player:
             player.update_player()
@@ -78,7 +76,7 @@ def view_player(id_player, id_team):
     if id_team:
         team_data = Team.get_by_id(id_team)
         if team_data:
-            team = Team(**team_data)  # Convert data to Team object
+            team = Team(**vars(team_data))  # Convert data to Team object
 
     if not id_player:
         flash("Player ID is missing.", "danger")

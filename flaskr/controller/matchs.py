@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 from flaskr.WTForms.Forms import RegisterMatchForm, DeleteMatchForm, EditMatchForm
 from flaskr.controller.players import player
@@ -84,6 +84,11 @@ def edit_match(id_match):
 
 
     match = Matchs(**match_data)
+    id_coach_home = Team.get_coach_id(match.id_home_team)
+    id_coach_away = Team.get_coach_id(match.id_away_team)
+
+    print(id_coach_home)
+    print(id_coach_away)
 
     if request.method == 'GET':
         form.date_match.data = match.date_match
@@ -103,7 +108,7 @@ def edit_match(id_match):
         flash("Match Edited!", "success")
         return redirect(url_for('match.view_matches'))
 
-    return render_template("/matchs/edit_match.html", username=session.get('username'), match=match, teams=teams,
+    return render_template("/matchs/edit_match.html", user=current_user.get_id(), id_coach_away=id_coach_away, id_coach_home=id_coach_home, match=match, teams=teams,
                            form=form)
 
 @match.route('/match/<int:id_match>', methods=['GET', 'POST'])

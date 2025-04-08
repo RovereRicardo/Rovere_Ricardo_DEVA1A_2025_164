@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 {% block title %} Update Match {{ match.id_match }} {% endblock %}
 {% block content %}
-    {% if session.username %}
+
+    {% if current_user.username == 'admin' or current_user.get_id()|int == id_coach_home.id_coach_creator or current_user.get_id()|int == id_coach_away.id_coach_creator %}
         <section class="details">
             <div class="last-played">
                 <h2>Update Match</h2>
@@ -9,6 +10,12 @@
                 {{ render_form(form, extra_classes="forms") }}
                 <br>
                 <a href="{{ url_for('match.view_matches') }}" class="btn btn-secondary col-lg">Cancel</a>
+            </div>
+        </section>
+    {% elif current_user.get_id()|int != id_coach_home.id_coach_creator or current_user.get_id()|int != id_coach_away.id_coach_creator %}
+        <section class="details">
+            <div class="last-played">
+                <h2>You can't edit this match. </h2>
             </div>
         </section>
     {% else %}

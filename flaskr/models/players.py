@@ -61,19 +61,8 @@ class Player:
         players = [dict(zip(column_names, player)) for player in players]
         return players
 
-    def delete_player(id_player, id_team):
+    def delete_player(id_player):
         cursor = connection.cursor()
-
-        # Delete from the association table
-        """cursor.execute("DELETE FROM t_team_player WHERE id_player_team = %s AND id_team_player = %s",
-                       (id_player, id_team))
-
-        # Check if the player is still linked to another team
-        cursor.execute("SELECT COUNT(*) FROM t_team_player WHERE id_player_team = %s", (id_player,))
-        count = cursor.fetchone()[0]
-
-        if count == 0:  # If player is not in any other team, delete from players table
-            cursor.execute("DELETE FROM t_player WHERE id_player = %s", (id_player,))"""
 
         cursor.execute("UPDATE t_player SET is_deleted = 1 WHERE id_player = %s", (id_player,))
 
@@ -84,8 +73,8 @@ class Player:
         cursor = connection.cursor()
 
         cursor.execute(
-            "UPDATE t_player SET name=%s, family_name=%s, number=%s, position=%s, position_name=%s, height=%s, birthday=%s, nationality=%s WHERE id_player = %s",
-            (self.name, self.family_name, self.number, self.position, self.position_name, self.height, self.birthday,self.nationality, self.id_player)
+            "UPDATE t_player SET name=%s, family_name=%s, picture=%s, number=%s, position=%s, position_name=%s, height=%s, birthday=%s, nationality=%s WHERE id_player = %s",
+            (self.name, self.family_name, self.picture, self.number, self.position, self.position_name, self.height, self.birthday,self.nationality, self.id_player)
         )
         connection.commit()
         cursor.close()

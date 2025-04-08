@@ -1,7 +1,3 @@
-from logging import exception
-from warnings import catch_warnings
-
-from click import confirm
 from flask import flash
 
 from flaskr.database.db import connection

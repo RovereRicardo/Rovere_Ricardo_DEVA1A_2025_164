@@ -1,5 +1,7 @@
 import pymysql
+from bokeh.colors.named import colors
 from flask import render_template, session
+from flask_login import current_user
 
 from flaskr.database.db import connection
 
@@ -61,24 +63,13 @@ class Team:
     @staticmethod
     def get_by_id(id_team):
         cursor = connection.cursor()
-        try:
-            cursor.execute("SELECT * FROM t_team WHERE id_team = %s", (id_team,))
-            team = cursor.fetchone()
+        cursor.execute("SELECT * FROM t_team WHERE id_team = %s", (id_team,))
+        team = cursor.fetchone()
 
-            if team is None:
-                return None  # No data found
-
-            # Assuming team is a tuple, we can turn it into a dictionary
-            column_names = [desc[0] for desc in cursor.description]
-            team_data = dict(zip(column_names, team))
-
-            return team_data
-
-        except pymysql.MySQLError as e:
-            print(f"Error querying MySQL: {e}")
-            return None
-        finally:
-            cursor.close()
+        column_names = [desc[0] for desc in cursor.description]
+        team_data = dict(zip(column_names, team))
+        cursor.close()
+        return Team(**team_data)
 
     @staticmethod
     def get_all_teams():
@@ -93,6 +84,15 @@ class Team:
     def get_coach(self):
         cursor = connection.cursor()
         cursor.execute("SELECT name, username FROM t_user JOIN t_team WHERE id_coach_creator = %s", (self.id_coach_creator,))
+        coach = cursor.fetchone()
+        cursor.close()
+        column_names = [desc[0] for desc in cursor.description]
+        coach = dict(zip(column_names, coach))
+        return coach
+
+    def get_coach_id(id_team):
+        cursor = connection.cursor()
+        cursor.execute("SELECT id_coach_creator FROM t_team WHERE id_team = %s", (id_team,))
         coach = cursor.fetchone()
         cursor.close()
         column_names = [desc[0] for desc in cursor.description]

@@ -26,13 +26,13 @@ class LoginForm(FlaskForm):
 
 class PlayerForm(FlaskForm):
     name = StringField('Name', validators=[validators.DataRequired(), Length(1, 20)])
-    family_name = StringField('Family Name', validators=[validators.DataRequired(), Length(1, 20)])
+    family_name = StringField('Family Name', validators=[ Length(1, 20)])
     picture = FileField('Picture', validators=[FileAllowed(['jpg', 'png']), FileSize(2 * 1024 * 1024, message="File size must not exceed 2MB.")])
     number = IntegerField('Number', validators=[validators.DataRequired(), NumberRange(0, 99)])
-    position = IntegerField('Position Number', validators=[validators.DataRequired(), NumberRange(1,5)])
-    position_name = StringField('Position Name', validators=[validators.DataRequired(), Length(1,2)])
-    height = IntegerField('Height', validators=[validators.DataRequired()])
-    birthday = DateField('Birthday', validators=[validators.DataRequired()])
+    position = IntegerField('Position Number', validators=[ NumberRange(1,5)])
+    position_name = StringField('Position Name', validators=[ Length(1,2)])
+    height = IntegerField('Height', validators=[])
+    birthday = DateField('Birthday', validators=[])
     nationality = StringField('Nationality', validators=[validators.DataRequired(), Length(1, 2)])
    # teams = SelectMultipleField('Teams')
     submit = SubmitField()

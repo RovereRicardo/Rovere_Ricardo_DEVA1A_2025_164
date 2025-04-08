@@ -17,37 +17,13 @@ DUMP_FILE_PATH = os.getenv("NAME_FILE_DUMP_SQL_BD")
 absolute_dump_path = os.path.abspath(DUMP_FILE_PATH)
 print(f"Absolute path to dump file: {absolute_dump_path}")
 
-# Establish connection to the MySQL server
-connection = pymysql.connect(
-    host=HOST_MYSQL,
-    port=PORT_MYSQL,
-    user=USER_MYSQL,
-    passwd=PASS_MYSQL,
-    database=DATABASE_NAME,
-)
+
 
 # Function to create the database
-def create_database(connection, db_name):
-    cursor = connection.cursor()
-    try:
-        cursor.execute(f"CREATE DATABASE {db_name}")
-        print(f"Database '{db_name}' created successfully.")
-    except Exception as e:
-        print(f"Error creating database {db_name}: {e}")
-    finally:
-        cursor.close()
-
-# Function to check if the database exists
-def database_exists(connection, db_name):
-    cursor = connection.cursor()
-    cursor.execute("SHOW DATABASES LIKE %s", (db_name,))
-    result = cursor.fetchone()
-    cursor.close()
-    return result is not None
-
 
 def import_dump():
     # Establish a new connection to MySQL to run the import
+    print("Importing dump...")
     connection = pymysql.connect(
         host=HOST_MYSQL,
         port=PORT_MYSQL,
@@ -55,6 +31,7 @@ def import_dump():
         passwd=PASS_MYSQL,
     )
 
+    # TODO: Uncomment for development
     try:
         cursor = connection.cursor()
         print(f"Attempting to create database '{DATABASE_NAME}'...")
@@ -66,6 +43,7 @@ def import_dump():
         cursor.close()
         connection.close()
         return
+
 
     try:
         print(f"Attempting to select database '{DATABASE_NAME}'...")
@@ -106,3 +84,12 @@ def import_dump():
     connection.close()
 
 import_dump()
+
+# Establish connection to the MySQL server
+connection = pymysql.connect(
+    host=HOST_MYSQL,
+    port=PORT_MYSQL,
+    user=USER_MYSQL,
+    passwd=PASS_MYSQL,
+    database=DATABASE_NAME,
+)

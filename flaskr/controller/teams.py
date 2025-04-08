@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 from flaskr.WTForms.Forms import TeamForm, DeleteTeamForm
 from flaskr.models.teams import Team  # Import the Team model
@@ -13,10 +13,11 @@ team = Blueprint('team', __name__)
 @login_required
 def register_team(id_team):
     form = TeamForm()
-    form.id_user.data = session.get('id_user')
+    form.id_user.data = current_user.get_id()
 
     team = Team.get_by_id(id_team) if id_team else Team()
 
+    print(team)
     if request.method == 'GET':
         if id_team:
             form = TeamForm(**vars(team))
@@ -29,11 +30,12 @@ def register_team(id_team):
             setattr(team, field, getattr(form, field).data)
 
         setattr(team, 'id_team', id_team)
-        setattr(team, 'id_coach_creator', session.get('id_user'))
+        setattr(team, 'id_coach_creator', current_user.get_id())
         setattr(team, 'team_logo', picture_data)
 
         if id_team:
             team.update_team()
+            flash("Team updated successfully.", "success")
         else:
             team.register_team()
             flash('Team registered successfully.', 'success')
@@ -64,8 +66,9 @@ def delete_team():
             return redirect(url_for('team.view_teams'))
 
         team = Team(**vars(team))
-
-        if(team.id_coach_creator == session.get('id_user')):
+        print(current_user.get_id())
+        print(team.id_coach_creator)
+        if int(team.id_coach_creator) == int(current_user.get_id()):
             team.delete_team()
             flash("Team deleted!", "success")
         else:
@@ -82,7 +85,7 @@ def view_team(id_team):
         flash("Team not found.", "danger")
         return redirect(url_for('index'))
 
-    team = Team(**team_data)
+    team = Team(**vars(team_data))
 
     player_data_list = Player.get_by_team(id_team)  # Returns a list of dictionaries
 
@@ -110,7 +113,7 @@ def team_details(id_team):
         flash("Team not found.", "danger")
         return redirect(url_for('index'))
 
-    team = Team(**team_data)
+    team = Team(**vars(team_data))
 
     coach = Team.get_coach(team)
 

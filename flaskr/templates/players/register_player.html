@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %} {% if player.id_player %} Update Player {% else %} New Player {% endif %}{% endblock %}
 {% block content %}
-    {% if session.username %}
+    {% if current_user.is_authenticated %}
         <section class="details">
             <div class="last-played">
                 <br>

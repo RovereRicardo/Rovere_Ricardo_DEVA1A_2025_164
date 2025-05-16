@@ -16,6 +16,27 @@ ces données afin d'y accéder rapidement et de les analyser efficacement.
 - Bootstrap <img src="https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white">
 - Pycharm <img src="https://img.shields.io/badge/PyCharm-000000.svg?&style=for-the-badge&logo=PyCharm&logoColor=white">
 
+### Lancer
+```text
+Vous pouvez lancer l'application en tapant : 
+flask --app flaskr run 
+depuis le dossier flaskr.
+```
+
+ou
+
+```text
+Cliquez droit sur le fichier run_app.py et choisissez Exécuter [CTRL+SHIFT+F10]
+```
+<img src="./flaskr/Doc/run.png">
+
+### APP Connexion administrateur 
+```text
+Username: admin
+password: admin
+```
+
+
 
 ## Installation
 ### Cloner le dépôt

@@ -30,6 +30,7 @@ def import_dump():
     # TODO: Uncomment for development
     try:
         cursor = connection.cursor()
+        cursor.execute(f"DROP DATABASE`{DATABASE_NAME}`;")
         print(f"Tentative de création de la base de données '{DATABASE_NAME}'...")
         cursor.execute(f"CREATE DATABASE IF NOT EXISTS `{DATABASE_NAME}`;")
         connection.commit()

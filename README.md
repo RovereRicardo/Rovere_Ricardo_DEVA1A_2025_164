@@ -11,63 +11,67 @@ ces données afin d'y accéder rapidement et de les analyser efficacement.
 
 
 ## Technologie utilisée
-- [ ] Flask <img src="https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white">
-- [ ] Python <img src="https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=blue">
-- [ ] Bootstrap <img src="https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white">
-- [ ] Pycharm <img src="https://img.shields.io/badge/PyCharm-000000.svg?&style=for-the-badge&logo=PyCharm&logoColor=white">
+- Flask <img src="https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white">
+- Python <img src="https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=blue">
+- Bootstrap <img src="https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white">
+- Pycharm <img src="https://img.shields.io/badge/PyCharm-000000.svg?&style=for-the-badge&logo=PyCharm&logoColor=white">
 
 
 ## Installation
-### Clone the repo
+### Cloner le dépôt
 ```python
 https://github.com/RovereRicardo/Rovere_Ricardo_DEVA1A_2025_164.git
 ```
-### Install Python 
+### Installer Python 
 ```python
-Download from official website : https://www.python.org/downloads/windows/
-After  installing in the command line type : "python -V" This commands will tell if Python is installed
+Téléchargez depuis le site officiel : https://www.python.org/downloads/windows/
+Après installation, dans la ligne de commande tapez : "python -V"
+Cette commande vous indiquera si Python est bien installé.
+
 ```
 
-### Install pip
+### Installer pip
 ```python
 py get-pip.py 
 ```
-Run with debug mode :
+Lancer en mode debug :
 ```python
-When everything is installed open the repo and type on the terminal : 
+Quand tout est installé, ouvrez le dépôt et tapez dans le terminal : 
 flask --app flaskr --debug run
 ```
-Run without debug mode :
+Lancer sans mode debug :
 ```python
 flask --app flaskr run
 ```
 
-## How to run the Application
+## Comment lancer l'application
 ```text
-If you wish to change the Host, User or Password: 
-Go to the .env file and change the credentials you wish.
+Si vous souhaitez modifier l'hôte, l'utilisateur ou le mot de passe : 
+Allez dans le fichier .env et changez les identifiants que vous voulez.
 ```
 <img src="./flaskr/Doc/env.jpg">
 
-### Run
+### Lancer
 ```text
-You can either run the application by typing :
-flask --app flaskr  run 
-From the flaskr folder.
+Vous pouvez lancer l'application en tapant : 
+flask --app flaskr run 
+depuis le dossier flaskr.
 ```
-or
+
+ou
+
 ```text
-Right click on the __init__.py file and choose Run [CTRL+SHIFT+F10]
+Cliquez droit sur le fichier run_app.py et choisissez Exécuter [CTRL+SHIFT+F10]
 ```
 <img src="./flaskr/Doc/run.png">
 
-### APP Login 
+### APP Connexion administrateur 
 ```text
 Username: admin
 password: admin
 ```
 
-### APP Logins Coaches
+### APP Connexion Coaches
 ```text
 Bulle :
 username: bulle
@@ -103,7 +107,7 @@ password: marlybasket
 
 ```
 
-## Flask Application Structure 
+## Structure de l'application Flask 
 ```
 .
 |───────Project
@@ -181,7 +185,7 @@ password: marlybasket
 |──────.env
 
 ```
-## Flask configuration
+## Configuration Flask
 ```python
 def create_app():
     app = Flask(__name__)
@@ -191,9 +195,7 @@ def create_app():
     )
 ```
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
+## Visuels
 ### Homepage
 <img src="./flaskr/Doc/homepage.png" >
 

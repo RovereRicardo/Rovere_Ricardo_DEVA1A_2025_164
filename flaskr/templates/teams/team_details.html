@@ -29,11 +29,10 @@
                     <p> {{ coach.name }}</p>
                     <h4><strong>Status</strong></h4>
                     {% if team.is_deleted == 0 %}
-                        <p><strong>Active</strong></p>
+                        <p class="text-success"><strong>Active</strong></p>
                     {% else %}
-                        <p><strong>Inactive</strong></p>
+                        <p class="text-danger"><strong class="text-red-500">Inactive</strong></p>
                     {% endif %}
-                    <p>Added is active 0 = yes no = 1</p>
                     <a href="{{ url_for('team.view_team', id_team=id_team) }}"
                        class="btn btn-outline-success">Players</a>
                 </div>

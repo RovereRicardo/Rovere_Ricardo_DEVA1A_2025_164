@@ -19,6 +19,7 @@ ces données afin d'y accéder rapidement et de les analyser efficacement.
 ### Install Requirements
 ```text
 python3.12 -m venv venv
+source venv/bin/activate
 pip install -r requirements.txt
 ```
 

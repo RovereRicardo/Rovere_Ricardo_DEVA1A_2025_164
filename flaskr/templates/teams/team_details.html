@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %} Team {% endblock %}
+{% block title %} Team {{ team.team_name }} {% endblock %}
 {% block content %}
     <section class="players-section">
         <div class="container">
@@ -40,6 +40,7 @@
             {% if current_user.username == 'admin' or current_user.get_id()|int == coach.id_coach_creator %}
                 <a href="{{ url_for('team.register_team',id_player=id_player, id_team=team.id_team) }}"
                    class="btn btn-warning ml-2 pull-right">Update</a>
+                <a href="" class="btn btn-danger ml-2 pull-right">Delete</a>
             {% endif %}
             <a href="{{ url_for('team.view_teams') }}" class="btn btn-secondary ml-2 pull-right"
                style="margin-right: 10px">Cancel</a>

@@ -16,6 +16,11 @@ ces données afin d'y accéder rapidement et de les analyser efficacement.
 - Bootstrap <img src="https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white">
 - Pycharm <img src="https://img.shields.io/badge/PyCharm-000000.svg?&style=for-the-badge&logo=PyCharm&logoColor=white">
 
+### Install Requirements
+```text
+pip install -r requirements.txt
+```
+
 ### Lancer
 ```text
 Vous pouvez lancer l'application en tapant : 

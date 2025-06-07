@@ -33,6 +33,7 @@
             {% if current_user.is_authenticated %}
                 <a href="{{ url_for('player.register_player', id_player=player.id_player, id_team=team.id_team) }}"
                    class="btn btn-warning ml-2 pull-right">Update</a>
+                <a href="" class="btn btn-danger ml-2 pull-right">Delete</a>
             {% endif %}
 
 

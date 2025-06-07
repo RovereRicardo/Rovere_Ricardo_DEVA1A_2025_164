@@ -18,6 +18,24 @@ ces données afin d'y accéder rapidement et de les analyser efficacement.
 
 ### Install Requirements
 ```text
+En théorie, lorsque vous ouvrez ce projet dans PyCharm :
+
+- PyCharm détectera automatiquement le fichier `requirements.txt`.
+- Il peut vous proposer d’installer toutes les dépendances nécessaires.
+- Si vous acceptez, tous les paquets listés seront installés automatiquement.
+
+Le projet est conçu pour fonctionner avec l’interpréteur **Python 3.12**.
+
+Si PyCharm ne propose pas l'installation automatiquement :
+1. Installez manuellement les dépendances :
+   > pip install -r requirements.txt
+
+2. Vérifiez que l’interpréteur utilisé est bien Python 3.12 :
+   - Fichier → Paramètres → Projet → Interpréteur Python → Choisir Python 3.12
+
+```
+
+```text
 MacOS
 python3.12 -m venv venv
 source venv/bin/activate

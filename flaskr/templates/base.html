@@ -154,6 +154,23 @@
                 loadTimers();
             };
         </script>
+        <script>
+            function toggleDeletedPlayers() {
+                const deletedRows = document.querySelectorAll('.deleted-player');
+                deletedRows.forEach(row => {
+                    row.classList.toggle('d-none');
+                });
+            }
+        </script>
+        <script>
+            function toggleDeletedTeams() {
+                const deletedRows = document.querySelectorAll('.deleted-team');
+                deletedRows.forEach(row => {
+                    row.classList.toggle('d-none');
+                });
+            }
+        </script>
+
     {% endblock %}
 </head>
 <body>

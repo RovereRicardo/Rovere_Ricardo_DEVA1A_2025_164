@@ -15,24 +15,24 @@
                 </thead>
                 <tbody>
                 {% for team in teams %}
-                    <tr>
+                    <tr class="{% if team.is_deleted == 1 %}table-danger deleted-team d-none{% endif %}">
                         <td>{{ team.team_name }}</td>
                         <td>{{ team.address }}</td>
                         <td>{{ team.city }}</td>
                         <td>
                             <a href="{{ url_for('team.team_details', id_team=team.id_team) }}" class="mr-3"
-                               title="View Team">
+                               title="Voir l'équipe">
                                 <span class="fa fa-eye"></span>
                             </a>
                             {% if current_user.is_authenticated %}
                                 <a href="{{ url_for('team.register_team', id_team=team.id_team) }}" class="mr-3"
-                                   title="Update Team">
+                                   title="Modifier l'équipe">
                                     <span class="fa fa-pencil"></span>
                                 </a>
                                 <form action="{{ url_for('team.delete_team') }}" method="POST" style="display:inline;">
                                     <input type="hidden" name="id_team" value="{{ team.id_team }}">
                                     <button type="submit" class="btn btn-danger"
-                                            onclick="return confirm('Are you sure?')">
+                                            onclick="return confirm('Êtes-vous sûr ?')">
                                         <span class="fa fa-trash"></span>
                                     </button>
                                 </form>
@@ -43,7 +43,10 @@
                 </tbody>
             </table>
             <br>
-            <a href="{{ url_for('index') }}" class="btn btn-secondary ml-0 pull-right">Home</a>
+            <button class="btn btn-warning ml-0 pull-right btn-gap" onclick="toggleDeletedTeams()">
+                Afficher/Masquer les équipes supprimées
+            </button>
+            <a href="{{ url_for('index') }}" class="btn btn-secondary ml-0 pull-right btn-gap">Home</a>
             <a href="{{ url_for('team.register_team') }} " class="btn btn-success pull-right btn-gap">
                 <i class="fa fa-plus"></i> Add New Team
             </a>

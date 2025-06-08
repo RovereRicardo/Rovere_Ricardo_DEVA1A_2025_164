@@ -35,7 +35,7 @@ class PlayerForm(FlaskForm):
     birthday = DateField('Birthday', validators=[])
     nationality = StringField('Nationality', validators=[validators.DataRequired(), Length(1, 2)])
    # teams = SelectMultipleField('Teams')
-    submit = SubmitField()
+    submit = SubmitField("Register Player / Reactivate Player")
 
 class DeletePlayerForm(FlaskForm):
     id_player = IntegerField('Player ID', validators=[validators.DataRequired()])
@@ -69,7 +69,7 @@ class TeamForm(FlaskForm):
     wins = IntegerField('Wins', validators=[validators.InputRequired(), validators.NumberRange(min=0)])
     loses = IntegerField('Loses', validators=[validators.InputRequired(), validators.NumberRange(min=0)])
     points = IntegerField('Points', validators=[validators.InputRequired(), validators.NumberRange(min=0)])
-    submit = SubmitField('Register Team')
+    submit = SubmitField('Register Team / Reactivate Team')
     id_user = HiddenField('ID User',)
 
 class DeleteTeamForm(FlaskForm):

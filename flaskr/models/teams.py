@@ -39,7 +39,7 @@ class Team:
     def update_team(self):
         cursor = connection.cursor()
         cursor.execute(
-            "UPDATE t_team SET team_name=%s, team_logo=%s, address=%s, city=%s, wins=%s, loses=%s, points=%s WHERE id_team=%s",
+            "UPDATE t_team SET team_name=%s, team_logo=%s, address=%s, city=%s, wins=%s, loses=%s, points=%s, is_deleted=0 WHERE id_team=%s",
             (self.team_name, self.team_logo, self.address, self.city, self.wins, self.loses, self.points, self.id_team))
         connection.commit()
         cursor.close()
@@ -74,29 +74,48 @@ class Team:
     @staticmethod
     def get_all_teams():
         cursor = connection.cursor()
-        cursor.execute("SELECT * FROM t_team WHERE is_deleted = 0 ORDER BY points DESC")
+        cursor.execute("SELECT * FROM t_team ORDER BY points DESC")
         column_names = [desc[0] for desc in cursor.description]  # Get column names here
         teams = cursor.fetchall()
         cursor.close()
         teams = [dict(zip(column_names, team)) for team in teams]
         return teams
 
+
     def get_coach(self):
         cursor = connection.cursor()
-        cursor.execute("SELECT name, username FROM t_user JOIN t_team WHERE id_coach_creator = %s", (self.id_coach_creator,))
+        cursor.execute("""
+            SELECT u.name, u.username
+            FROM t_user u
+            JOIN t_team t ON u.id_user = t.id_coach_creator
+            WHERE t.id_team = %s
+        """, (self.id_team,))
         coach = cursor.fetchone()
-        cursor.close()
+
+        if coach is None:
+            cursor.close()
+            return None  # Aucun coach trouvé
+
         column_names = [desc[0] for desc in cursor.description]
         coach = dict(zip(column_names, coach))
+        cursor.close()
         return coach
 
+
+    @staticmethod
     def get_coach_id(id_team):
         cursor = connection.cursor()
         cursor.execute("SELECT id_coach_creator FROM t_team WHERE id_team = %s", (id_team,))
         coach = cursor.fetchone()
-        cursor.close()
+
+        # Vérifie si un résultat a été trouvé
+        if coach is None:
+            cursor.close()
+            return None  # Aucun coach trouvé pour cette équipe
+
         column_names = [desc[0] for desc in cursor.description]
         coach = dict(zip(column_names, coach))
+        cursor.close()
         return coach
 
 

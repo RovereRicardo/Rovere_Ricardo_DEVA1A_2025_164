@@ -23,7 +23,7 @@ class Player:
     def get_by_team(id_team):
         cursor = connection.cursor()
         cursor.execute(
-            "SELECT p.* FROM t_player p JOIN t_team_player tp ON p.id_player = tp.id_player_team JOIN t_team t ON tp.id_team_player = t.id_team WHERE t.id_team = %s AND p.is_deleted = 0",
+            "SELECT p.* FROM t_player p JOIN t_team_player tp ON p.id_player = tp.id_player_team JOIN t_team t ON tp.id_team_player = t.id_team WHERE t.id_team = %s",
             (id_team,))
         players = cursor.fetchall()
         column_names = [desc[0] for desc in cursor.description]
@@ -61,7 +61,7 @@ class Player:
         players = [dict(zip(column_names, player)) for player in players]
         return players
 
-    def delete_player(id_player):
+    def delete_player(id_player, id_team):
         cursor = connection.cursor()
 
         cursor.execute("UPDATE t_player SET is_deleted = 1 WHERE id_player = %s", (id_player,))
@@ -73,7 +73,7 @@ class Player:
         cursor = connection.cursor()
 
         cursor.execute(
-            "UPDATE t_player SET name=%s, family_name=%s, picture=%s, number=%s, position=%s, position_name=%s, height=%s, birthday=%s, nationality=%s WHERE id_player = %s",
+            "UPDATE t_player SET name=%s, family_name=%s, picture=%s, number=%s, position=%s, position_name=%s, height=%s, birthday=%s, nationality=%s, is_deleted=0 WHERE id_player = %s",
             (self.name, self.family_name, self.picture, self.number, self.position, self.position_name, self.height, self.birthday,self.nationality, self.id_player)
         )
         connection.commit()
@@ -96,7 +96,7 @@ class Player:
     def get_all_players(self):
         cursor = connection.cursor()
         cursor.execute(
-            "SELECT p.*, t.id_team FROM t_player p JOIN t_team_player tp ON p.id_player = tp.id_player_team JOIN t_team t ON tp.id_team_player = t.id_team WHERE p.is_deleted = 0",
+            "SELECT p.*, t.id_team FROM t_player p JOIN t_team_player tp ON p.id_player = tp.id_player_team JOIN t_team t ON tp.id_team_player = t.id_team",
         )
         players = cursor.fetchall()
         cursor.close()

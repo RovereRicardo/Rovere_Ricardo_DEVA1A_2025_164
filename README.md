@@ -49,6 +49,12 @@ L’objectif est de centraliser toutes les données pour une meilleure analyse e
 ---
 
 ## 🔧 Installation
+```text
+# 1. Identifiant BD
+Identifiant: root
+# 2. Mot de pass BD
+Mot de pass: root
+```
 
 ```bash
 # 1. Cloner le dépôt

@@ -59,7 +59,7 @@ Mot de pass: root
 ```bash
 # 1. Cloner le dépôt
 git clone https://github.com/RovereRicardo/Rovere_Ricardo_DEVA1A_2025_164.git
-cd Rovere_Ricardo_DEVA1A_2025_164
+cd DEVA2A
 
 # 2. Créer un environnement virtuel
 python -m venv venv            # Windows

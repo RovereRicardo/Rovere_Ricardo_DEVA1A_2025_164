@@ -2,52 +2,67 @@ import pymysql
 import os
 from dotenv import load_dotenv
 
-# chargement des variables de environment
+# Chargement des variables d'environnement
 load_dotenv()
 
-# Fetch database config depuis les variables de environnement
-HOST_MYSQL = os.getenv("HOST_MYSQL")
-USER_MYSQL = os.getenv("USER_MYSQL")
-PASS_MYSQL = os.getenv("PASS_MYSQL")
-PORT_MYSQL = int(os.getenv("PORT_MYSQL", 3306))
-DATABASE_NAME = os.getenv("NAME_BD_MYSQL")
-DUMP_FILE_PATH = os.getenv("NAME_FILE_DUMP_SQL_BD")
+# Configuration unique qui fonctionne en local ET dans Docker
+DB_HOST = os.getenv("DB_HOST", os.getenv("HOST_MYSQL", "localhost"))
+DB_USER = os.getenv("DB_USER", os.getenv("USER_MYSQL", "root"))
+DB_PASSWORD = os.getenv("DB_PASSWORD", os.getenv("PASS_MYSQL", "root"))
+DB_PORT = int(os.getenv("DB_PORT", os.getenv("PORT_MYSQL", 3306)))
+DB_NAME = os.getenv("DB_NAME", os.getenv("NAME_BD_MYSQL", "basketstats"))
+DUMP_FILE_PATH = os.getenv("NAME_FILE_DUMP_SQL_BD", "flaskr/database/rovere_ricardo_deva1a_basketstats_164_2025.sql")
 
-# conversion du patch du dump
+# Conversion du chemin du dump
 absolute_dump_path = os.path.abspath(DUMP_FILE_PATH)
 print(f"Absolute path to dump file: {absolute_dump_path}")
 
-def import_dump():
-    # connection pour faire l import du dump
-    print("Importing dump...")
+
+def get_db_connection():
+    """Crée une connexion à la base de données MySQL"""
     connection = pymysql.connect(
-        host=HOST_MYSQL,
-        port=PORT_MYSQL,
-        user=USER_MYSQL,
-        passwd=PASS_MYSQL,
+        host=DB_HOST,
+        port=DB_PORT,
+        user=DB_USER,
+        password=DB_PASSWORD,
+        database=DB_NAME,
+        charset='utf8mb4',
+        cursorclass=pymysql.cursors.DictCursor
+    )
+    return connection
+
+
+def import_dump():
+    """Importe le dump SQL"""
+    print(f"Connexion à MySQL: host={DB_HOST}, port={DB_PORT}, user={DB_USER}, database={DB_NAME}")
+
+    connection = pymysql.connect(
+        host=DB_HOST,
+        port=DB_PORT,
+        user=DB_USER,
+        password=DB_PASSWORD,
+        charset='utf8mb4'
     )
 
-    # TODO: Uncomment for development
     try:
         cursor = connection.cursor()
-        cursor.execute(f"DROP DATABASE IF EXISTS `{DATABASE_NAME}`;")
-        print(f"Tentative de création de la base de données '{DATABASE_NAME}'...")
-        cursor.execute(f"CREATE DATABASE IF NOT EXISTS `{DATABASE_NAME}`;")
+        cursor.execute(f"DROP DATABASE IF EXISTS `{DB_NAME}`;")
+        print(f"Tentative de création de la base de données '{DB_NAME}'...")
+        cursor.execute(f"CREATE DATABASE IF NOT EXISTS `{DB_NAME}`;")
         connection.commit()
-        print(f"La base de données '{DATABASE_NAME}' a été créée ou existe déjà.")
+        print(f"La base de données '{DB_NAME}' a été créée ou existe déjà.")
     except Exception as e:
-        print(f"Erreur dans la creation de la base de données '{DATABASE_NAME}': {e}")
+        print(f"Erreur dans la création de la base de données '{DB_NAME}': {e}")
         cursor.close()
         connection.close()
         return
 
-
     try:
-        print(f"Tentative de sélection de la base de données '{DATABASE_NAME}'...")
-        connection.select_db(DATABASE_NAME)
-        print(f"Base de données sélectionnée '{DATABASE_NAME}'.")
+        print(f"Tentative de sélection de la base de données '{DB_NAME}'...")
+        connection.select_db(DB_NAME)
+        print(f"Base de données sélectionnée '{DB_NAME}'.")
     except Exception as e:
-        print(f"Erreur lors de la sélection de la base de données '{DATABASE_NAME}': {e}")
+        print(f"Erreur lors de la sélection de la base de données '{DB_NAME}': {e}")
         connection.close()
         return
 
@@ -57,8 +72,8 @@ def import_dump():
             sql = dump_file.read()
 
             # Remove 'CREATE DATABASE' and 'USE <database>' statements
-            sql = sql.replace(f"CREATE DATABASE IF NOT EXISTS `{DATABASE_NAME}`;", "")
-            sql = sql.replace(f"USE `{DATABASE_NAME}`;", "")
+            sql = sql.replace(f"CREATE DATABASE IF NOT EXISTS `{DB_NAME}`;", "")
+            sql = sql.replace(f"USE `{DB_NAME}`;", "")
 
             cursor = connection.cursor()
 
@@ -71,7 +86,7 @@ def import_dump():
                 connection.commit()
                 print(f"La sauvegarde de la base de données depuis {absolute_dump_path} a été importée avec succès.")
             except Exception as e:
-                print(f"Erreur lors de la l'importation de la sauvegarde : {e}")
+                print(f"Erreur lors de l'importation de la sauvegarde : {e}")
                 connection.rollback()
             finally:
                 cursor.close()
@@ -80,13 +95,15 @@ def import_dump():
 
     connection.close()
 
+
+# Import au démarrage seulement
 import_dump()
 
-# Establish connection to the MySQL server
+# Connexion globale pour l'application
 connection = pymysql.connect(
-    host=HOST_MYSQL,
-    port=PORT_MYSQL,
-    user=USER_MYSQL,
-    passwd=PASS_MYSQL,
-    database=DATABASE_NAME,
+    host=DB_HOST,
+    port=DB_PORT,
+    user=DB_USER,
+    password=DB_PASSWORD,
+    database=DB_NAME,
 )

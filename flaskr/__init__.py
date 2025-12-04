@@ -14,9 +14,14 @@ from flaskr.models.user import User
 
 def create_app():
     app = Flask(__name__)
+
+    # Récupérer DB_NAME avec fallback
+    db_name = os.getenv("DB_NAME", os.getenv("NAME_BD_MYSQL", "basketstats"))
+
+    # Stocker dans app.config pour y accéder partout
     app.config.from_mapping(
-        SECRET_KEY= os.getenv("SECRET_KEY"),
-        DATABASE=os.getenv("NAME_BD_MYSQL"),
+        SECRET_KEY=os.getenv("SECRET_KEY", os.urandom(24).hex()),
+        DATABASE=db_name,
     )
 
     login_manager = LoginManager()
@@ -39,23 +44,37 @@ def create_app():
 
     @app.route("/")
     def index():
-
         global connection
-        if not connection.open:
-            connection.ping(reconnect=True)
 
-        db_name = os.getenv("NAME_BD_MYSQL")
-        connection.select_db(db_name)
+        try:
+            # Récupérer db_name depuis app.config
+            current_db_name = app.config['DATABASE']
 
-        print(current_user.get_id())
-        return render_template("index.html")
+            # Vérifier et reconnecter si nécessaire
+            if not connection.open:
+                connection.ping(reconnect=True)
+
+            # LIGNE 48 : Utiliser current_db_name au lieu de db_name
+            if current_db_name:
+                connection.select_db(current_db_name)
+            else:
+                raise ValueError("DB_NAME n'est pas défini dans les variables d'environnement")
+
+            # Debug
+            if os.getenv('VERBOSE', 'OFF').upper() == 'ON':
+                print(f"Connecté à la base de données: {current_db_name}")
+
+            return render_template("index.html")
+
+        except Exception as e:
+            print(f"Erreur dans index(): {e}")
+            return render_template("500.html", error=str(e)), 500
 
     @app.template_filter('b64encode')
     def b64encode_filter(data):
         return base64.b64encode(data).decode('utf-8') if data else None
 
-    app.secret_key = os.urandom(24)
-
+    # Enregistrement des blueprints
     from flaskr.controller.user import user
     app.register_blueprint(user)
 

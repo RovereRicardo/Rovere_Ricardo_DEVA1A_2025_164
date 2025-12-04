@@ -1,0 +1,106 @@
+services:
+  # Environnement de développement
+  app-dev:
+    build:
+      context: .
+      target: development
+    container_name: basketstats-dev
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+      - /app/__pycache__
+      - /app/flaskr/__pycache__
+    environment:
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+      - VERBOSE=ON
+      - AUTO_LOGIN=admin
+      - DB_HOST=db-dev
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=root
+      - DB_NAME=basketstats_dev
+    networks:
+      - basketstats-network
+    depends_on:
+      db-dev:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Base de données MySQL pour développement
+  db-dev:
+    image: mysql:8.0
+    container_name: basketstats-mysql-dev
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: basketstats_dev
+    volumes:
+      - mysql-dev-data:/var/lib/mysql
+      - ./flaskr/database/rovere_ricardo_deva1a_basketstats_164_2025.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3308:3306"
+    networks:
+      - basketstats-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # Environnement de production
+  app-prod:
+    build:
+      context: .
+      target: production
+    container_name: basketstats-prod
+    ports:
+      - "5001:5000"
+    environment:
+      - FLASK_ENV=production
+      - FLASK_DEBUG=0
+      - VERBOSE=OFF
+      - AUTO_LOGIN=""
+      - DB_HOST=db-prod
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=root
+      - DB_NAME=basketstats_prod
+    networks:
+      - basketstats-network
+    depends_on:
+      db-prod:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Base de données MySQL pour production
+  db-prod:
+    image: mysql:8.0
+    container_name: basketstats-mysql-prod
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: basketstats_prod
+    volumes:
+      - mysql-prod-data:/var/lib/mysql
+      - ./flaskr/database/rovere_ricardo_deva1a_basketstats_164_2025.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3309:3306"
+    networks:
+      - basketstats-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  mysql-dev-data:
+  mysql-prod-data:
+
+networks:
+  basketstats-network:
+    driver: bridge

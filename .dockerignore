@@ -1,0 +1,70 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Documentation (PDFs can be large)
+*.pdf
+
+# Logs
+*.log
+
+# Environment files (security)
+.env
+.env.local
+.env.*.local
+
+# Node modules (if any)
+node_modules/
+npm-debug.log*
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Instance folder
+instance/
+
+# Build/distribution
+build/
+dist/
+*.egg-info/
+
+# Docker
+docker-compose.override.yml
+.dockerignore
+
+# Documentation images (keep only if small)
+# flaskr/Doc/*.png
+
+# README files we want in the image
+!README*.md
+

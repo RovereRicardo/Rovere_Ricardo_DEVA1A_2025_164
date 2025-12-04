@@ -15,8 +15,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `rovere_ricardo_deva1a_basketstats_164_2025`
 --
-CREATE DATABASE IF NOT EXISTS `rovere_ricardo_deva1a_basketstats_164_2025` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-USE `rovere_ricardo_deva1a_basketstats_164_2025`;
 
 -- --------------------------------------------------------
 
